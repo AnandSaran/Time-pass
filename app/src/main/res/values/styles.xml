@@ -1,0 +1,146 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#292929</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/text_color</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:background">@android:color/transparent</item>
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    </style>
+
+    <!--region Font Text Style-->
+    <style name="AppTheme.TextAppearance">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColorHint">?android:attr/textColorHint</item>
+        <item name="android:textColorHighlight">?android:attr/textColorHighlight</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoRegular">
+        <item name="android:fontFamily">@font/roboto</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoMedium">
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+    <!--endregion -->
+
+    <!--region Font: Roboto_Regular-->
+    <style name="AppTheme.TextAppearance.RobotoRegular.Tiny">
+        <item name="android:textSize">9sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoRegular.Small">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoRegular.Regular">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoRegular.Medium">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoRegular.Large">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoRegular.ExtraLarge">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoRegular.DoubleExtraLarge">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoRegular.TripleExtraLarge">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoRegular.Giant">
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoRegular.ExtraGiant">
+        <item name="android:textSize">32sp</item>
+    </style>
+    <!--endregion-->
+
+    <!--region Font: Roboto_medium-->
+    <style name="AppTheme.TextAppearance.RobotoMedium.Tiny">
+        <item name="android:textSize">9sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoMedium.Small">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoMedium.Regular">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoMedium.Large">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoMedium.ExtraLarge">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoMedium.DoubleExtraLarge">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoMedium.TripleExtraLarge">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoMedium.Giant">
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.RobotoMedium.ExtraGiant">
+        <item name="android:textSize">32sp</item>
+    </style>
+    <!--endregion-->
+
+
+    <!--region Text view style of rail title -->
+    <style name="RailItemTitleStyle">
+        <item name="android:ellipsize">end</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:textAppearance">@style/AppTheme.TextAppearance.RobotoMedium.Large</item>
+    </style>
+
+    <style name="RailItemTitleStyle.DoubleLine">
+        <item name="android:maxLines">1</item>
+        <item name="android:minLines">1</item>
+    </style>
+
+    <style name="RailItemTypeTitleStyle">
+        <item name="android:ellipsize">end</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:textAppearance">@style/AppTheme.TextAppearance.RobotoRegular.Medium</item>
+    </style>
+
+    <style name="RailItemTypeTitleStyle.DoubleLine">
+        <item name="android:maxLines">2</item>
+        <item name="android:minLines">1</item>
+    </style>
+    <!--endregion -->
+</resources>

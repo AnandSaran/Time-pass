@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--region Rail item size-->
+    <integer name="recycler_view_category_span_count">2</integer>
+    <!--endregion-->
+</resources>
