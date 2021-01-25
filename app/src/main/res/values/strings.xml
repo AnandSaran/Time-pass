@@ -1,4 +1,38 @@
 <resources>
     <string name="label_mobile_number">Mobile number</string>
-    <string name="login_button_text">Let\'s Time pass</string>
+    <string name="label_otp">Otp</string>
+    <string name="label_name">Name</string>
+    <string name="label_submit">Submit</string>
+    <string name="label_update_profile">Update Profile</string>
+    <string name="label_edit_profile">Edit Profile</string>
+    <string name="label_email">Email</string>
+    <string name="label_skip">Skip</string>
+    <string name="login_button_text">Let\'s Time Pass</string>
+    <string name="otp_verify_button_text">Verify Otp</string>
+    <string name="invalid_otp">Invalid OTP</string>
+    <string name="invalid_phone_number">Invalid phone number</string>
+    <string name="quoto_exceed">Quota exceeded</string>
+    <string name="enter_otp">Enter OTP</string>
+    <string name="enter_mobile_number">Enter mobile number</string>
+    <string name="permission_title">Permission</string>
+    <string name="permission_message">we need permission for read images</string>
+    <string name="permission_denied_message">If you reject permission,you can not use this service</string>
+    <string name="download_started">Download started</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="profile">Profile</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="fragment_user_video_list">fragment_user_video_list</string>
+    <string name="fragment_category">fragment_category</string>
+    <string name="fragment_profile">fragment_profile</string>
+    <string name="comments">Comment\'s</string>
+    <string name="label_title">Title</string>
+    <string name="label_description">Description (Optional)</string>
+    <string name="label_upload_video">Upload Video</string>
+    <string name="invalid_title">Enter title</string>
+    <string name="invalid_video">Invalid video</string>
+    <string name="select_video_max_time">Select 30 seconds video</string>
+    <string name="label_edit_video">Edit video</string>
+    <string name="label_next">Next</string>
 </resources>

@@ -2,9 +2,9 @@ package com.gregantech.timepass.network
 
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.BuildConfig.DEBUG
+import com.gregantech.timepass.network.jsonadapter.NullToEmptyStringAdapter
+import com.gregantech.timepass.network.jsonadapter.StringToBooleanAdapter
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
-import com.singtel.cast.network.jsonadapter.NullToEmptyStringAdapter
-import com.singtel.cast.network.jsonadapter.StringToBooleanAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor

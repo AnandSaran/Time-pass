@@ -1,4 +1,4 @@
-package com.singtel.cast.network.jsonadapter
+package com.gregantech.timepass.network.jsonadapter
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonQualifier

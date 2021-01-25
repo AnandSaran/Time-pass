@@ -5,8 +5,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.gregantech.timepass.R
 import com.gregantech.timepass.model.RailItemDecorationTypeEnum
-import com.gregantech.timepass.util.itemdecoration.CategoryDetailItemDecoratoration
-import com.singtel.cast.utils.recyclerview.itemdecoration.CategoryGridItemDecoration
+import com.gregantech.timepass.util.itemdecoration.CategoryGridItemDecoration
 
 fun RecyclerView.setCustomDivider(drawable: Int) {
     val divider = ContextCompat.getDrawable(this.context, drawable)

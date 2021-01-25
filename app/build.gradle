@@ -3,6 +3,9 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'androidx.navigation.safeargs'
+
 androidExtensions {
     experimental = true
 }
@@ -12,7 +15,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.gregantech.timepass"
+        applicationId "com.adroit.timepass"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
@@ -65,6 +68,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    packagingOptions {
+        exclude 'META-INF/*.kotlin_module'
+    }
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
@@ -93,6 +101,10 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$version_navigation"
     implementation "androidx.navigation:navigation-ui:$version_navigation"
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$version_navigation"
+
+    //Paging
+    implementation "androidx.paging:paging-runtime:$version_paging"
+
     // Jetpack Compose Integration
     implementation "androidx.navigation:navigation-compose:$version_navigation_compose"
 
@@ -131,6 +143,52 @@ dependencies {
     // exoplayer
     implementation "com.google.android.exoplayer:exoplayer:$version_exoplayer"
     implementation "com.google.android.exoplayer:exoplayer-ui:$version_exoplayer"
+
+    //country code picker
+    implementation "com.hbb20:ccp:$version_country_code_picker"
+
+    //progress bar
+    implementation "com.wang.avi:library:$version_av_loading_indicator"
+
+    //viewpager 2
+    implementation "androidx.viewpager2:viewpager2:$version_viewpager_two"
+
+    // Import the Firebase BoM
+    implementation platform("com.google.firebase:firebase-bom:$version_firebase_bom")
+
+    // Add the dependency for the Firebase SDK for Google Analytics
+    // When using the BoM, don't specify versions in Firebase dependencies
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    //firebase auth
+    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation "androidx.browser:browser:$version_browser"
+
+    //permission
+    implementation "gun0912.ted:tedpermission-rx2:$version_ted_permission"
+
+    //crop
+    implementation "com.github.yalantis:ucrop:$version_image_crop"
+    implementation 'com.github.MasayukiSuda:Mp4Composer-android:v0.4.1'
+
+    //image compress
+    implementation "id.zelory:compressor:$version_image_compressor"
+
+    //video crop
+    implementation "com.github.Ahmedbadereldin:Video-Trimmer-Android:$version_video_trimmer"
+
+    implementation 'org.koin:koin-android:2.0.1'
+    implementation 'org.koin:koin-androidx-scope:2.0.1'
+    implementation 'org.koin:koin-androidx-viewmodel:2.0.1'
+    // Ktor for Android
+    implementation "io.ktor:ktor-client-android:1.2.5"
+// Ktor JVM(necessary for logging extension)
+    implementation "io.ktor:ktor-client-logging-jvm:1.2.5"
+// Ktor Logging extension
+    implementation "io.ktor:ktor-client-logging:1.2.5"
+// Necessary to show logs in logcat
+    implementation "ch.qos.logback:logback-classic:1.2.3"
+    implementation "androidx.work:work-runtime-ktx:$version_work"
 
     testImplementation "junit:junit:$version_junit"
     androidTestImplementation "androidx.test.ext:junit:$version_test_junit"

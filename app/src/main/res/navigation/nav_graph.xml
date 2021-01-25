@@ -3,19 +3,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/categoryFragment">
+    app:startDestination="@id/userVideoListFragment">
+    <fragment
+        android:id="@+id/userVideoListFragment"
+        android:name="com.gregantech.timepass.view.uservideolist.fragment.UserVideoListFragment"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_user_video_list" />
+
+    <fragment
+        android:id="@+id/userProfileFragment"
+        android:name="com.gregantech.timepass.view.profile.fragment.ProfileFragment"
+        android:label="@string/profile"
+        tools:layout="@layout/fragment_profile" />
+
     <fragment
         android:id="@+id/categoryFragment"
-        android:name="com.gregantech.timepass.view.category.fragment.CategoryFragment"
+        android:name="com.gregantech.timepass.view.home.fragment.CategoryFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_category" >
+        tools:layout="@layout/fragment_category">
         <action
             android:id="@+id/action_categoryFragment_to_categoryDetailFragment"
-            app:destination="@id/categoryDetailFragment" />
+            app:destination="@id/categoryDetailFragment">
+            <argument
+                android:name="categoryId"
+                android:defaultValue="0"
+                app:argType="string" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/categoryDetailFragment"
         android:name="com.gregantech.timepass.view.categorydetail.fragment.CategoryDetailFragment"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_category_detail" />
+        tools:layout="@layout/fragment_category_detail">
+        <argument
+            android:name="categoryId"
+            android:defaultValue="0"
+            app:argType="string" />
+    </fragment>
 </navigation>

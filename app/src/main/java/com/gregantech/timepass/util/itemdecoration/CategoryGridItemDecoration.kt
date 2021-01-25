@@ -1,4 +1,4 @@
-package com.singtel.cast.utils.recyclerview.itemdecoration
+package com.gregantech.timepass.util.itemdecoration
 
 import android.graphics.Rect
 import android.view.View

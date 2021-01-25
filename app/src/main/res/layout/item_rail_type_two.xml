@@ -8,78 +8,131 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clParent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/transparent">
 
-        <FrameLayout
-            android:id="@+id/clMediaContainer"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/dp_0"
-            app:layout_constraintDimensionRatio="2:1.2"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/dp_10" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/dp_10" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="@dimen/dp_10" />
+
+
+        <VideoView
+            android:id="@+id/vvPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/layProgressBar"
+            layout="@layout/progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/ivVolumeControl"
+            android:layout_width="@dimen/dp_45"
+            android:layout_height="@dimen/dp_45"
+            android:layout_gravity="end|bottom"
+            android:alpha="0"
+            android:animateLayoutChanges="true"
+            android:padding="@dimen/dp_10"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_volume_up"
+            tools:ignore="ContentDescription" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clRailController"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/guidelineBottom"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd">
 
             <ImageView
-                android:id="@+id/imageViewPhoto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
+                android:id="@+id/ivLike"
+                android:layout_width="@dimen/dp_44"
+                android:layout_height="@dimen/dp_44"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="@dimen/dp_10"
+                android:tint="@color/white"
+                android:src="@drawable/ic_un_like"
+                app:layout_constraintBottom_toTopOf="@id/tvTotalLike"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription"
-                tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
-            <ImageView
-                android:id="@+id/ivVolumeControl"
-                android:layout_width="@dimen/dp_45"
-                android:layout_height="@dimen/dp_45"
-                android:layout_gravity="end|bottom"
-                android:alpha="0"
-                android:animateLayoutChanges="true"
-                android:padding="@dimen/dp_10"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/ic_volume_up"
                 tools:ignore="ContentDescription" />
 
+            <TextView
+                android:id="@+id/tvTotalLike"
+                style="@style/RailItemTotalLikeStyle"
+                android:layout_width="wrap_content"
+                android:textColor="@color/white"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_10"
+                app:layout_constraintBottom_toTopOf="@id/ivShare"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="@tools:sample/lorem" />
 
-        </FrameLayout>
+            <ImageView
+                android:id="@+id/ivShare"
+                android:layout_width="@dimen/dp_44"
+                android:layout_height="@dimen/dp_44"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="@dimen/dp_10"
+                android:src="@drawable/ic_share"
+                android:tint="@color/white"
+                app:layout_constraintBottom_toTopOf="@id/ivDownload"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="ContentDescription" />
 
-        <ImageView
-            android:id="@+id/ivLike"
-            android:layout_width="@dimen/dp_44"
-            android:layout_height="@dimen/dp_44"
-            android:padding="@dimen/dp_10"
-            android:src="@drawable/ic_un_like"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/clMediaContainer" />
-
-        <ImageView
-            android:id="@+id/share_image"
-            android:layout_width="@dimen/dp_44"
-            android:layout_height="@dimen/dp_44"
-            android:padding="@dimen/dp_10"
-            android:src="@drawable/ic_share"
-            app:layout_constraintStart_toEndOf="@id/ivLike"
-            app:layout_constraintTop_toBottomOf="@id/clMediaContainer" />
+            <ImageView
+                android:id="@+id/ivDownload"
+                android:layout_width="@dimen/dp_44"
+                android:layout_height="@dimen/dp_44"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="@dimen/dp_10"
+                android:tint="@color/white"
+                android:src="@drawable/ic_download"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="ContentDescription" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/tvTitle"
             style="@style/RailItemTypeTitleStyle.DoubleLine"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_30"
-            android:fontFamily="@font/roboto_medium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivLike"
+            android:layout_marginEnd="@dimen/dp_40"
+            app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
+            app:layout_constraintEnd_toStartOf="@id/clRailController"
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
             tools:text="@tools:sample/lorem/random" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

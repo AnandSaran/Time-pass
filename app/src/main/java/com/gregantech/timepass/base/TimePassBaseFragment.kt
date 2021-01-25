@@ -1,6 +1,7 @@
 package com.gregantech.timepass.base
 
 import androidx.fragment.app.Fragment
+import com.gregantech.timepass.model.RailItemTypeTwoModel
 
 /**
  * Created by anand
@@ -18,6 +19,10 @@ abstract class TimePassBaseFragment : Fragment() {
 
     fun dismissProgressBar() {
         baseActivity.dismissProgressBar()
+    }
+
+    fun downloadWithFlow(railItemTypeTwoModel: RailItemTypeTwoModel) {
+        baseActivity.downloadWithFlow(railItemTypeTwoModel)
     }
 
 }

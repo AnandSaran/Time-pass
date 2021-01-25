@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="dataModel"
+            type="com.gregantech.timepass.model.RailItemTypeTwoModel" />
+
+        <variable
+            name="callback"
+            type="com.gregantech.timepass.util.PlayerStateCallback" />
+
+        <variable
+            name="index"
+            type="int" />
+
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clParent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_10"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/ivUserProfile"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/circle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvUserName"
+                style="@style/RailItemTypeTitleStyle.SingleLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{dataModel.userName}"
+                android:layout_marginStart="8dp"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                app:layout_constraintBottom_toBottomOf="@id/ivUserProfile"
+                app:layout_constraintStart_toEndOf="@+id/ivUserProfile"
+                app:layout_constraintTop_toTopOf="@id/ivUserProfile"
+                tools:text="John Doe" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:maxHeight="400dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/clProfile">
+
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/vvPlayer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:item_index="@{index}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:on_state_change="@{callback}"
+                app:progressbar="@{progressBar}"
+                app:resize_mode="fill"
+                app:surface_type="texture_view"
+                app:video_url="@{dataModel.video}" />
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/progressBar"
+                style="@style/AVLoadingIndicatorView.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                app:indicatorColor="@color/colorAccent"
+                app:indicatorName="BallGridPulseIndicator"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/ivLike"
+            android:layout_width="@dimen/dp_44"
+            android:layout_height="@dimen/dp_44"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/dp_10"
+            android:src="@{dataModel.liked ? @drawable/ic_like : @drawable/ic_un_like_black}"
+            app:layout_constraintEnd_toStartOf="@id/tvTotalLike"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/clPlayer"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tvTotalLike"
+            style="@style/RailItemTotalLikeStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{Integer.toString(dataModel.totalLike)}"
+            app:layout_constraintBottom_toBottomOf="@id/ivLike"
+            app:layout_constraintStart_toEndOf="@id/ivLike"
+            app:layout_constraintTop_toTopOf="@id/ivLike"
+            tools:text="@tools:sample/lorem" />
+
+        <ImageView
+            android:id="@+id/ivComment"
+            android:layout_width="@dimen/dp_44"
+            android:layout_height="@dimen/dp_44"
+            android:layout_marginStart="@dimen/dp_10"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/dp_10"
+            android:src="@drawable/ic_comment"
+            app:layout_constraintStart_toEndOf="@id/tvTotalLike"
+            app:layout_constraintTop_toBottomOf="@id/clPlayer"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tvTotalComment"
+            style="@style/RailItemTotalLikeStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{Integer.toString(dataModel.totalComment)}"
+            app:layout_constraintBottom_toBottomOf="@id/ivComment"
+            app:layout_constraintStart_toEndOf="@id/ivComment"
+            app:layout_constraintTop_toTopOf="@id/ivComment"
+            tools:text="@tools:sample/lorem" />
+
+        <ImageView
+            android:id="@+id/ivShare"
+            android:layout_width="@dimen/dp_44"
+            android:layout_height="@dimen/dp_44"
+            android:layout_marginStart="@dimen/dp_10"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/dp_10"
+            android:src="@drawable/ic_share_black"
+            app:layout_constraintStart_toEndOf="@id/tvTotalComment"
+            app:layout_constraintTop_toBottomOf="@id/clPlayer"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/ivDownload"
+            android:layout_width="@dimen/dp_44"
+            android:layout_height="@dimen/dp_44"
+            android:layout_marginStart="@dimen/dp_10"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/dp_10"
+            android:src="@drawable/ic_download_black"
+            app:layout_constraintStart_toEndOf="@id/ivShare"
+            app:layout_constraintTop_toBottomOf="@id/clPlayer"
+            tools:ignore="ContentDescription" />
+
+        <ImageView
+            android:id="@+id/ivFollow"
+            android:layout_width="@dimen/dp_44"
+            android:layout_height="@dimen/dp_44"
+            android:layout_marginStart="@dimen/dp_10"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="@dimen/dp_10"
+            android:src="@{dataModel.followed ? @drawable/ic_followed : @drawable/ic_follow_black}"
+            app:layout_constraintStart_toEndOf="@id/ivDownload"
+            app:layout_constraintTop_toBottomOf="@id/clPlayer"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            style="@style/RailItemTypeTitleStyle.DoubleLine"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:text="@{dataModel.title}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivLike"
+            tools:text="@tools:sample/lorem/random" />
+
+        <TextView
+            android:id="@+id/tvSubtitle"
+            style="@style/RailItemTypeSubtitleStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_20"
+            android:text="@{dataModel.subtitle}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+            tools:text="@tools:sample/lorem/random" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

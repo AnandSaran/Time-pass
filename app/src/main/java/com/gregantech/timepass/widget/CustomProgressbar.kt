@@ -18,10 +18,6 @@ class CustomProgressbar(context: Context) : Dialog(context) {
         window?.let {
             it.setLayout(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             it.setBackgroundDrawableResource(android.R.color.transparent)
-            it.setFlags(
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-            )
             setCanceledOnTouchOutside(false)
             setCancelable(false)
         }

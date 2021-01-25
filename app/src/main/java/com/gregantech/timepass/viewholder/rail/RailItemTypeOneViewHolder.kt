@@ -20,7 +20,7 @@ class RailItemTypeOneViewHolder(private var railBinding: ItemRailTypeOneBinding)
     ) {
         railBinding.apply {
             tvTitle.text = railItem.title
-            imageViewPhoto.loadUrl(railItem.image)
+            ivPoster.loadUrl(railItem.image)
             cardViewLayout.setOnClickListener {
                 if (railItemClickHandler.isInitializedForPosterClicking()) {
                     railItemClickHandler.clickPoster(railItem)

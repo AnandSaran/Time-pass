@@ -24,7 +24,7 @@
             android:orientation="horizontal"
             app:layout_constraintGuide_end="0dp" />
 
-        <com.gregantech.timepass.widget.VideoPlayerRecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_category_video_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -32,6 +32,6 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
             app:layout_constraintTop_toBottomOf="@id/guidelineTop"
-            tools:listitem="@layout/item_rail_type_two" />
+            tools:listitem="@layout/item_instagram" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -4,10 +4,9 @@ import android.os.Bundle
 import android.os.Handler
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseActivity
-import com.gregantech.timepass.util.constant.SharedPreferenceKey.USER_ID
-import com.gregantech.timepass.util.sharedpreference.SharedPref
-import com.gregantech.timepass.view.category.activity.CategoryActivity
-import com.gregantech.timepass.view.login.LoginActivity
+import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
+import com.gregantech.timepass.view.home.activity.HomeActivity
+import com.gregantech.timepass.view.login.activity.LoginActivity
 
 class SplashActivity : TimePassBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,8 +16,8 @@ class SplashActivity : TimePassBaseActivity() {
     }
 
     private fun navigateNextScreen() {
-        if (SharedPref.instance.getStringValue(this, USER_ID) != null) {
-            CategoryActivity.present(this)
+        if (SharedPreferenceHelper.isUserLoggedIn()) {
+            HomeActivity.present(this)
         } else {
             LoginActivity.present(this)
         }
