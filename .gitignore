@@ -1,6 +1,7 @@
 *.iml
 .gradle
 /local.properties
+/.idea
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -12,3 +13,7 @@
 /captures
 .externalNativeBuild
 .cxx
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/compiler.xml
+/.idea/jarRepositories.xml
+/app/src/main/res/xml/file_path.xml

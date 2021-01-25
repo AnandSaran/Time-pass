@@ -3,8 +3,10 @@ package com.gregantech.timepass.view.uservideolist.fragment
 import android.Manifest
 import android.app.Activity
 import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -41,6 +43,7 @@ import com.gregantech.timepass.util.URIPathHelper
 import com.gregantech.timepass.util.constant.EMPTY_LONG
 import com.gregantech.timepass.util.constant.EMPTY_STRING
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+import com.gregantech.timepass.util.extension.shareDownloadedFile
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
@@ -69,6 +72,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     var railModel = RailItemTypeTwoModel()
     var currentIndex = -1
     var isShareClick = false
+    var downloadID: Long? = null
 
     private var permissionlistenerCreateVideo: PermissionListener = object : PermissionListener {
         override fun onPermissionGranted() {
@@ -97,6 +101,14 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     companion object {
         fun newInstance() = UserVideoListFragment()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requireContext().registerReceiver(
+            downloadStatusReceiver,
+            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        )
     }
 
     override fun onCreateView(
@@ -130,6 +142,11 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        requireContext().unregisterReceiver(downloadStatusReceiver)
+    }
+
     private fun setupViewModelObserver() {
         viewModel.getUserVideoList(pageNo)
             .observe(viewLifecycleOwner, Observer { categoryListResponse ->
@@ -149,9 +166,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
                 }
             })
         viewModel.downloadRequest.observe(viewLifecycleOwner, Observer {
-            it.let {
-                downloadVideo(it)
-            }
+            downloadVideo(it)
         })
 
     }
@@ -290,7 +305,10 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     private fun onClickDownload() {
         if (isShareClick) {
-            onClickShare(railModel)
+
+            viewModel.createDownloadRequest(railModel, getString(R.string.app_name))
+
+            // onClickShare(railModel)
         } else {
             viewModel.createDownloadRequest(railModel, getString(R.string.app_name))
         }
@@ -350,11 +368,21 @@ class UserVideoListFragment : TimePassBaseFragment() {
         binding.rvUserVideoList.adapter?.notifyItemRangeInserted(startPosition, endPosition)
     }
 
+    private val downloadStatusReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            if (downloadID == id) {
+                requireContext().shareDownloadedFile(downloadID!!)
+            }
+            dismissProgressBar()
+        }
+    }
+
     private fun downloadVideo(request: DownloadManager.Request) {
+        showProgressBar()
         getString(R.string.download_started).toast(ctxt)
-        val manager =
-            ctxt.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        manager.enqueue(request)
+        val manager = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        downloadID = manager.enqueue(request)
     }
 
     override fun onPause() {

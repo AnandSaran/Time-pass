@@ -15,3 +15,6 @@ const val FOLLOWERS="\nFollowers"
 const val FOLLOWING="\nFollowing"
 const val ZERO="0"
 const val JUST_NOW="Just now"
+
+const val SUBJECT = "This is a sample subject"
+const val BODY = "This is a sample body share example"
