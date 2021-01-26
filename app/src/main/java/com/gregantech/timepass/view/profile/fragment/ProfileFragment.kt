@@ -3,7 +3,10 @@ package com.gregantech.timepass.view.profile.fragment
 import android.Manifest
 import android.app.Activity
 import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.*
 import androidx.activity.result.ActivityResult
@@ -53,6 +56,7 @@ class ProfileFragment : TimePassBaseFragment() {
     private lateinit var railItemClickHandler: RailItemClickHandler
     private var railList: ArrayList<RailBaseItemModel> = arrayListOf()
 
+    var isShareClick = false
     private var isLastData: Boolean = false
     private var pageNo: Int = 1
 
@@ -60,6 +64,8 @@ class ProfileFragment : TimePassBaseFragment() {
     var isLoading: Boolean = false
     var railModel = RailItemTypeTwoModel()
     var currentIndex = -1
+
+    var downloadID: Long? = null
 
     private var permissionListener: PermissionListener = object : PermissionListener {
         override fun onPermissionGranted() {
@@ -104,6 +110,10 @@ class ProfileFragment : TimePassBaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        requireContext().registerReceiver(
+            downloadStatusReceiver,
+            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -257,6 +267,7 @@ class ProfileFragment : TimePassBaseFragment() {
         }
 
         railItemClickHandler.clickShare = { railModel ->
+            isShareClick = true
             onClickShare(railModel as RailItemTypeTwoModel)
         }
 
@@ -265,14 +276,18 @@ class ProfileFragment : TimePassBaseFragment() {
         }
 
         railItemClickHandler.clickDownload = { railModel ->
+            isShareClick = false
             this.railModel = railModel as RailItemTypeTwoModel
             askPermission()
         }
     }
 
     private fun onClickShare(railItemTypeTwoModel: RailItemTypeTwoModel) {
-        ctxt.shareVideoText(railItemTypeTwoModel.video)
+        //ctxt.shareVideoText(railItemTypeTwoModel.video)
+        railModel = railItemTypeTwoModel
+        onClickDownload()
     }
+
 
     private fun onClickFollow(railItemTypeTwoModel: RailItemTypeTwoModel) {
         when (railItemTypeTwoModel.isFollowed) {
@@ -362,11 +377,26 @@ class ProfileFragment : TimePassBaseFragment() {
         binding.rvUserVideoList.adapter?.notifyItemRangeInserted(startPosition, endPosition)
     }
 
+
+    private val downloadStatusReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            if (downloadID == id && isShareClick) {
+                requireContext().shareDownloadedFile(downloadID!!)
+            }
+            if(isShareClick){
+                dismissProgressBar()
+            }
+        }
+    }
+
     private fun downloadVideo(request: DownloadManager.Request) {
+        if(isShareClick){
+            showProgressBar()
+        }
         getString(R.string.download_started).toast(ctxt)
-        val manager =
-            ctxt.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        manager.enqueue(request)
+        val manager = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        downloadID = manager.enqueue(request)
     }
 
     override fun onPause() {
@@ -417,5 +447,10 @@ class ProfileFragment : TimePassBaseFragment() {
             ctxt,
             railItemTypeTwoModel.contentId, isUserPost = true
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        requireContext().unregisterReceiver(downloadStatusReceiver)
     }
 }

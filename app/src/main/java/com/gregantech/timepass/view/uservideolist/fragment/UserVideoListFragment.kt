@@ -304,14 +304,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     }
 
     private fun onClickDownload() {
-        if (isShareClick) {
-
-            viewModel.createDownloadRequest(railModel, getString(R.string.app_name))
-
-            // onClickShare(railModel)
-        } else {
-            viewModel.createDownloadRequest(railModel, getString(R.string.app_name))
-        }
+        viewModel.createDownloadRequest(railModel, getString(R.string.app_name))
     }
 
     private fun setUserFollow(railItemTypeTwoModel: RailItemTypeTwoModel) {
@@ -371,15 +364,19 @@ class UserVideoListFragment : TimePassBaseFragment() {
     private val downloadStatusReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            if (downloadID == id) {
+            if (downloadID == id && isShareClick) {
                 requireContext().shareDownloadedFile(downloadID!!)
             }
-            dismissProgressBar()
+            if(isShareClick){
+                dismissProgressBar()
+            }
         }
     }
 
     private fun downloadVideo(request: DownloadManager.Request) {
-        showProgressBar()
+        if(isShareClick){
+            showProgressBar()
+        }
         getString(R.string.download_started).toast(ctxt)
         val manager = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         downloadID = manager.enqueue(request)

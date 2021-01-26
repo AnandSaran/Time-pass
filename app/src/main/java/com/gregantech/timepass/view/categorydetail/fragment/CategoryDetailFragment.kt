@@ -3,8 +3,11 @@ package com.gregantech.timepass.view.categorydetail.fragment
 import android.Manifest
 import android.app.Activity
 import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.DOWNLOAD_SERVICE
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +39,7 @@ import com.gregantech.timepass.util.PlayerViewAdapter.Companion.releaseAllPlayer
 import com.gregantech.timepass.util.constant.EMPTY_LONG
 import com.gregantech.timepass.util.constant.EMPTY_STRING
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+import com.gregantech.timepass.util.extension.shareDownloadedFile
 import com.gregantech.timepass.util.extension.shareVideoText
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
@@ -56,6 +60,7 @@ class CategoryDetailFragment : TimePassBaseFragment() {
 
     private var railList: ArrayList<RailBaseItemModel> = arrayListOf()
 
+    var isShareClick = false
     private var categoryId: String = EMPTY_STRING
     private var isLastData: Boolean = false
     private var pageNo: Int = 1
@@ -64,6 +69,7 @@ class CategoryDetailFragment : TimePassBaseFragment() {
     var isLoading: Boolean = false
     var railModel = RailItemTypeTwoModel()
     var currentIndex = -1
+    var downloadID: Long? = null
     private var permissionListener: PermissionListener = object : PermissionListener {
         override fun onPermissionGranted() {
             onClickDownload()
@@ -83,6 +89,14 @@ class CategoryDetailFragment : TimePassBaseFragment() {
     companion object {
         fun newInstance() =
             CategoryDetailFragment()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        requireContext().registerReceiver(
+            downloadStatusReceiver,
+            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        )
     }
 
     override fun onCreateView(
@@ -200,19 +214,34 @@ class CategoryDetailFragment : TimePassBaseFragment() {
         }
 
         railItemClickHandler.clickShare = { railModel ->
+            isShareClick = true
             onClickShare(railModel as RailItemTypeTwoModel)
         }
         railItemClickHandler.clickComment = { railModel ->
             onClickComment(railModel as RailItemTypeTwoModel)
         }
         railItemClickHandler.clickDownload = { railModel ->
+            isShareClick = false
             this.railModel = railModel as RailItemTypeTwoModel
             askPermission()
         }
     }
 
+    private val downloadStatusReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            if (downloadID == id && isShareClick) {
+                requireContext().shareDownloadedFile(downloadID!!)
+            }
+            if(isShareClick){
+                dismissProgressBar()
+            }
+        }
+    }
+
     private fun onClickShare(railItemTypeTwoModel: RailItemTypeTwoModel) {
-        ctxt.shareVideoText(railItemTypeTwoModel.video)
+        railModel = railItemTypeTwoModel
+        onClickDownload()
     }
 
     private fun onClickFollow(railItemTypeTwoModel: RailItemTypeTwoModel) {
@@ -308,10 +337,12 @@ class CategoryDetailFragment : TimePassBaseFragment() {
     }
 
     private fun downloadVideo(request: DownloadManager.Request) {
+        if(isShareClick){
+            showProgressBar()
+        }
         getString(R.string.download_started).toast(ctxt)
-        val manager =
-            ctxt.getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        manager.enqueue(request)
+        val manager = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        downloadID = manager.enqueue(request)
     }
 
     override fun onPause() {
@@ -369,5 +400,10 @@ class CategoryDetailFragment : TimePassBaseFragment() {
             ctxt,
             railItemTypeTwoModel.contentId, isAdminPost = true
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        requireContext().unregisterReceiver(downloadStatusReceiver)
     }
 }
