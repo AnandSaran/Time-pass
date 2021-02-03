@@ -12,6 +12,7 @@ import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.util.PlayerStateCallback
 import com.gregantech.timepass.util.PlayerViewAdapter
 import com.gregantech.timepass.util.extension.loadDrawable
+import com.gregantech.timepass.util.extension.loadUrl
 import com.gregantech.timepass.util.extension.loadUrlCircle
 import com.gregantech.timepass.util.extension.visible
 import java.util.*
@@ -71,10 +72,10 @@ class InstagramAdapter(
                 dataModel = model
                 callback = this@InstagramAdapter
                 index = adapterPosition
-                //(clPlayer.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = "1:1"
                 setupOnClick(model)
                 setupFollow(model.isShowFollow)
                 setupProfile(model)
+                setupMediaContent(model)
                 executePendingBindings()
             }
         }
@@ -167,6 +168,19 @@ class InstagramAdapter(
         private fun changeTotalLike(railItem: RailItemTypeTwoModel) {
             binding.tvTotalLike.text = generateTotalLike(railItem)
         }
+
+        private fun setupMediaContent(model: RailItemTypeTwoModel) {
+            val isImage = model.isImage
+            if (isImage != null && isImage) {
+                binding.clPlayer.visible(false)
+                binding.ivPoster.visible(true)
+                binding.ivPoster.loadUrl(model.image)
+            } else {
+                binding.ivPoster.visible(false)
+                binding.clPlayer.visible(true)
+            }
+        }
+
     }
 
     private fun generateTotalLike(railItem: RailItemTypeTwoModel): String {

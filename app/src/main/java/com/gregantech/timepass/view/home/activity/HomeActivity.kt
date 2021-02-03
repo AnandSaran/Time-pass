@@ -3,9 +3,8 @@ package com.gregantech.timepass.view.home.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -14,9 +13,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.databinding.ActivityCategoryBinding
+import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
+import com.gregantech.timepass.view.home.viewmodel.HomeSharedViewModel
+import com.gregantech.timepass.view.uservideolist.fragment.UserVideoListFragment
 
 
-class HomeActivity : TimePassBaseActivity() {
+class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemClickListener {
     private lateinit var binding: ActivityCategoryBinding
     private lateinit var navController: NavController
     private var selectedIndex: Int = -1
@@ -26,6 +29,13 @@ class HomeActivity : TimePassBaseActivity() {
             val intent = Intent(context, HomeActivity::class.java)
             context.startActivity(intent)
         }
+    }
+
+    private val homeSharedViewModel: HomeSharedViewModel by lazy {
+        requireNotNull(this) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this).get(HomeSharedViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +67,7 @@ class HomeActivity : TimePassBaseActivity() {
     private fun initView() {
         setupBottomNavMenu()
         setSupportActionBar(binding.tbCategory.toolbar)
+        binding.tbCategory.toolbar.setTitleTextAppearance(this, R.style.logo_font)
     }
 
     private fun initViewModelFactory() {
@@ -113,6 +124,15 @@ class HomeActivity : TimePassBaseActivity() {
             else -> {
                 false
             }
+        }
+    }
+
+    override fun onItemClick(item: String) {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val fragment = navHostFragment.childFragmentManager.fragments[0]
+        if (fragment is UserVideoListFragment) {
+            fragment.onFilePickItemClick(item)
         }
     }
 }

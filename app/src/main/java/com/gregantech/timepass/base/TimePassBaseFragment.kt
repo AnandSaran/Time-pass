@@ -8,7 +8,7 @@ import com.gregantech.timepass.model.RailItemTypeTwoModel
  */
 
 abstract class TimePassBaseFragment : Fragment() {
-    private val TAG = this::class.java.simpleName
+    protected val TAG = this::class.java.simpleName
 
     val baseActivity: TimePassBaseActivity
         get() = activity as TimePassBaseActivity

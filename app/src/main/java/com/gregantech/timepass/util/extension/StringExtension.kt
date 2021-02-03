@@ -12,6 +12,14 @@ fun String.appendPost(): String {
     }
 }
 
+fun String.appendPostText(): String {
+    return if (this.isBlank()) {
+        POST
+    } else {
+        this.plus(SINGLE_WHITE_SPACE).plus(POST)
+    }
+}
+
 fun String.appendFollowers(): String {
     return if (this.isBlank()) {
         ZERO.plus(FOLLOWERS)

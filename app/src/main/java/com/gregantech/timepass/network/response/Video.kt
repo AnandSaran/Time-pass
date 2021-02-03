@@ -10,21 +10,24 @@ import kotlinx.android.parcel.Parcelize
 @JsonClass(generateAdapter = true)
 data class Video(
     @NullToEmptyString
-    val Id: String = "",
+    val Id: String = EMPTY_STRING,
     @NullToEmptyString
-    val videoName: String = "",
+    val videoName: String = EMPTY_STRING,
     @NullToEmptyString
-    val videoTitle: String = "",
+    val videoTitle: String = EMPTY_STRING,
     @NullToEmptyString
-    val videoDescription: String = "",
+    val videoDescription: String = EMPTY_STRING,
     @NullToEmptyString
-    val videoThumbnail: String = "",
+    val image: String = EMPTY_STRING,
     @NullToEmptyString
-    val followerId: String = "",
+    val followerId: String = EMPTY_STRING,
     val videoLikes: Int = 0,
     val videoComments: Int = 0,
     val isFollowed: Boolean = false,
     val isLiked: Boolean = false,
+    val isImage: Boolean? = false,
+    @NullToEmptyString
+    val videoImage: String = EMPTY_STRING,
     @NullToEmptyString
     val userName: String = EMPTY_STRING,
     @NullToEmptyString

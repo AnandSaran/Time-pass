@@ -13,4 +13,9 @@ enum class RailItemTypeEnum(val value: Int) {
      * with poster, title, like, share, player, sound, loading
      */
     TYPE_RAIL_ITEM_TWO(1),
+
+    /**
+     * with poster, video icon
+     */
+    TYPE_RAIL_ITEM_THREE(2),
 }

@@ -7,30 +7,30 @@ import android.view.MenuItem
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
-import com.gregantech.timepass.adapter.rail.InstagramAdapter
+import com.gregantech.timepass.adapter.rail.RailAdapter
 import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityUserProfileBinding
 import com.gregantech.timepass.general.bundklekey.UserProfileActivityBundleKeyEnum
 import com.gregantech.timepass.model.RailBaseItemModel
-import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.ProfileRepository
 import com.gregantech.timepass.network.repository.VideoListRepository
-import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
+import com.gregantech.timepass.network.repository.bridge.toRailItemTypeThreeModelList
 import com.gregantech.timepass.network.repository.local.UserProfileScreenRepository
 import com.gregantech.timepass.network.response.User
-import com.gregantech.timepass.util.PlayerViewAdapter
+import com.gregantech.timepass.network.response.Video
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.*
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.profile.viewmodel.UserProfileViewModel
-import com.gregantech.timepass.widget.PaginationScrollListener
+import com.gregantech.timepass.widget.GridPaginationScrollListener
 
 class UserProfileActivity : TimePassBaseActivity() {
 
+    private var user: User = User()
     private lateinit var binding: ActivityUserProfileBinding
     private var sharedPreferenceHelper = SharedPreferenceHelper
     private lateinit var viewModelFactory: UserProfileViewModel.Factory
@@ -50,19 +50,22 @@ class UserProfileActivity : TimePassBaseActivity() {
     }
 
     private val followerId: String by lazy {
+        sharedPreferenceHelper.getUserId()
+    }
+
+    private val userId: String by lazy {
         intent.getStringExtra(UserProfileActivityBundleKeyEnum.FOLLOWER_ID.value)
     }
 
     private lateinit var railItemClickHandler: RailItemClickHandler
     private var railList: ArrayList<RailBaseItemModel> = arrayListOf()
+    private var videoList: ArrayList<Video> = arrayListOf()
 
     private var isLastData: Boolean = false
     private var pageNo: Int = 1
 
     var isLastPage: Boolean = false
     var isLoading: Boolean = false
-    var railModel = RailItemTypeTwoModel()
-    var currentIndex = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +73,7 @@ class UserProfileActivity : TimePassBaseActivity() {
         setupToolBar()
         setupViewModelFactory()
         getUserData()
+        onClick()
         onClickRailListItem()
         setupViewModelObserver()
     }
@@ -110,7 +114,7 @@ class UserProfileActivity : TimePassBaseActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_user_profile)
     }
 
-    private fun setUserData(user: User) {
+    private fun setUserData() {
         binding.ivProfilePicture.loadUrlCircle(
             user.profileImage,
             R.drawable.place_holder_profile
@@ -120,15 +124,32 @@ class UserProfileActivity : TimePassBaseActivity() {
         binding.tvTotalPost.text = user.posts.appendPost()
         binding.tvTotalFollowers.text = user.followers.appendFollowers()
         binding.tvTotalFollowing.text = user.following.appendFollowing()
+        setFollowButton()
+    }
+
+    private fun setFollowButton() {
+        user.isFollowed?.let {
+            binding.btnFollow.visible(true)
+            changeFollowIcon(it)
+            when (it) {
+                true -> {
+                    binding.btnFollow.text = getString(R.string.following)
+                }
+                false -> {
+                    binding.btnFollow.text = getString(R.string.follow)
+                }
+            }
+        }
     }
 
     private fun getUserData() {
-        viewModel.getUserProfile(followerId).observe(this, Observer {
+        viewModel.getUserProfile(followerId, userId).observe(this, Observer {
             when (it.status) {
                 TimePassBaseResult.Status.SUCCESS -> {
                     dismissProgressBar()
                     it.data?.user?.let { user ->
-                        setUserData(user)
+                        this.user = user
+                        setUserData()
                     }
                 }
                 TimePassBaseResult.Status.LOADING -> {
@@ -140,7 +161,7 @@ class UserProfileActivity : TimePassBaseActivity() {
     }
 
     private fun setupViewModelObserver() {
-        viewModel.getUserVideoList(followerId, pageNo)
+        viewModel.getUserVideoList(userId, pageNo)
             .observe(this, Observer { categoryListResponse ->
                 when (categoryListResponse.status) {
                     TimePassBaseResult.Status.LOADING -> {
@@ -148,7 +169,8 @@ class UserProfileActivity : TimePassBaseActivity() {
                     TimePassBaseResult.Status.SUCCESS -> {
                         categoryListResponse.data?.let {
                             isLastData = it.is_last
-                            railList.addAll(it.video.toRailItemTypeTwoModelList(false))
+                            addVideoList(it.video)
+                            railList.addAll(it.video.toRailItemTypeThreeModelList())
                             setupRecyclerView(railList)
                         }
                     }
@@ -161,19 +183,17 @@ class UserProfileActivity : TimePassBaseActivity() {
 
     private fun setupRecyclerView(categoryVideoList: ArrayList<RailBaseItemModel>) {
         binding.rvUserVideoList.apply {
-            setHasFixedSize(true)
-            adapter = InstagramAdapter(
-                modelList = categoryVideoList,
-                railItemClickHandler = railItemClickHandler
+            adapter = RailAdapter(
+                categoryVideoList,
+                railItemClickHandler
             )
+            setupRecyclerViewScrollListener()
         }
-        // setUpSnapShot()
-        setupRecyclerViewScrollListener()
     }
 
     private fun setupRecyclerViewScrollListener() {
         binding.rvUserVideoList.addOnScrollListener(object :
-            PaginationScrollListener(binding.rvUserVideoList.layoutManager as LinearLayoutManager) {
+            GridPaginationScrollListener(binding.rvUserVideoList.layoutManager as GridLayoutManager) {
             override fun isLastPage(): Boolean {
                 return isLastPage
             }
@@ -183,10 +203,6 @@ class UserProfileActivity : TimePassBaseActivity() {
             }
 
             override fun onItemIsFirstVisibleItem(index: Int) {
-                currentIndex = index
-                if (index != -1) {
-                    PlayerViewAdapter.playIndexThenPausePreviousPlayer(index)
-                }
             }
 
             override fun loadMoreItems() {
@@ -198,7 +214,7 @@ class UserProfileActivity : TimePassBaseActivity() {
 
     private fun getMoreCategoryVideo() {
         if (isLastData) return
-        viewModel.getMoreCategoryVideoList(followerId, pageNo)
+        viewModel.getMoreCategoryVideoList(userId, ++pageNo)
             .observe(this, Observer { categoryListResponse ->
                 when (categoryListResponse.status) {
                     TimePassBaseResult.Status.LOADING -> {
@@ -208,7 +224,8 @@ class UserProfileActivity : TimePassBaseActivity() {
 
                         categoryListResponse.data?.let {
                             isLastData = it.is_last
-                            addMoreVideoList(it.video.toRailItemTypeTwoModelList(false))
+                            addVideoList(it.video)
+                            addMoreVideoList(it.video.toRailItemTypeThreeModelList())
                         }
                     }
                     TimePassBaseResult.Status.ERROR -> {
@@ -229,12 +246,72 @@ class UserProfileActivity : TimePassBaseActivity() {
     private fun onClickRailListItem() {
         railItemClickHandler = RailItemClickHandler()
         railItemClickHandler.clickPoster = { railModel ->
+            displayUserVideoListPage(railModel.contentId)
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        PlayerViewAdapter.releaseAllPlayers()
+    private fun onClick() {
+        binding.btnFollow.setOnClickListener {
+            onClickFollow()
+        }
+    }
+
+    private fun onClickFollow() {
+        when (user.isFollowed) {
+            true -> {
+                user.isFollowed = false
+            }
+            false -> {
+                user.isFollowed = true
+            }
+        }
+
+        setFollowButton()
+        setUserFollow()
+    }
+
+    private fun setUserFollow() {
+        user.isFollowed?.let {
+            viewModel.setUserFollow(it, followerId, userId)
+                .observe(this,
+                    Observer {
+                    })
+        }
+    }
+
+    private fun changeFollowIcon(isFollowed: Boolean) {
+        binding.btnFollow.setCompoundDrawablesWithIntrinsicBounds(
+            getFollowDrawable(isFollowed),
+            0,
+            0,
+            0
+        )
+    }
+
+    private fun getFollowDrawable(isFollowed: Boolean): Int {
+        return if (isFollowed) {
+            R.drawable.ic_followed
+        } else {
+            R.drawable.ic_follow_black
+        }
+    }
+
+    private fun displayUserVideoListPage(contentId: String) {
+        val scrollToPosition = videoList.indexOfFirst { it.Id == contentId }
+        UserVideoListActivity.present(
+            this,
+            userId,
+            videoList,
+            isLastData,
+            pageNo,
+            isLastPage,
+            scrollToPosition,
+            user.userName
+        )
+    }
+
+    private fun addVideoList(video: List<Video>) {
+        videoList.addAll(video)
     }
 
 }

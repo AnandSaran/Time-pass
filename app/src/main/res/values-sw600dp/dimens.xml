@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="recyler_view_player_height">700dp</dimen>
+    <dimen name="recyler_view_poster_min_height">400dp</dimen>
+</resources>
