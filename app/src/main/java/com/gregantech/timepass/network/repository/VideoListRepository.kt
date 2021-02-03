@@ -52,8 +52,26 @@ class VideoListRepository : TimePassBaseRepository() {
         )
     }
 
+    suspend fun uploadImage(
+        userID: String,
+        videoTitle: String,
+        videoDescription: String,
+        imageFile: File
+    ) = getResult {
+        videoService.uploadImage(
+            generateMultiPartString(userID),
+            generateMultiPartString(videoTitle),
+            generateMultiPartString(videoDescription),
+            generateMultiPartImage(imageFile)
+        )
+    }
+
     private fun generateMultiPartVideo(file: File): RequestBody {
         return RequestBody.create(MediaType.parse("video/mp4"), file)
+    }
+
+    private fun generateMultiPartImage(file: File): RequestBody {
+        return RequestBody.create(MediaType.parse("image/jpeg"), file)
     }
 
     private fun generateMultiPartString(content: String): RequestBody {

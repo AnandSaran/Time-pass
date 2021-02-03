@@ -7,26 +7,49 @@ import androidx.lifecycle.liveData
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.network.ApiResult
 import com.gregantech.timepass.network.repository.VideoListRepository
+import com.gregantech.timepass.network.repository.local.VideoUploadScreenRepository
 import com.gregantech.timepass.network.response.VideoUploadResponse
 import com.gregantech.timepass.util.constant.ANNOTATION_UNCHECKED_CAST
 import com.gregantech.timepass.util.constant.ErrorMessage
 import com.gregantech.timepass.util.constant.UNKNOWN_VIEW_MODEL_CLASS
-import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import kotlinx.coroutines.Dispatchers
 import java.io.File
 
 class VideoUploadViewModel(
-    private val videoListRepository: VideoListRepository
+    private val videoListRepository: VideoListRepository,
+    private val videoUploadScreenRepository: VideoUploadScreenRepository
 ) : ViewModel() {
 
     fun updateVideo(videoTitle: String, videoDescription: String, videoFilePath: String) =
         liveData<TimePassBaseResult<VideoUploadResponse>>(Dispatchers.IO) {
             emit(TimePassBaseResult.loading(null))
             val result = videoListRepository.uploadVideo(
-                SharedPreferenceHelper.getUserId(),
+                videoUploadScreenRepository.getUserId(),
                 videoTitle,
                 videoDescription,
                 File(videoFilePath)
+            )
+            when (result.status) {
+                TimePassBaseResult.Status.SUCCESS -> {
+                    onUpdateProfileSuccess(result)
+                }
+                TimePassBaseResult.Status.ERROR -> {
+                    onUpdateProfileFail()
+                }
+                else -> {
+                    onUpdateProfileFail()
+                }
+            }
+        }
+
+    fun uploadImage(videoTitle: String, videoDescription: String, imageFilePath: String) =
+        liveData<TimePassBaseResult<VideoUploadResponse>>(Dispatchers.IO) {
+            emit(TimePassBaseResult.loading(null))
+            val result = videoListRepository.uploadImage(
+                videoUploadScreenRepository.getUserId(),
+                videoTitle,
+                videoDescription,
+                videoUploadScreenRepository.getCompressedImage(imageFilePath)
             )
             when (result.status) {
                 TimePassBaseResult.Status.SUCCESS -> {
@@ -66,12 +89,13 @@ class VideoUploadViewModel(
 
     @Suppress(ANNOTATION_UNCHECKED_CAST)
     class Factory(
-        private val videoListRepository: VideoListRepository
+        private val videoListRepository: VideoListRepository,
+        private val videoUploadScreenRepository: VideoUploadScreenRepository
     ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(VideoUploadViewModel::class.java)) {
-                return VideoUploadViewModel(videoListRepository) as T
+                return VideoUploadViewModel(videoListRepository, videoUploadScreenRepository) as T
             }
             throw IllegalArgumentException(UNKNOWN_VIEW_MODEL_CLASS)
         }

@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -42,16 +43,20 @@ import com.gregantech.timepass.util.constant.EMPTY_LONG
 import com.gregantech.timepass.util.constant.EMPTY_STRING
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.toast
+import com.gregantech.timepass.util.log.LogUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoTrimmerActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoUploadActivity
+import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
 import com.gregantech.timepass.view.player.activity.PlayerActivity
 import com.gregantech.timepass.view.profile.activity.UserProfileActivity
 import com.gregantech.timepass.view.uservideolist.viewmodel.UserVideoListViewModel
 import com.gregantech.timepass.widget.PaginationScrollListener
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
+import com.yalantis.ucrop.UCrop
+import java.io.File
 
 class UserVideoListFragment : TimePassBaseFragment() {
     private lateinit var binding: FragmentUserVideoListBinding
@@ -72,7 +77,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     private var permissionlistenerCreateVideo: PermissionListener = object : PermissionListener {
         override fun onPermissionGranted() {
-            callVideoPic()
+            openFilePicker()
         }
 
         override fun onPermissionDenied(deniedPermissions: List<String>) {
@@ -209,7 +214,13 @@ class UserVideoListFragment : TimePassBaseFragment() {
     private fun onClickRailListItem() {
         railItemClickHandler = RailItemClickHandler()
         railItemClickHandler.clickPoster = { railModel ->
-            displayPlayerPage((railModel as RailItemTypeTwoModel).video)
+            val railModel=railModel as RailItemTypeTwoModel
+            val isImage=railModel.isImage
+            if (isImage !=null&& isImage){
+                displayImagePage(railModel.image)
+            }else{
+                displayPlayerPage(railModel.video)
+            }
         }
         railItemClickHandler.clickFollow = { railModel ->
             onClickFollow(railModel as RailItemTypeTwoModel)
@@ -244,7 +255,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     }
 
     private fun onClickProfile(railItemTypeTwoModel: RailItemTypeTwoModel) {
-        dispalyUserProfilePage(railItemTypeTwoModel.followerId)
+        displayUserProfilePage(railItemTypeTwoModel.followerId)
     }
 
     private fun onClickFollow(railItemTypeTwoModel: RailItemTypeTwoModel) {
@@ -318,6 +329,10 @@ class UserVideoListFragment : TimePassBaseFragment() {
                 PlayerViewAdapter.getCurrentPlayerPosition()
             )
         )
+    }
+
+    private fun displayImagePage(imageUrl: String) {
+
     }
 
     private fun getMoreCategoryVideo() {
@@ -457,13 +472,13 @@ class UserVideoListFragment : TimePassBaseFragment() {
             }
         }
 
-    private fun displayVideoUploadPage(videoPath: String) {
+    private fun displayVideoUploadPage(videoPath: String, isImage: Boolean = false) {
         if (videoPath.isNotBlank()) {
             startUploadVideoActivityForResult.launch(
-                VideoUploadActivity.generateIntent(ctxt, videoPath)
+                VideoUploadActivity.generateIntent(ctxt, videoPath,isImage)
             )
         } else {
-            getString(R.string.invalid_video).toast(ctxt)
+            getString(R.string.invalid_file).toast(ctxt)
         }
     }
 
@@ -487,8 +502,75 @@ class UserVideoListFragment : TimePassBaseFragment() {
         }
     }
 
-    private fun dispalyUserProfilePage(followerId: String) {
+    private fun displayUserProfilePage(followerId: String) {
         UserProfileActivity.present(ctxt, followerId)
+    }
+
+    fun onFilePickItemClick(item: String) {
+        when (item) {
+            getString(R.string.image) -> {
+                callGalleryPic()
+            }
+            getString(R.string.video) -> {
+                callVideoPic()
+            }
+            else -> {
+            }
+        }
+    }
+
+    private fun callGalleryPic() {
+        val intent: Intent =
+            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        imagePicActivityResultLauncher.launch(intent)
+    }
+
+    private var imagePicActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.let { openCropImageScreen(it) }
+        }
+    }
+
+    private fun openCropImageScreen(intent: Intent) {
+        LogUtil.print(TAG, "File Path: " + intent.data)
+        intent.data?.let { data ->
+            activity?.let {
+                UCrop.of(
+                    data,
+                    Uri.fromFile(
+                        File(
+                            ctxt.cacheDir,
+                            System.currentTimeMillis().toString() + ".png"
+                        )
+                    )
+                ).start(it, this)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            UCrop.REQUEST_CROP -> {
+                if (resultCode == AppCompatActivity.RESULT_OK) {
+                    data?.let {
+                        val resultUri = UCrop.getOutput(data)
+                        LogUtil.print(TAG, "File Path: " + resultUri)
+                        displayVideoUploadPage(resultUri.toString(), isImage = true)
+                    }
+                }
+            }
+        }
+    }
+
+    fun openFilePicker() {
+        childFragmentManager.let {
+            FilePickerBottomSheetFragment.newInstance(Bundle()).apply {
+                show(it, tag)
+            }
+        }
     }
 
 }

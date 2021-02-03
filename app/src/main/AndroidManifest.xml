@@ -21,7 +21,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.profile.activity.UserProfileActivity"></activity>
+        <activity
+            android:name=".view.profile.activity.UserVideoListActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.profile.activity.UserProfileActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".view.createvideo.activity.VideoUploadActivity"
             android:configChanges="orientation|screenSize"

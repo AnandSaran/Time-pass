@@ -29,6 +29,7 @@ class RailItemTypeTwoModel(
     var totalComment: Int = 0,
     var isShowFollow: Boolean = true,
     var isShowProfile: Boolean = true,
+    var isImage: Boolean? = false,
     var userName: String = EMPTY_STRING,
     var userImage: String = EMPTY_STRING
 ) : Parcelable, RailBaseItemModel(){

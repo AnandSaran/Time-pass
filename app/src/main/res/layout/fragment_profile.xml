@@ -67,11 +67,11 @@
                         android:id="@+id/tvName"
                         style="@style/RailItemTypeTitleStyle.SingleLine"
                         android:layout_width="0dp"
-                        android:textAppearance="@style/AppTheme.TextAppearance.RobotoRegular.DoubleExtraLarge"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_10"
                         android:fontFamily="@font/roboto_medium"
                         android:gravity="center"
+                        android:textAppearance="@style/AppTheme.TextAppearance.RobotoRegular.DoubleExtraLarge"
                         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
                         app:layout_constraintStart_toStartOf="@id/guidelineStart"
                         app:layout_constraintTop_toBottomOf="@id/ivProfilePicture"
@@ -80,9 +80,9 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
                         android:orientation="horizontal"
                         android:weightSum="3"
-                        android:layout_marginTop="@dimen/dp_10"
                         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
                         app:layout_constraintStart_toStartOf="@id/guidelineStart"
                         app:layout_constraintTop_toBottomOf="@id/tvName">
@@ -125,11 +125,12 @@
             android:id="@+id/rvUserVideoList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
             android:orientation="vertical"
             android:paddingTop="@dimen/dp_20"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:spanCount="@integer/span_count_user_profile_post"
+            tools:listitem="@layout/item_rail_type_three" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

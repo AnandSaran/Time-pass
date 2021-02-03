@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--region Rail item size-->
-    <integer name="recycler_view_category_span_count">4</integer>
+    <integer name="span_count_category">4</integer>
+    <integer name="span_count_user_profile_post">4</integer>
     <!--endregion-->
 </resources>

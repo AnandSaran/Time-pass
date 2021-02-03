@@ -12,20 +12,22 @@ import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityVideoUploadBinding
-import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
 import com.gregantech.timepass.general.bundklekey.CreateVideoBundleEnum
 import com.gregantech.timepass.network.repository.VideoListRepository
-import com.gregantech.timepass.network.response.Video
+import com.gregantech.timepass.network.repository.convertor.ProfileConverterFactory
+import com.gregantech.timepass.network.repository.local.VideoUploadScreenRepository
 import com.gregantech.timepass.network.response.VideoUploadResponse
+import com.gregantech.timepass.util.constant.EMPTY_BOOLEAN
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.toast
-import com.gregantech.timepass.util.log.LogUtil
+import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.createvideo.viewmodel.VideoUploadViewModel
 
 class VideoUploadActivity : TimePassBaseActivity() {
     private lateinit var binding: ActivityVideoUploadBinding
     private lateinit var viewModelFactory: VideoUploadViewModel.Factory
     private var filePath: String? = null
+    private var isImage = EMPTY_BOOLEAN
 
     private val viewModel: VideoUploadViewModel by lazy {
         requireNotNull(this) {
@@ -36,10 +38,11 @@ class VideoUploadActivity : TimePassBaseActivity() {
 
     companion object {
         fun generateIntent(
-            context: Context, videoPath: String
+            context: Context, videoPath: String, isImage: Boolean = false
         ): Intent {
             val intent = Intent(context, VideoUploadActivity::class.java)
             intent.putExtra(CreateVideoBundleEnum.VIDEO_PATH.value, videoPath)
+            intent.putExtra(CreateVideoBundleEnum.IS_IMAGE.value, isImage)
             return intent
         }
     }
@@ -55,7 +58,7 @@ class VideoUploadActivity : TimePassBaseActivity() {
 
     private fun setData() {
         filePath = intent.getStringExtra(CreateVideoBundleEnum.VIDEO_PATH.value)
-        LogUtil.printDebug(TAG, filePath.toString())
+        isImage = intent.getBooleanExtra(CreateVideoBundleEnum.IS_IMAGE.value, EMPTY_BOOLEAN)
     }
 
     private fun initDataBinding() {
@@ -69,11 +72,19 @@ class VideoUploadActivity : TimePassBaseActivity() {
     }
 
     private fun setupViewModelFactory() {
-        viewModelFactory = VideoUploadViewModel.Factory(VideoListRepository())
+        viewModelFactory = VideoUploadViewModel.Factory(
+            VideoListRepository(),
+            VideoUploadScreenRepository(ProfileConverterFactory(this), SharedPreferenceHelper)
+        )
     }
 
     private fun setToolbarTitle() {
-        supportActionBar?.title = getString(R.string.label_upload_video)
+        supportActionBar?.title =
+            if (isImage) {
+                getString(R.string.label_upload_image)
+            } else {
+                getString(R.string.label_upload_video)
+            }
     }
 
     private fun setToolbarBackButton() {
@@ -99,26 +110,56 @@ class VideoUploadActivity : TimePassBaseActivity() {
 
     private fun onClickSubmit() {
         if (isValidForm()) {
-            viewModel.updateVideo(
-                binding.edtTitle.text.toString(),
-                binding.edtDescription.text.toString(),
-                filePath.toString()
-            ).observe(this, Observer {
-                when (it.status) {
-                    TimePassBaseResult.Status.SUCCESS -> {
-                        dismissProgressBar()
-                        returnResult(it.data)
-                    }
-                    TimePassBaseResult.Status.LOADING -> {
-                        showProgressBar()
-                    }
-                    else -> {
-                        dismissProgressBar()
-                        it.message?.toast(this)
-                    }
-                }
-            })
+            if (isImage) {
+                uploadImage()
+            } else {
+                uploadVideo()
+            }
         }
+    }
+
+    private fun uploadImage() {
+        viewModel.uploadImage(
+            binding.edtTitle.text.toString(),
+            binding.edtDescription.text.toString(),
+            filePath.toString()
+        ).observe(this, Observer {
+            when (it.status) {
+                TimePassBaseResult.Status.SUCCESS -> {
+                    dismissProgressBar()
+                    returnResult(it.data)
+                }
+                TimePassBaseResult.Status.LOADING -> {
+                    showProgressBar()
+                }
+                else -> {
+                    dismissProgressBar()
+                    it.message?.toast(this)
+                }
+            }
+        })
+    }
+
+    private fun uploadVideo() {
+        viewModel.updateVideo(
+            binding.edtTitle.text.toString(),
+            binding.edtDescription.text.toString(),
+            filePath.toString()
+        ).observe(this, Observer {
+            when (it.status) {
+                TimePassBaseResult.Status.SUCCESS -> {
+                    dismissProgressBar()
+                    returnResult(it.data)
+                }
+                TimePassBaseResult.Status.LOADING -> {
+                    showProgressBar()
+                }
+                else -> {
+                    dismissProgressBar()
+                    it.message?.toast(this)
+                }
+            }
+        })
     }
 
     private fun returnResult(data: VideoUploadResponse?) {
@@ -139,7 +180,7 @@ class VideoUploadActivity : TimePassBaseActivity() {
             count++
         }
         if (filePath.isNullOrBlank()) {
-            getString(R.string.invalid_video).toast(this)
+            getString(R.string.invalid_file).toast(this)
             count++
         }
 

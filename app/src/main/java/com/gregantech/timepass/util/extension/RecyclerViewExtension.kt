@@ -28,7 +28,7 @@ fun RecyclerView.generateRailItemDecoration(
             itemDecoration = CategoryGridItemDecoration(
                 spacingHorizontal = resources.getDimensionPixelOffset(R.dimen.item_category_grid_spacing_horizontal),
                 spacingVertical = resources.getDimensionPixelOffset(R.dimen.item_category_grid_spacing_vertical),
-                spanCount = resources.getInteger(R.integer.recycler_view_category_span_count),
+                spanCount = resources.getInteger(R.integer.span_count_category),
                 includeEdge = true
             )
             addItemDecoration(itemDecoration)

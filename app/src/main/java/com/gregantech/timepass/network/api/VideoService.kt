@@ -41,4 +41,13 @@ interface VideoService {
         @Part("videoFile\"; filename=\"videoFile.mp4") videoFile: RequestBody
     ): Response<VideoUploadResponse>
 
+    @Multipart
+    @POST("userImageUpload_api.php")
+    suspend fun uploadImage(
+        @Part("userID") userID: RequestBody,
+        @Part("videoTitle") videoTitle: RequestBody,
+        @Part("videoDescription") videoDescription: RequestBody,
+        @Part("imageFile\"; filename=\"imageFile.png") imageFile: RequestBody
+    ): Response<VideoUploadResponse>
+
 }

@@ -48,9 +48,9 @@
                 style="@style/RailItemTypeTitleStyle.SingleLine"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{dataModel.userName}"
                 android:layout_marginStart="8dp"
                 android:singleLine="true"
+                android:text="@{dataModel.userName}"
                 android:textColor="@android:color/black"
                 app:layout_constraintBottom_toBottomOf="@id/ivUserProfile"
                 app:layout_constraintStart_toEndOf="@+id/ivUserProfile"
@@ -59,44 +59,67 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/clPlayer"
+            android:id="@+id/clMeidaContent"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:maxHeight="400dp"
-            app:layout_constraintDimensionRatio="1:1"
+            android:layout_height="wrap_content"
+            android:maxHeight="@dimen/recyler_view_player_height"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/clProfile">
 
-            <com.google.android.exoplayer2.ui.PlayerView
-                android:id="@+id/vvPlayer"
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:item_index="@{index}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:on_state_change="@{callback}"
-                app:progressbar="@{progressBar}"
-                app:resize_mode="fill"
-                app:surface_type="texture_view"
-                app:video_url="@{dataModel.video}" />
-
-            <com.wang.avi.AVLoadingIndicatorView
-                android:id="@+id/progressBar"
-                style="@style/AVLoadingIndicatorView.Small"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:adjustViewBounds="true"
+                android:id="@+id/ivPoster"
+                android:minHeight="@dimen/recyler_view_poster_min_height"
+                android:scaleType="centerCrop"
                 android:visibility="gone"
-                app:indicatorColor="@color/colorAccent"
-                app:indicatorName="BallGridPulseIndicator"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clPlayer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible">
+
+                <com.google.android.exoplayer2.ui.PlayerView
+                    android:id="@+id/vvPlayer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:item_index="@{index}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:on_state_change="@{callback}"
+                    app:progressbar="@{progressBar}"
+                    app:resize_mode="zoom"
+                    app:surface_type="texture_view"
+                    app:video_url="@{dataModel.video}" />
+
+                <com.wang.avi.AVLoadingIndicatorView
+                    android:id="@+id/progressBar"
+                    style="@style/AVLoadingIndicatorView.Small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    app:indicatorColor="@color/colorAccent"
+                    app:indicatorName="BallGridPulseIndicator"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageView
@@ -108,7 +131,7 @@
             android:src="@{dataModel.liked ? @drawable/ic_like : @drawable/ic_un_like_black}"
             app:layout_constraintEnd_toStartOf="@id/tvTotalLike"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/clPlayer"
+            app:layout_constraintTop_toBottomOf="@id/clMeidaContent"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -131,7 +154,7 @@
             android:padding="@dimen/dp_10"
             android:src="@drawable/ic_comment"
             app:layout_constraintStart_toEndOf="@id/tvTotalLike"
-            app:layout_constraintTop_toBottomOf="@id/clPlayer"
+            app:layout_constraintTop_toBottomOf="@id/clMeidaContent"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -154,7 +177,7 @@
             android:padding="@dimen/dp_10"
             android:src="@drawable/ic_share_black"
             app:layout_constraintStart_toEndOf="@id/tvTotalComment"
-            app:layout_constraintTop_toBottomOf="@id/clPlayer"
+            app:layout_constraintTop_toBottomOf="@id/clMeidaContent"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -166,7 +189,7 @@
             android:padding="@dimen/dp_10"
             android:src="@drawable/ic_download_black"
             app:layout_constraintStart_toEndOf="@id/ivShare"
-            app:layout_constraintTop_toBottomOf="@id/clPlayer"
+            app:layout_constraintTop_toBottomOf="@id/clMeidaContent"
             tools:ignore="ContentDescription" />
 
         <ImageView
@@ -178,7 +201,7 @@
             android:padding="@dimen/dp_10"
             android:src="@{dataModel.followed ? @drawable/ic_followed : @drawable/ic_follow_black}"
             app:layout_constraintStart_toEndOf="@id/ivDownload"
-            app:layout_constraintTop_toBottomOf="@id/clPlayer"
+            app:layout_constraintTop_toBottomOf="@id/clMeidaContent"
             tools:ignore="ContentDescription" />
 
         <TextView

@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SnapHelper
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
-import com.gregantech.timepass.adapter.rail.InstagramAdapter
+import com.gregantech.timepass.adapter.rail.RailAdapter
 import com.gregantech.timepass.base.TimePassBaseFragment
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.FragmentProfileBinding
@@ -26,7 +26,8 @@ import com.gregantech.timepass.model.RailBaseItemModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.LoginRepository
 import com.gregantech.timepass.network.repository.VideoListRepository
-import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
+import com.gregantech.timepass.network.repository.bridge.toRailItemTypeThreeModelList
+import com.gregantech.timepass.network.response.Video
 import com.gregantech.timepass.util.PlayerViewAdapter
 import com.gregantech.timepass.util.PlayerViewAdapter.Companion.playIndexThenPausePreviousPlayer
 import com.gregantech.timepass.util.constant.EMPTY_LONG
@@ -36,6 +37,7 @@ import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.player.activity.PlayerActivity
 import com.gregantech.timepass.view.profile.activity.ProfileActivity
+import com.gregantech.timepass.view.profile.activity.UserVideoListActivity
 import com.gregantech.timepass.view.profile.viewmodel.ProfileFragmentViewModel
 import com.gregantech.timepass.widget.PaginationScrollListener
 import com.gun0912.tedpermission.PermissionListener
@@ -60,6 +62,7 @@ class ProfileFragment : TimePassBaseFragment() {
     var isLoading: Boolean = false
     var railModel = RailItemTypeTwoModel()
     var currentIndex = -1
+    private var videoList: ArrayList<Video> = arrayListOf()
 
     private var permissionListener: PermissionListener = object : PermissionListener {
         override fun onPermissionGranted() {
@@ -180,7 +183,8 @@ class ProfileFragment : TimePassBaseFragment() {
                     TimePassBaseResult.Status.SUCCESS -> {
                         categoryListResponse.data?.let {
                             isLastData = it.is_last
-                            railList.addAll(it.video.toRailItemTypeTwoModelList(false))
+                            addVideoList(it.video)
+                            railList.addAll(it.video.toRailItemTypeThreeModelList())
                             setupRecyclerView(railList)
                         }
                     }
@@ -201,8 +205,8 @@ class ProfileFragment : TimePassBaseFragment() {
         binding.rvUserVideoList.apply {
             //generateRailItemDecoration(RailItemDecorationTypeEnum.TYPE_RAIL_ITEM_DECORATION_TWO)
             setHasFixedSize(true)
-            adapter = InstagramAdapter(
-                modelList = categoryVideoList,
+            adapter = RailAdapter(
+                categoryVideoList,
                 railItemClickHandler = railItemClickHandler
             )
         }
@@ -246,7 +250,7 @@ class ProfileFragment : TimePassBaseFragment() {
     private fun onClickRailListItem() {
         railItemClickHandler = RailItemClickHandler()
         railItemClickHandler.clickPoster = { railModel ->
-            displayPlayerPage((railModel as RailItemTypeTwoModel).video)
+            displayUserVideoListPage(railModel.contentId)
         }
         railItemClickHandler.clickFollow = { railModel ->
             onClickFollow(railModel as RailItemTypeTwoModel)
@@ -344,7 +348,8 @@ class ProfileFragment : TimePassBaseFragment() {
 
                         categoryListResponse.data?.let {
                             isLastData = it.is_last
-                            addMoreVideoList(it.video.toRailItemTypeTwoModelList(false))
+                            addVideoList(it.video)
+                            addMoreVideoList(it.video.toRailItemTypeThreeModelList())
                         }
                     }
                     TimePassBaseResult.Status.ERROR -> {
@@ -417,5 +422,23 @@ class ProfileFragment : TimePassBaseFragment() {
             ctxt,
             railItemTypeTwoModel.contentId, isUserPost = true
         )
+    }
+
+    private fun displayUserVideoListPage(contentId: String) {
+        val scrollToPosition = videoList.indexOfFirst { it.Id == contentId }
+        UserVideoListActivity.present(
+            ctxt,
+            SharedPreferenceHelper.getUserId(),
+            videoList,
+            isLastData,
+            pageNo,
+            isLastPage,
+            scrollToPosition,
+            SharedPreferenceHelper.getUserName()
+        )
+    }
+
+    private fun addVideoList(video: List<Video>) {
+        videoList.addAll(video)
     }
 }

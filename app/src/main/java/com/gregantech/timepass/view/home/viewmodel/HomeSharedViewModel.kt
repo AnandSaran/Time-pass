@@ -13,9 +13,17 @@ import kotlinx.coroutines.launch
 class HomeSharedViewModel : ViewModel() {
 
     var displayFragment = MutableLiveData<Pair<HomeNavigationState, Bundle>>()
+    var pickFile = MutableLiveData<String>()
+
     private fun showFragment(item: Pair<HomeNavigationState, Bundle>) {
         viewModelScope.launch {
             displayFragment.value = item
+        }
+    }
+
+     fun setPickFile(item: String) {
+        viewModelScope.launch {
+            pickFile.value = item
         }
     }
 

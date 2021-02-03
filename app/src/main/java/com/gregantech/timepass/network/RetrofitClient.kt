@@ -19,9 +19,9 @@ import java.util.concurrent.TimeUnit
  * Main entry point for network access
  */
 object RetrofitClient {
-    private const val TIME_OUT_WRITE: Long = 20
-    private const val TIME_OUT_READ: Long = 20
-    private const val TIME_OUT_CONNECT: Long = 20
+    private const val TIME_OUT_WRITE: Long = 120
+    private const val TIME_OUT_READ: Long = 120
+    private const val TIME_OUT_CONNECT: Long = 120
 
     /**
      * Define the interceptor, add authentication header(s)

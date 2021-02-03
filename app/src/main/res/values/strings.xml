@@ -30,9 +30,14 @@
     <string name="label_title">Title</string>
     <string name="label_description">Description (Optional)</string>
     <string name="label_upload_video">Upload Video</string>
+    <string name="label_upload_image">Upload Image</string>
     <string name="invalid_title">Enter title</string>
-    <string name="invalid_video">Invalid video</string>
+    <string name="invalid_file">Invalid file</string>
     <string name="select_video_max_time">Select 30 seconds video</string>
     <string name="label_edit_video">Edit video</string>
     <string name="label_next">Next</string>
+    <string name="following">Following</string>
+    <string name="follow">Follow</string>
+    <string name="image">Image</string>
+    <string name="video">Video</string>
 </resources>

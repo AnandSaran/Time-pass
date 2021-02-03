@@ -20,11 +20,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
-                app:layout_scrollFlags="scroll|enterAlways">
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:animateLayoutChanges="true">
 
                     <androidx.constraintlayout.widget.Guideline
                         android:id="@+id/guidelineBottom"
@@ -55,6 +56,7 @@
                         android:id="@+id/ivProfilePicture"
                         android:layout_width="@dimen/avatar_width"
                         android:layout_height="@dimen/avatar_height"
+                        android:layout_marginTop="@dimen/dp_20"
                         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
                         app:layout_constraintStart_toStartOf="@id/guidelineStart"
                         app:layout_constraintTop_toBottomOf="@id/tbProfile"
@@ -78,6 +80,7 @@
                         tools:text="@tools:sample/lorem/random" />
 
                     <LinearLayout
+                        android:id="@+id/llUserFollowContent"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_10"
@@ -117,6 +120,26 @@
                             android:gravity="center"
                             tools:text="@tools:sample/lorem/random" />
                     </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnFollow"
+                        style="@style/AppTheme.TextAppearance.RobotoRegular.Large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:backgroundTint="@color/colorAccent"
+                        android:drawablePadding="@dimen/dp_10"
+                        android:paddingLeft="@dimen/dp_20"
+                        android:paddingRight="@dimen/dp_20"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        app:drawableTint="@color/white"
+                        app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
+                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                        app:layout_constraintTop_toBottomOf="@id/llUserFollowContent"
+                        tools:text="@string/label_submit"
+                        tools:visibility="visible" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
@@ -125,11 +148,11 @@
             android:id="@+id/rvUserVideoList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:clipToPadding="false"
             android:orientation="vertical"
-            android:paddingTop="@dimen/dp_20"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:spanCount="@integer/span_count_user_profile_post"
+            tools:listitem="@layout/item_rail_type_three" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -1,13 +1,8 @@
 package com.gregantech.timepass.util
 
-import android.R
-import android.content.Context
 import android.net.Uri
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.databinding.BindingAdapter
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
@@ -17,11 +12,6 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.video.VideoListener
 
-
-// extension function for show toast
-fun Context.toast(text: String) {
-    Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
-}
 
 class PlayerViewAdapter {
 
@@ -101,7 +91,7 @@ class PlayerViewAdapter {
                 .createMediaSource(Uri.parse(url))
 
             player.prepare(mediaSource)
-            player.addVideoListener(object : VideoListener{
+            player.addVideoListener(object : VideoListener {
                 override fun onVideoSizeChanged(
                     width: Int,
                     height: Int,
@@ -114,8 +104,8 @@ class PlayerViewAdapter {
                         unappliedRotationDegrees,
                         pixelWidthHeightRatio
                     )
-                    ((this@loadVideo.parent as ConstraintLayout).layoutParams as  ConstraintLayout.LayoutParams).dimensionRatio =
-                    width.toString().plus(":").plus(height.toString())
+                    ((this@loadVideo.parent as ConstraintLayout).layoutParams as ConstraintLayout.LayoutParams).dimensionRatio =
+                        width.toString().plus(":").plus(height.toString())
                 }
             })
 
@@ -131,7 +121,7 @@ class PlayerViewAdapter {
 
                 override fun onPlayerError(error: ExoPlaybackException) {
                     super.onPlayerError(error)
-                 //   this@loadVideo.context.toast("Oops! Error occurred while playing media.")
+                    //   this@loadVideo.context.toast("Oops! Error occurred while playing media.")
                 }
 
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {

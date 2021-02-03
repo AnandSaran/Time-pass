@@ -115,5 +115,7 @@
     <dimen name="activity_margin_vertical">20dp</dimen>
     <dimen name="avatar_width">150dp</dimen>
     <dimen name="avatar_height">150dp</dimen>
+    <dimen name="recyler_view_player_height">400dp</dimen>
+    <dimen name="recyler_view_poster_min_height">200dp</dimen>
     <!--endregion-->
 </resources>
