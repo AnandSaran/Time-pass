@@ -1,6 +1,8 @@
 package com.gregantech.timepass.view.profile.activity
 
+import android.Manifest
 import android.app.Activity
+import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
 import com.gregantech.timepass.adapter.rail.InstagramAdapter
+import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityUserVideoListBinding
 import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
@@ -25,25 +28,35 @@ import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
 import com.gregantech.timepass.network.response.User
 import com.gregantech.timepass.network.response.Video
-import com.gregantech.timepass.util.PlayerViewAdapter
+import com.gregantech.timepass.util.NewPlayerViewAdapter
 import com.gregantech.timepass.util.constant.*
 import com.gregantech.timepass.util.extension.appendPostText
 import com.gregantech.timepass.util.extension.toast
+import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
+import com.gregantech.timepass.view.comment.fragment.CommentActivity
+import com.gregantech.timepass.view.player.activity.ImageViewActivity
 import com.gregantech.timepass.view.player.activity.PlayerActivity
-import com.gregantech.timepass.view.profile.viewmodel.UserVideoListViewModel
+import com.gregantech.timepass.view.profile.viewmodel.UserVideoListActivityViewModel
 import com.gregantech.timepass.widget.PaginationScrollListener
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.TedPermission
 
-class UserVideoListActivity : AppCompatActivity() {
+class UserVideoListActivity : TimePassBaseActivity() {
     private var user: User = User()
     private lateinit var binding: ActivityUserVideoListBinding
-    private lateinit var viewModelFactory: UserVideoListViewModel.Factory
+    private lateinit var activityViewModelFactory: UserVideoListActivityViewModel.Factory
     var currentIndex = -1
+    private val playerViewAdapter = NewPlayerViewAdapter()
+    var downloadID: Long? = null
 
-    private val viewModel: UserVideoListViewModel by lazy {
+    private val viewModel: UserVideoListActivityViewModel by lazy {
         requireNotNull(this) {
             VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
         }
-        ViewModelProvider(this, viewModelFactory).get(UserVideoListViewModel::class.java)
+        ViewModelProvider(
+            this,
+            activityViewModelFactory
+        ).get(UserVideoListActivityViewModel::class.java)
     }
 
     companion object {
@@ -91,6 +104,8 @@ class UserVideoListActivity : AppCompatActivity() {
     private var isLastPage = EMPTY_BOOLEAN
     var isLoading: Boolean = false
     private var scrollToPosition = EMPTY_INT
+    var isShareClick = false
+    var railModel = RailItemTypeTwoModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,33 +115,42 @@ class UserVideoListActivity : AppCompatActivity() {
         setupViewModelFactory()
         onClickRailListItem()
         setupRecyclerView(railList)
+        setupViewModelObserver()
     }
 
     override fun onPause() {
         super.onPause()
-        PlayerViewAdapter.pauseCurrentPlayingVideo()
+        playerViewAdapter.pauseCurrentPlayingVideo()
     }
 
     override fun onResume() {
         super.onResume()
         if (currentIndex != -1) {
-            PlayerViewAdapter.playIndexThenPausePreviousPlayer(currentIndex)
+            playerViewAdapter.playIndexThenPausePreviousPlayer(currentIndex)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        PlayerViewAdapter.releaseAllPlayers()
+        playerViewAdapter.releaseAllPlayers()
     }
 
     private fun setupViewModelFactory() {
-        viewModelFactory = UserVideoListViewModel.Factory(
-            VideoListRepository()
+        activityViewModelFactory = UserVideoListActivityViewModel.Factory(
+            VideoListRepository(),
+            SharedPreferenceHelper
         )
     }
 
     private fun initDataBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_user_video_list)
+    }
+
+    private fun setupViewModelObserver() {
+        viewModel.downloadRequest.observe(this, Observer {
+            downloadVideo(it)
+        })
+
     }
 
     private fun setupIntentData() {
@@ -181,7 +205,32 @@ class UserVideoListActivity : AppCompatActivity() {
     private fun onClickRailListItem() {
         railItemClickHandler = RailItemClickHandler()
         railItemClickHandler.clickPoster = { railModel ->
-            displayPlayerPage((railModel as RailItemTypeTwoModel).video)
+            val railModel = railModel as RailItemTypeTwoModel
+            val isImage = railModel.isImage
+            if (isImage != null && isImage) {
+                displayImagePage(railModel.image)
+            } else {
+                displayPlayerPage(railModel.video)
+            }
+        }
+        railItemClickHandler.clickLike = { railModel ->
+            onClickLike(railModel as RailItemTypeTwoModel)
+        }
+
+        railItemClickHandler.clickComment = { railModel ->
+            onClickComment(railModel as RailItemTypeTwoModel)
+        }
+
+        railItemClickHandler.clickShare = { railModel ->
+            isShareClick = true
+            this.railModel = railModel as RailItemTypeTwoModel
+            askPermission()
+        }
+
+        railItemClickHandler.clickDownload = { railModel ->
+            isShareClick = false
+            this.railModel = railModel as RailItemTypeTwoModel
+            askPermission()
         }
     }
 
@@ -189,7 +238,8 @@ class UserVideoListActivity : AppCompatActivity() {
         binding.rvUserVideoList.apply {
             adapter = InstagramAdapter(
                 categoryVideoList,
-                railItemClickHandler
+                railItemClickHandler,
+                playerViewAdapter
             )
             smoothScrollToPosition(scrollToPosition)
             setupRecyclerViewScrollListener()
@@ -210,7 +260,7 @@ class UserVideoListActivity : AppCompatActivity() {
             override fun onItemIsFirstVisibleItem(index: Int) {
                 currentIndex = index
                 if (index != -1) {
-                    PlayerViewAdapter.playIndexThenPausePreviousPlayer(index)
+                    playerViewAdapter.playIndexThenPausePreviousPlayer(index)
                 }
             }
 
@@ -257,9 +307,13 @@ class UserVideoListActivity : AppCompatActivity() {
             PlayerActivity.generateIntent(
                 this,
                 videoUrl,
-                PlayerViewAdapter.getCurrentPlayerPosition()
+                playerViewAdapter.getCurrentPlayerPosition()
             )
         )
+    }
+
+    private fun displayImagePage(imageUrl: String) {
+        ImageViewActivity.present(this, imageUrl)
     }
 
     val startForResult =
@@ -277,6 +331,73 @@ class UserVideoListActivity : AppCompatActivity() {
         }
 
     private fun changePlayerCurrentPosition(playerCurrentPosition: Long) {
-        PlayerViewAdapter.changePlayerCurrentPosition(playerCurrentPosition)
+        playerViewAdapter.changePlayerCurrentPosition(playerCurrentPosition)
     }
+
+    private fun onClickLike(railItemTypeTwoModel: RailItemTypeTwoModel) {
+        when (railItemTypeTwoModel.isLiked) {
+            true -> {
+                railItemTypeTwoModel.isLiked = false
+            }
+            false -> {
+                railItemTypeTwoModel.isLiked = true
+            }
+        }
+
+        setVideoLike(railItemTypeTwoModel)
+        //  notifyDataPosition(railList.indexOf(railItemTypeTwoModel), railItemTypeTwoModel)
+
+    }
+
+    private fun onClickComment(railItemTypeTwoModel: RailItemTypeTwoModel) {
+        showCommentPage(railItemTypeTwoModel)
+    }
+
+    private fun showCommentPage(railItemTypeTwoModel: RailItemTypeTwoModel) {
+        CommentActivity.present(
+            this,
+            railItemTypeTwoModel.contentId, isUserPost = true
+        )
+    }
+
+    private fun onClickDownload() {
+        viewModel.createDownloadRequest(railModel, getString(R.string.app_name))
+    }
+
+    private fun setVideoLike(railItemTypeTwoModel: RailItemTypeTwoModel) {
+        viewModel.setVideoLike(railItemTypeTwoModel.contentId, railItemTypeTwoModel.isLiked)
+            .observe(this,
+                Observer {
+                })
+    }
+
+    private fun askPermission() {
+        TedPermission.with(this)
+            .setPermissionListener(permissionListener)
+            .setDeniedMessage(getString(R.string.permission_denied_message))
+            .setPermissions(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            .check()
+    }
+
+    private var permissionListener: PermissionListener = object : PermissionListener {
+        override fun onPermissionGranted() {
+            onClickDownload()
+        }
+
+        override fun onPermissionDenied(deniedPermissions: List<String>) {
+        }
+    }
+
+    private fun downloadVideo(request: DownloadManager.Request) {
+        if (isShareClick) {
+            showProgressBar()
+        }
+        getString(R.string.download_started).toast(this)
+        val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        downloadID = manager.enqueue(request)
+    }
+
 }

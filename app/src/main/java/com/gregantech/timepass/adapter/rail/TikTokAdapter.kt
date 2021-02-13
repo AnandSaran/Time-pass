@@ -1,6 +1,5 @@
 package com.gregantech.timepass.adapter.rail
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,8 +9,8 @@ import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
 import com.gregantech.timepass.databinding.ItemTikTokBinding
 import com.gregantech.timepass.model.RailBaseItemModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
+import com.gregantech.timepass.util.NewPlayerViewAdapter
 import com.gregantech.timepass.util.PlayerStateCallback
-import com.gregantech.timepass.util.PlayerViewAdapter
 import com.gregantech.timepass.util.extension.loadDrawable
 
 /**
@@ -20,7 +19,8 @@ import com.gregantech.timepass.util.extension.loadDrawable
  */
 class TikTokAdapter(
     private var modelList: ArrayList<RailBaseItemModel>,
-    private val railItemClickHandler: RailItemClickHandler
+    private val railItemClickHandler: RailItemClickHandler,
+    private val playerAdapter: NewPlayerViewAdapter
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), PlayerStateCallback {
 
     override fun onCreateViewHolder(
@@ -63,7 +63,7 @@ class TikTokAdapter(
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         val position = holder.adapterPosition
-        PlayerViewAdapter.releaseRecycledPlayers(position)
+        playerAdapter.releaseRecycledPlayers(position)
         super.onViewRecycled(holder)
     }
 

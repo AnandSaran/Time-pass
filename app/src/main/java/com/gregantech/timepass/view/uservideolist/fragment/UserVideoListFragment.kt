@@ -37,14 +37,13 @@ import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
 import com.gregantech.timepass.network.response.Video
-import com.gregantech.timepass.util.PlayerViewAdapter
-import com.gregantech.timepass.util.PlayerViewAdapter.Companion.pauseCurrentPlayingVideo
-import com.gregantech.timepass.util.PlayerViewAdapter.Companion.playIndexThenPausePreviousPlayer
+import com.gregantech.timepass.util.NewPlayerViewAdapter
 import com.gregantech.timepass.util.URIPathHelper
 import com.gregantech.timepass.util.constant.EMPTY_LONG
 import com.gregantech.timepass.util.constant.EMPTY_STRING
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.shareDownloadedFile
+import com.gregantech.timepass.util.extension.smoothSnapToPosition
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.log.LogUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
@@ -67,6 +66,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     private lateinit var ctxt: Context
     private lateinit var viewModelFactory: UserVideoListViewModel.Factory
     private lateinit var railItemClickHandler: RailItemClickHandler
+    private val playerViewAdapter = NewPlayerViewAdapter()
 
     private var railList: ArrayList<RailBaseItemModel> = arrayListOf()
 
@@ -184,7 +184,8 @@ class UserVideoListFragment : TimePassBaseFragment() {
             setHasFixedSize(true)
             adapter = InstagramAdapter(
                 modelList = categoryVideoList,
-                railItemClickHandler = railItemClickHandler
+                railItemClickHandler = railItemClickHandler,
+                playerViewAdapter = playerViewAdapter
             )
         }
         // setUpSnapShot()
@@ -210,7 +211,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
             override fun onItemIsFirstVisibleItem(index: Int) {
                 currentIndex = index
                 if (index != -1) {
-                    PlayerViewAdapter.playIndexThenPausePreviousPlayer(index)
+                    playerViewAdapter.playIndexThenPausePreviousPlayer(index)
                 }
             }
 
@@ -338,7 +339,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
             PlayerActivity.generateIntent(
                 ctxt,
                 videoUrl,
-                PlayerViewAdapter.getCurrentPlayerPosition()
+                playerViewAdapter.getCurrentPlayerPosition()
             )
         )
     }
@@ -401,13 +402,13 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     override fun onPause() {
         super.onPause()
-        pauseCurrentPlayingVideo()
+        playerViewAdapter.pauseCurrentPlayingVideo()
     }
 
     override fun onResume() {
         super.onResume()
         if (currentIndex != -1) {
-            playIndexThenPausePreviousPlayer(currentIndex)
+            playerViewAdapter.playIndexThenPausePreviousPlayer(currentIndex)
         }
     }
 
@@ -424,7 +425,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        PlayerViewAdapter.releaseAllPlayers()
+        playerViewAdapter.releaseAllPlayers()
     }
 
     val startForResult =
@@ -442,7 +443,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
         }
 
     private fun changePlayerCurrentPosition(playerCurrentPosition: Long) {
-        PlayerViewAdapter.changePlayerCurrentPosition(playerCurrentPosition)
+        playerViewAdapter.changePlayerCurrentPosition(playerCurrentPosition)
     }
 
     private fun askVideoPermission() {
@@ -524,7 +525,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
             val positionAdd = 0
             railList.add(positionAdd, it.toRailItemTypeTwoModel())
             binding.rvUserVideoList.adapter?.notifyItemInserted(positionAdd)
-            binding.rvUserVideoList.smoothScrollToPosition(positionAdd)
+            binding.rvUserVideoList.smoothSnapToPosition(positionAdd)
         }
     }
 

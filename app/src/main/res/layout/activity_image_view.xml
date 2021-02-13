@@ -13,7 +13,7 @@
         android:background="@android:color/black"
         tools:context=".view.player.activity.ImageViewActivity">
 
-        <ImageView
+        <com.github.chrisbanes.photoview.PhotoView
             android:id="@+id/ivPost"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

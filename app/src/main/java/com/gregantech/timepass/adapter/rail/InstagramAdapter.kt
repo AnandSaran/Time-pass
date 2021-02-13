@@ -3,14 +3,12 @@ package com.gregantech.timepass.adapter.rail
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.Player
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
 import com.gregantech.timepass.databinding.ItemInstagramBinding
 import com.gregantech.timepass.model.RailBaseItemModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
-import com.gregantech.timepass.util.PlayerStateCallback
-import com.gregantech.timepass.util.PlayerViewAdapter
+import com.gregantech.timepass.util.NewPlayerViewAdapter
 import com.gregantech.timepass.util.extension.loadDrawable
 import com.gregantech.timepass.util.extension.loadUrl
 import com.gregantech.timepass.util.extension.loadUrlCircle
@@ -22,8 +20,9 @@ import java.util.*
  */
 class InstagramAdapter(
     private var modelList: ArrayList<RailBaseItemModel>,
-    private val railItemClickHandler: RailItemClickHandler
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), PlayerStateCallback {
+    private val railItemClickHandler: RailItemClickHandler,
+    private val playerViewAdapter: NewPlayerViewAdapter
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(
         viewGroup: ViewGroup,
@@ -40,7 +39,6 @@ class InstagramAdapter(
         holder: RecyclerView.ViewHolder,
         position: Int
     ) {
-
         //Here you can fill your row view
         if (holder is VideoPlayerViewHolder) {
             val model = getItem(position)
@@ -52,7 +50,7 @@ class InstagramAdapter(
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
         val position = holder.adapterPosition
-        PlayerViewAdapter.releaseRecycledPlayers(position)
+        playerViewAdapter.releaseRecycledPlayers(position)
         super.onViewRecycled(holder)
     }
 
@@ -70,8 +68,6 @@ class InstagramAdapter(
         fun onBind(model: RailItemTypeTwoModel) {
             binding.apply {
                 dataModel = model
-                callback = this@InstagramAdapter
-                index = adapterPosition
                 setupOnClick(model)
                 setupFollow(model.isShowFollow)
                 setupProfile(model)
@@ -178,6 +174,12 @@ class InstagramAdapter(
             } else {
                 binding.ivPoster.visible(false)
                 binding.clPlayer.visible(true)
+                playerViewAdapter.loadVideo(
+                    model.video,
+                    binding.progressBar,
+                    adapterPosition,
+                    binding.vvPlayer
+                )
             }
         }
 
@@ -193,19 +195,6 @@ class InstagramAdapter(
             }
         }.toString()
 
-    }
-
-    override fun onVideoDurationRetrieved(duration: Long, player: Player) {
-    }
-
-    override fun onVideoBuffering(player: Player) {
-    }
-
-    override fun onStartedPlaying(player: Player) {
-
-    }
-
-    override fun onFinishedPlaying(player: Player) {
     }
 
     private fun onClickDownload(

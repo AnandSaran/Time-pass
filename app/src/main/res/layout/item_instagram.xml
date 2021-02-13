@@ -9,29 +9,20 @@
             name="dataModel"
             type="com.gregantech.timepass.model.RailItemTypeTwoModel" />
 
-        <variable
-            name="callback"
-            type="com.gregantech.timepass.util.PlayerStateCallback" />
-
-        <variable
-            name="index"
-            type="int" />
-
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clParent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_5"
-        android:background="@color/transparent">
+        android:background="@color/transparent"
+        android:padding="@dimen/dp_5">
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardUseCompatPadding="true"
             app:cardCornerRadius="@dimen/dp_5"
+            app:cardUseCompatPadding="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -87,7 +78,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
+                        android:scaleType="fitXY"
                         android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -108,16 +99,12 @@
                             android:id="@+id/vvPlayer"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            app:item_index="@{index}"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:on_state_change="@{callback}"
-                            app:progressbar="@{progressBar}"
                             app:resize_mode="zoom"
-                            app:surface_type="texture_view"
-                            app:video_url="@{dataModel.video}" />
+                            app:surface_type="texture_view" />
 
                         <com.wang.avi.AVLoadingIndicatorView
                             android:id="@+id/progressBar"

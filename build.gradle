@@ -46,6 +46,7 @@ buildscript {
         version_video_picker = "1.0.4"
         version_viewpager_two = "1.0.0"
         version_work = "2.4.0"
+        version_photo_view = "2.0.0"
         version_junit = "4.12"
         version_test_junit = "1.1.1"
         version_test_espresso = "3.3.0"

@@ -31,16 +31,11 @@ import com.gregantech.timepass.model.RailBaseItemModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
-import com.gregantech.timepass.util.PlayerViewAdapter
-import com.gregantech.timepass.util.PlayerViewAdapter.Companion.getCurrentPlayerPosition
-import com.gregantech.timepass.util.PlayerViewAdapter.Companion.pauseCurrentPlayingVideo
-import com.gregantech.timepass.util.PlayerViewAdapter.Companion.playIndexThenPausePreviousPlayer
-import com.gregantech.timepass.util.PlayerViewAdapter.Companion.releaseAllPlayers
+import com.gregantech.timepass.util.NewPlayerViewAdapter
 import com.gregantech.timepass.util.constant.EMPTY_LONG
 import com.gregantech.timepass.util.constant.EMPTY_STRING
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.shareDownloadedFile
-import com.gregantech.timepass.util.extension.shareVideoText
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.categorydetail.viewmodel.CategoryDetailFragmentViewModel
@@ -70,6 +65,8 @@ class CategoryDetailFragment : TimePassBaseFragment() {
     var railModel = RailItemTypeTwoModel()
     var currentIndex = -1
     var downloadID: Long? = null
+    private val playerViewAdapter = NewPlayerViewAdapter()
+
     private var permissionListener: PermissionListener = object : PermissionListener {
         override fun onPermissionGranted() {
             onClickDownload()
@@ -163,7 +160,8 @@ class CategoryDetailFragment : TimePassBaseFragment() {
             setHasFixedSize(true)
             adapter = InstagramAdapter(
                 modelList = categoryVideoList,
-                railItemClickHandler = railItemClickHandler
+                railItemClickHandler = railItemClickHandler,
+                playerViewAdapter = playerViewAdapter
             )
         }
         // setUpSnapShot()
@@ -189,7 +187,7 @@ class CategoryDetailFragment : TimePassBaseFragment() {
             override fun onItemIsFirstVisibleItem(index: Int) {
                 currentIndex = index
                 if (index != -1) {
-                    playIndexThenPausePreviousPlayer(index)
+                    playerViewAdapter.playIndexThenPausePreviousPlayer(index)
                 }
             }
 
@@ -301,7 +299,7 @@ class CategoryDetailFragment : TimePassBaseFragment() {
             PlayerActivity.generateIntent(
                 ctxt,
                 videoUrl,
-                getCurrentPlayerPosition()
+                playerViewAdapter.getCurrentPlayerPosition()
             )
         )
     }
@@ -347,13 +345,13 @@ class CategoryDetailFragment : TimePassBaseFragment() {
 
     override fun onPause() {
         super.onPause()
-        pauseCurrentPlayingVideo()
+        playerViewAdapter.pauseCurrentPlayingVideo()
     }
 
     override fun onResume() {
         super.onResume()
         if (currentIndex != -1) {
-            playIndexThenPausePreviousPlayer(currentIndex)
+            playerViewAdapter.playIndexThenPausePreviousPlayer(currentIndex)
         }
     }
 
@@ -370,7 +368,7 @@ class CategoryDetailFragment : TimePassBaseFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        releaseAllPlayers()
+        playerViewAdapter.releaseAllPlayers()
     }
 
     val startForResult =
@@ -388,7 +386,7 @@ class CategoryDetailFragment : TimePassBaseFragment() {
         }
 
     private fun changePlayerCurrentPosition(playerCurrentPosition: Long) {
-        PlayerViewAdapter.changePlayerCurrentPosition(playerCurrentPosition)
+        playerViewAdapter.changePlayerCurrentPosition(playerCurrentPosition)
     }
 
     private fun onClickComment(railItemTypeTwoModel: RailItemTypeTwoModel) {
