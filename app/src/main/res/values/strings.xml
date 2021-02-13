@@ -40,4 +40,5 @@
     <string name="follow">Follow</string>
     <string name="image">Image</string>
     <string name="video">Video</string>
+    <string name="under_line_text"><u>%1$s</u></string>
 </resources>

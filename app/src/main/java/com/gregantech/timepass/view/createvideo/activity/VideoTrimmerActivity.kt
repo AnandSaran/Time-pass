@@ -456,6 +456,6 @@ class VideoTrimmerActivity : TimePassBaseActivity(),
 
     private fun randomLetter(): GlWatermarkFilter.Position {
         val pick = Random().nextInt(GlWatermarkFilter.Position.values().size)
-        return GlWatermarkFilter.Position.values()[pick]
+        return GlWatermarkFilter.Position.LEFT_TOP/*GlWatermarkFilter.Position.values()[pick]*/
     }
 }

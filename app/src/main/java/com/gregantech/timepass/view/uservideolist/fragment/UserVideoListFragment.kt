@@ -52,6 +52,7 @@ import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoTrimmerActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoUploadActivity
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
+import com.gregantech.timepass.view.player.activity.ImageViewActivity
 import com.gregantech.timepass.view.player.activity.PlayerActivity
 import com.gregantech.timepass.view.profile.activity.UserProfileActivity
 import com.gregantech.timepass.view.uservideolist.viewmodel.UserVideoListViewModel
@@ -229,11 +230,11 @@ class UserVideoListFragment : TimePassBaseFragment() {
     private fun onClickRailListItem() {
         railItemClickHandler = RailItemClickHandler()
         railItemClickHandler.clickPoster = { railModel ->
-            val railModel=railModel as RailItemTypeTwoModel
-            val isImage=railModel.isImage
-            if (isImage !=null&& isImage){
+            val railModel = railModel as RailItemTypeTwoModel
+            val isImage = railModel.isImage
+            if (isImage != null && isImage) {
                 displayImagePage(railModel.image)
-            }else{
+            } else {
                 displayPlayerPage(railModel.video)
             }
         }
@@ -343,7 +344,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     }
 
     private fun displayImagePage(imageUrl: String) {
-
+        ImageViewActivity.present(ctxt, imageUrl)
     }
 
     private fun getMoreCategoryVideo() {
@@ -382,18 +383,19 @@ class UserVideoListFragment : TimePassBaseFragment() {
             if (downloadID == id && isShareClick) {
                 requireContext().shareDownloadedFile(downloadID!!)
             }
-            if(isShareClick){
+            if (isShareClick) {
                 dismissProgressBar()
             }
         }
     }
 
     private fun downloadVideo(request: DownloadManager.Request) {
-        if(isShareClick){
+        if (isShareClick) {
             showProgressBar()
         }
         getString(R.string.download_started).toast(ctxt)
-        val manager = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val manager =
+            requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         downloadID = manager.enqueue(request)
     }
 
@@ -448,7 +450,6 @@ class UserVideoListFragment : TimePassBaseFragment() {
             .setPermissionListener(permissionlistenerCreateVideo)
             .setDeniedMessage(getString(R.string.permission_denied_message))
             .setPermissions(
-                Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             )
@@ -500,7 +501,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     private fun displayVideoUploadPage(videoPath: String, isImage: Boolean = false) {
         if (videoPath.isNotBlank()) {
             startUploadVideoActivityForResult.launch(
-                VideoUploadActivity.generateIntent(ctxt, videoPath,isImage)
+                VideoUploadActivity.generateIntent(ctxt, videoPath, isImage)
             )
         } else {
             getString(R.string.invalid_file).toast(ctxt)

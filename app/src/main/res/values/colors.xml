@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1EDE65</color>
-    <color name="colorPrimaryDark">#058C14</color>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#F1F1F1</color>
     <color name="colorAccent">#048914</color>
     <color name="white">#FFFFFF</color>
     <color name="background_color_grey_light">#F6F6F6</color>
     <color name="transparent">#00915E5E</color>
     <color name="text_color">#000000</color>
+    <color name="gray">#838383</color>
     <color name="ucrop_color_toolbar">@color/colorPrimary</color>
     <color name="ucrop_color_statusbar">@color/colorPrimaryDark</color>
     <!--  <color name="ucrop_color_toolbar_widget">#000000</color>

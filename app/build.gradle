@@ -18,7 +18,7 @@ android {
         applicationId "com.adroit.timepass"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
+        versionCode 3
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -54,7 +54,6 @@ android {
             buildConfigField "String", "BASEURL", "\"http://timepass.net.in/app-api/\""
         }
         prod {
-            applicationIdSuffix ".prd"
             resValue "string", "app_name", "Time pass"
             buildConfigField "String", "BASEURL", "\"http://timepass.net.in/app-api/\""
         }
@@ -76,7 +75,12 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
-
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
 }
 
 dependencies {

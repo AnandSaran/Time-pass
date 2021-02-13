@@ -107,7 +107,7 @@ class UserVideoListViewModel(
         appName: String
     ) {
         val downloadRequest =
-            DownloadManager.Request(Uri.parse(railItemTypeTwoModel.video))
+            DownloadManager.Request(Uri.parse(generateDownloadUrl(railItemTypeTwoModel)))
         downloadRequest.setTitle(railItemTypeTwoModel.title)
         downloadRequest.setDescription(railItemTypeTwoModel.title)
         downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
@@ -122,6 +122,14 @@ class UserVideoListViewModel(
             filename
         )
         updateDownloadRequest(downloadRequest)
+    }
+
+    private fun generateDownloadUrl(railItemTypeTwoModel: RailItemTypeTwoModel): String {
+        return if (railItemTypeTwoModel.isImage != null && railItemTypeTwoModel.isImage!!) {
+            railItemTypeTwoModel.image
+        } else {
+            railItemTypeTwoModel.video
+        }
     }
 
     private fun updateDownloadRequest(request: DownloadManager.Request) {
