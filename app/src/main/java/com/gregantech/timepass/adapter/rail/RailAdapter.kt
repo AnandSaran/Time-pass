@@ -3,11 +3,9 @@ package com.gregantech.timepass.adapter.rail
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
-import com.gregantech.timepass.model.RailBaseItemModel
+import com.gregantech.timepass.model.*
 import com.gregantech.timepass.model.RailItemTypeEnum.*
-import com.gregantech.timepass.model.RailItemTypeOneModel
-import com.gregantech.timepass.model.RailItemTypeThreeModel
-import com.gregantech.timepass.model.RailItemTypeTwoModel
+import com.gregantech.timepass.viewholder.rail.RailItemTypeFourViewHolder
 import com.gregantech.timepass.viewholder.rail.RailItemTypeOneViewHolder
 import com.gregantech.timepass.viewholder.rail.RailItemTypeThreeViewHolder
 import com.gregantech.timepass.viewholder.rail.RailItemTypeTwoViewHolder
@@ -34,6 +32,7 @@ class RailAdapter(
             TYPE_RAIL_ITEM_ONE.value -> RailItemTypeOneViewHolder.from(parent)
             TYPE_RAIL_ITEM_TWO.value -> RailItemTypeTwoViewHolder.from(parent)
             TYPE_RAIL_ITEM_THREE.value -> RailItemTypeThreeViewHolder.from(parent)
+            TYPE_RAIL_ITEM_FOUR.value -> RailItemTypeFourViewHolder.from(parent)
             else -> throw ClassCastException("$TAG - Unknown viewType: $viewType")
         }
     }
@@ -60,6 +59,11 @@ class RailAdapter(
             TYPE_RAIL_ITEM_THREE.value -> {
                 val railItem = railListModel[position] as RailItemTypeThreeModel
                 val mHolder = holder as RailItemTypeThreeViewHolder
+                mHolder.bind(railItem, railItemClickHandler)
+            }
+            TYPE_RAIL_ITEM_FOUR.value -> {
+                val railItem = railListModel[position] as RailItemTypeFourModel
+                val mHolder = holder as RailItemTypeFourViewHolder
                 mHolder.bind(railItem, railItemClickHandler)
             }
             else -> throw ClassCastException("$TAG - Unknown viewType: ${holder.itemViewType}")

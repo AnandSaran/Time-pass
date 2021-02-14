@@ -421,7 +421,7 @@ class VideoTrimmerActivity : TimePassBaseActivity(),
         Mp4Composer(srcMp4Path, destMp4Path)
             .fillMode(FillMode.PRESERVE_ASPECT_FIT)
             .trim(trimStartMs, trimEndMs)
-            .filter(GlFilterGroup(GlWatermarkFilter(icon, position)))
+            /*.filter(GlFilterGroup(GlWatermarkFilter(icon, position)))*/
             .listener(object : Mp4Composer.Listener {
                 override fun onFailed(exception: java.lang.Exception?) {
                     runOnUiThread { dismissProgressBar() }
@@ -440,7 +440,6 @@ class VideoTrimmerActivity : TimePassBaseActivity(),
 
                 override fun onCompleted() {
                     runOnUiThread {
-                        dismissProgressBar()
                         dismissProgressBar()
                         val conData = Bundle()
                         conData.putString("INTENT_VIDEO_FILE", destMp4Path)

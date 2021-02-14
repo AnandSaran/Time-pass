@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -241,7 +240,7 @@ class UserVideoListActivity : TimePassBaseActivity() {
                 railItemClickHandler,
                 playerViewAdapter
             )
-            smoothScrollToPosition(scrollToPosition)
+            layoutManager?.scrollToPosition(scrollToPosition)
             setupRecyclerViewScrollListener()
         }
     }

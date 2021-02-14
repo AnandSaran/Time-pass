@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:background="@color/background_color_grey_light"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/tbUserList"
+            layout="@layout/toolbar" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSearchUser"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_10"
+            android:hint="@string/search_user"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/container"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tbUserList">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtSearchUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionSearch"
+                android:inputType="textNoSuggestions|textCapSentences" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tilSearchUser" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

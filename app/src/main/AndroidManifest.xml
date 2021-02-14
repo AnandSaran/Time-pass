@@ -21,6 +21,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".view.userlist.activity.UserListActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".view.player.activity.ImageViewActivity"
             android:screenOrientation="portrait" />
         <activity

@@ -10,9 +10,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,6 +27,8 @@ import com.gregantech.timepass.adapter.rail.InstagramAdapter
 import com.gregantech.timepass.base.TimePassBaseFragment
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.FragmentUserVideoListBinding
+import com.gregantech.timepass.general.UserListScreenTitleEnum
+import com.gregantech.timepass.general.UserListScreenTypeEnum
 import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
 import com.gregantech.timepass.general.bundklekey.CreateVideoBundleEnum
 import com.gregantech.timepass.model.RailBaseItemModel
@@ -54,6 +54,7 @@ import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
 import com.gregantech.timepass.view.player.activity.ImageViewActivity
 import com.gregantech.timepass.view.player.activity.PlayerActivity
 import com.gregantech.timepass.view.profile.activity.UserProfileActivity
+import com.gregantech.timepass.view.userlist.activity.UserListActivity
 import com.gregantech.timepass.view.uservideolist.viewmodel.UserVideoListViewModel
 import com.gregantech.timepass.widget.PaginationScrollListener
 import com.gun0912.tedpermission.PermissionListener
@@ -111,6 +112,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         requireContext().registerReceiver(
             downloadStatusReceiver,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
@@ -151,6 +153,26 @@ class UserVideoListFragment : TimePassBaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         requireContext().unregisterReceiver(downloadStatusReceiver)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_user_video_list, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.miSearch -> showSearchScreen()
+        }
+        return true
+    }
+
+    private fun showSearchScreen() {
+        UserListActivity.present(
+            ctxt,
+            UserListScreenTitleEnum.SEARCH,
+            UserListScreenTypeEnum.SEARCH
+        )
     }
 
     private fun setupViewModelObserver() {

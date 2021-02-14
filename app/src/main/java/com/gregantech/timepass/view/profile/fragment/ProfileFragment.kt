@@ -16,6 +16,8 @@ import com.gregantech.timepass.adapter.rail.RailAdapter
 import com.gregantech.timepass.base.TimePassBaseFragment
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.FragmentProfileBinding
+import com.gregantech.timepass.general.UserListScreenTitleEnum
+import com.gregantech.timepass.general.UserListScreenTypeEnum
 import com.gregantech.timepass.model.RailBaseItemModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.LoginRepository
@@ -28,6 +30,7 @@ import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.profile.activity.ProfileActivity
 import com.gregantech.timepass.view.profile.activity.UserVideoListActivity
 import com.gregantech.timepass.view.profile.viewmodel.ProfileFragmentViewModel
+import com.gregantech.timepass.view.userlist.activity.UserListActivity
 import com.gregantech.timepass.widget.PaginationScrollListener
 
 
@@ -148,6 +151,7 @@ class ProfileFragment : TimePassBaseFragment() {
             )
         setupViewModelObserver()
         setUserData()
+        setupOnClick()
     }
 
     private fun setupViewModelObserver() {
@@ -212,7 +216,20 @@ class ProfileFragment : TimePassBaseFragment() {
         })
     }
 
-    private fun onClickCreateVideo() {
+    private fun setupOnClick() {
+        binding.tvTotalFollowers.setOnClickListener {
+            showUserListPage(UserListScreenTitleEnum.FOLLOWERS, UserListScreenTypeEnum.FOLLOWERS)
+        }
+        binding.tvTotalFollowing.setOnClickListener {
+            showUserListPage(UserListScreenTitleEnum.FOLLOWING, UserListScreenTypeEnum.FOLLOWING)
+        }
+    }
+
+    private fun showUserListPage(
+        title: UserListScreenTitleEnum,
+        screenType: UserListScreenTypeEnum
+    ) {
+        UserListActivity.present(ctxt, title, screenType)
     }
 
     private fun onClickRailListItem() {

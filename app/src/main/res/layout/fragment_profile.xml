@@ -101,6 +101,7 @@
                             android:id="@+id/tvTotalFollowing"
                             style="@style/RailItemTypeTitleStyle.DoubleLine"
                             android:layout_width="0dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:fontFamily="@font/roboto_medium"
@@ -113,6 +114,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:background="?attr/selectableItemBackgroundBorderless"
                             android:fontFamily="@font/roboto_medium"
                             android:gravity="center"
                             tools:text="@tools:sample/lorem/random" />
