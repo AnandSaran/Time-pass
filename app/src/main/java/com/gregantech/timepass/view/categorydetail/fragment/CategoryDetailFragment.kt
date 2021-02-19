@@ -5,7 +5,6 @@ import android.app.Activity
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
@@ -283,7 +282,7 @@ class CategoryDetailFragment : TimePassBaseFragment() {
     }
 
     private fun onClickDownload() {
-        if(isNotDownloaded(railModel.getStrippedFileName(), isShareClick))
+        if (isNotDownloaded(requireContext(), railModel.getStrippedFileName(), isShareClick))
             viewModel.createDownloadRequest(railModel, getString(R.string.app_name))
     }
 

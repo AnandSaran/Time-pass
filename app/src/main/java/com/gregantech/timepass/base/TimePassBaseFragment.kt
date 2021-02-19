@@ -1,8 +1,8 @@
 package com.gregantech.timepass.base
 
+import android.content.Context
 import androidx.fragment.app.Fragment
 import com.gregantech.timepass.model.RailItemTypeTwoModel
-import com.gregantech.timepass.model.getStrippedFileName
 import com.gregantech.timepass.util.constant.RAW_DOWNLOAD_PATH
 import com.gregantech.timepass.util.extension.isFileDownloaded
 import com.gregantech.timepass.util.extension.shareFile
@@ -30,10 +30,10 @@ abstract class TimePassBaseFragment : Fragment() {
         baseActivity.downloadWithFlow(railItemTypeTwoModel)
     }
 
-    fun isNotDownloaded(fileName: String, isShareClick: Boolean) =
-        if (requireContext().isFileDownloaded(fileName)) {
+    fun isNotDownloaded(context: Context, fileName: String, isShareClick: Boolean) =
+        if (context.isFileDownloaded(fileName)) {
             if (isShareClick) requireContext().shareFile(RAW_DOWNLOAD_PATH.plus(fileName))
-            else "File already Downloaded ".toast(requireContext())
+            else "File already Downloaded ".toast(context)
             false
         } else true
 

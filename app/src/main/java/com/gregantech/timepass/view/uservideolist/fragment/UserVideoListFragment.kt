@@ -9,9 +9,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.view.*
 import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResult
@@ -35,7 +33,6 @@ import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
 import com.gregantech.timepass.general.bundklekey.CreateVideoBundleEnum
 import com.gregantech.timepass.model.RailBaseItemModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
-import com.gregantech.timepass.model.getFileToDownload
 import com.gregantech.timepass.model.getStrippedFileName
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModel
@@ -45,9 +42,10 @@ import com.gregantech.timepass.util.NewPlayerViewAdapter
 import com.gregantech.timepass.util.URIPathHelper
 import com.gregantech.timepass.util.constant.EMPTY_LONG
 import com.gregantech.timepass.util.constant.EMPTY_STRING
-import com.gregantech.timepass.util.constant.RAW_DOWNLOAD_PATH
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
-import com.gregantech.timepass.util.extension.*
+import com.gregantech.timepass.util.extension.shareDownloadedFile
+import com.gregantech.timepass.util.extension.smoothSnapToPosition
+import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.log.LogUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
@@ -348,7 +346,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     }
 
     private fun onClickDownload() {
-        if(isNotDownloaded(railModel.getStrippedFileName(), isShareClick))
+        if (isNotDownloaded(requireContext(), railModel.getStrippedFileName(), isShareClick))
             viewModel.createDownloadRequest(railModel, getString(R.string.app_name))
     }
 
