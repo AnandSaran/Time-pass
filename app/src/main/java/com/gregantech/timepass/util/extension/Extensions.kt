@@ -6,12 +6,14 @@ import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Environment
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.model.DownloadResult
 import com.gregantech.timepass.util.constant.BODY
+import com.gregantech.timepass.util.constant.RAW_DOWNLOAD_PATH
 import com.gregantech.timepass.util.constant.SUBJECT
 import com.yalantis.ucrop.util.FileUtils.getPath
 import io.ktor.client.HttpClient
@@ -47,15 +49,25 @@ fun Context.shareDownloadedFile(downloadId: Long) {
             val downloadLocalUri = getString(getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))
             val downloadMimeType = getString(getColumnIndex(DownloadManager.COLUMN_MEDIA_TYPE))
 
+            Log.d(
+                "ShareDownloaded",
+                "shareDownloadedFile: downloadMimeType $downloadMimeType downloadLocalUri $downloadLocalUri"
+            )
+
             if (downloadStatus == DownloadManager.STATUS_SUCCESSFUL) {
-                shareFile(getPath(mContext,Uri.parse(downloadLocalUri)))
+                shareFile(getPath(mContext, Uri.parse(downloadLocalUri)))
             }
         }
         close()
     }
 }
 
-fun Context.shareFile(filePath: String?) {
+fun String.stripFileNameFromUrl() = substring(lastIndexOf("/") + 1)
+
+fun Context.isFileDownloaded(fileName: String?) =
+    File(RAW_DOWNLOAD_PATH.plus(fileName)).exists()
+
+fun Context.shareFile(filePath: String?, mimeType: String? = null) {
 
     filePath?.let { path ->
         val file = File(path)
@@ -65,7 +77,7 @@ fun Context.shareFile(filePath: String?) {
         val uri = FileProvider.getUriForFile(this, "${BuildConfig.APPLICATION_ID}.provider", file)
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
-            type = uri.getMimeTypeForIntent()
+            type = mimeType ?: uri.getMimeTypeForIntent()
             putExtra(Intent.EXTRA_STREAM, uri)
             putExtra(Intent.EXTRA_SUBJECT, SUBJECT)
             putExtra(Intent.EXTRA_TEXT, BODY)

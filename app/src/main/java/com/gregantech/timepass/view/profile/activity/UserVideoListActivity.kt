@@ -25,6 +25,7 @@ import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
 import com.gregantech.timepass.general.bundklekey.UserVideoListActivityBundleKeyEnum
 import com.gregantech.timepass.model.RailBaseItemModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
+import com.gregantech.timepass.model.getStrippedFileName
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
 import com.gregantech.timepass.network.response.User
@@ -391,7 +392,8 @@ class UserVideoListActivity : TimePassBaseActivity() {
     }
 
     private fun onClickDownload() {
-        viewModel.createDownloadRequest(railModel, getString(R.string.app_name))
+        if(isNotDownloaded(railModel.getStrippedFileName(), isShareClick))
+            viewModel.createDownloadRequest(railModel, getString(R.string.app_name))
     }
 
     private fun setVideoLike(railItemTypeTwoModel: RailItemTypeTwoModel) {

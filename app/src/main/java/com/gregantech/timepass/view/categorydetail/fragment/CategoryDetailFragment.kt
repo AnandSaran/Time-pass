@@ -29,6 +29,7 @@ import com.gregantech.timepass.databinding.FragmentCategoryDetailBinding
 import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
 import com.gregantech.timepass.model.RailBaseItemModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
+import com.gregantech.timepass.model.getStrippedFileName
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
 import com.gregantech.timepass.util.NewPlayerViewAdapter
@@ -282,7 +283,8 @@ class CategoryDetailFragment : TimePassBaseFragment() {
     }
 
     private fun onClickDownload() {
-        viewModel.createDownloadRequest(railModel, getString(R.string.app_name))
+        if(isNotDownloaded(railModel.getStrippedFileName(), isShareClick))
+            viewModel.createDownloadRequest(railModel, getString(R.string.app_name))
     }
 
     private fun setUserFollow(railItemTypeTwoModel: RailItemTypeTwoModel) {

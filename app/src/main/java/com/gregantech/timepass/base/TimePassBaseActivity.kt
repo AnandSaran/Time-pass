@@ -3,8 +3,8 @@ package com.gregantech.timepass.base
 import androidx.appcompat.app.AppCompatActivity
 import com.gregantech.timepass.model.DownloadResult
 import com.gregantech.timepass.model.RailItemTypeTwoModel
-import com.gregantech.timepass.util.extension.downloadFile
-import com.gregantech.timepass.util.extension.shareVideoText
+import com.gregantech.timepass.util.constant.RAW_DOWNLOAD_PATH
+import com.gregantech.timepass.util.extension.*
 import com.gregantech.timepass.widget.CustomProgressbar
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -43,6 +43,13 @@ abstract class TimePassBaseActivity : AppCompatActivity() {
         }
         return customProgressbar
     }
+
+    fun isNotDownloaded(fileName: String, isShareClick: Boolean) =
+        if (isFileDownloaded(fileName)) {
+            if (isShareClick) shareFile(RAW_DOWNLOAD_PATH.plus(fileName))
+            else "File already Downloaded ".toast(this)
+            false
+        } else true
 
     fun downloadWithFlow(model: RailItemTypeTwoModel) {
         CoroutineScope(Dispatchers.IO).launch {

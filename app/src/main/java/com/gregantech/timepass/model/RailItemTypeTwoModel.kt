@@ -6,6 +6,7 @@ import android.os.Parcelable
 import androidx.core.net.toUri
 import com.gregantech.timepass.util.constant.EMPTY_STRING
 import com.gregantech.timepass.util.extension.globalContext
+import com.gregantech.timepass.util.extension.stripFileNameFromUrl
 import kotlinx.android.parcel.Parcelize
 import java.io.File
 
@@ -33,9 +34,12 @@ class RailItemTypeTwoModel(
     var userName: String = EMPTY_STRING,
     var userImage: String = EMPTY_STRING
 ) : Parcelable, RailBaseItemModel(){
-
     val uriFile: Uri
         get() = file.toUri()
     val file: File
         get() = File(globalContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), title)
 }
+
+fun RailItemTypeTwoModel.getFileToDownload() = if(video.isEmpty()) image else video
+
+fun RailItemTypeTwoModel.getStrippedFileName() = (if(video.isEmpty()) image else video).stripFileNameFromUrl()

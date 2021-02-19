@@ -9,6 +9,7 @@ import android.webkit.URLUtil
 import androidx.lifecycle.*
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.model.RailItemTypeTwoModel
+import com.gregantech.timepass.model.getFileToDownload
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.request.UserFollowRequest
 import com.gregantech.timepass.network.request.VideoLikeRequest
@@ -123,11 +124,12 @@ class CategoryDetailFragmentViewModel(
         downloadRequest.setTitle(railItemTypeTwoModel.title)
         downloadRequest.setDescription(railItemTypeTwoModel.title)
         downloadRequest.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+
         val filename: String =
             URLUtil.guessFileName(
-                railItemTypeTwoModel.video,
+                railItemTypeTwoModel.getFileToDownload(),
                 null,
-                MimeTypeMap.getFileExtensionFromUrl(railItemTypeTwoModel.video)
+                MimeTypeMap.getFileExtensionFromUrl(railItemTypeTwoModel.getFileToDownload())
             )
         Log.d("CategoryDetail", "createDownloadRequest: filename $filename")
         downloadRequest.setDestinationInExternalPublicDir(

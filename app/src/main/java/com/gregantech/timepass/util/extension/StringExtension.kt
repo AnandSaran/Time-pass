@@ -12,6 +12,7 @@ fun String.appendPost(): String {
     }
 }
 
+
 fun String.appendPostText(): String {
     return if (this.isBlank()) {
         POST

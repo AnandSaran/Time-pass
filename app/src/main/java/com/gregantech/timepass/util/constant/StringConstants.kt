@@ -19,5 +19,7 @@ const val FOLLOWING="\nFollowing"
 const val ZERO="0"
 const val JUST_NOW="Just now"
 
+const val RAW_DOWNLOAD_PATH = "/storage/emulated/0/Movies/"
+
 const val SUBJECT = "This is a sample subject"
 const val BODY = "This is a sample body share example"
