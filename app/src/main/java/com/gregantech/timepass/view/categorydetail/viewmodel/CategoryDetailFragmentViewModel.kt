@@ -3,6 +3,7 @@ package com.gregantech.timepass.view.categorydetail.viewmodel
 import android.app.DownloadManager
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import android.webkit.MimeTypeMap
 import android.webkit.URLUtil
 import androidx.lifecycle.*
@@ -128,6 +129,7 @@ class CategoryDetailFragmentViewModel(
                 null,
                 MimeTypeMap.getFileExtensionFromUrl(railItemTypeTwoModel.video)
             )
+        Log.d("CategoryDetail", "createDownloadRequest: filename $filename")
         downloadRequest.setDestinationInExternalPublicDir(
             Environment.DIRECTORY_MOVIES,
             filename

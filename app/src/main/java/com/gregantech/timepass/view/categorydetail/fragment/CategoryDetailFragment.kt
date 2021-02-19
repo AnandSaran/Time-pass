@@ -50,7 +50,7 @@ class CategoryDetailFragment : TimePassBaseFragment() {
     private lateinit var ctxt: Context
     private lateinit var binding: FragmentCategoryDetailBinding
     private lateinit var viewModelFactory: CategoryDetailFragmentViewModel.Factory
-
+    private var isRegistered = false
     private lateinit var railItemClickHandler: RailItemClickHandler
 
     private var railList: ArrayList<RailBaseItemModel> = arrayListOf()
@@ -88,13 +88,21 @@ class CategoryDetailFragment : TimePassBaseFragment() {
             CategoryDetailFragment()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onStart() {
+        super.onStart()
         requireContext().registerReceiver(
             downloadStatusReceiver,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
+        isRegistered = true
     }
+
+    override fun onStop() {
+        super.onStop()
+        if (isRegistered)
+            requireContext().unregisterReceiver(downloadStatusReceiver)
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -233,7 +241,8 @@ class CategoryDetailFragment : TimePassBaseFragment() {
             }
             if(isShareClick){
                 dismissProgressBar()
-            }
+            }else
+                getString(R.string.download_completed).toast(requireContext())
         }
     }
 
@@ -400,8 +409,4 @@ class CategoryDetailFragment : TimePassBaseFragment() {
         )
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        requireContext().unregisterReceiver(downloadStatusReceiver)
-    }
 }

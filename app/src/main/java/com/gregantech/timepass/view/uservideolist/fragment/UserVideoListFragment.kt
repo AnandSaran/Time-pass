@@ -68,7 +68,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     private lateinit var viewModelFactory: UserVideoListViewModel.Factory
     private lateinit var railItemClickHandler: RailItemClickHandler
     private val playerViewAdapter = NewPlayerViewAdapter()
-
+    private var isRegistered = false
     private var railList: ArrayList<RailBaseItemModel> = arrayListOf()
 
     private var isLastData: Boolean = false
@@ -113,10 +113,15 @@ class UserVideoListFragment : TimePassBaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+    }
+
+    override fun onStart() {
+        super.onStart()
         requireContext().registerReceiver(
             downloadStatusReceiver,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
+        isRegistered = true
     }
 
     override fun onCreateView(
@@ -150,9 +155,10 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        requireContext().unregisterReceiver(downloadStatusReceiver)
+    override fun onStop() {
+        super.onStop()
+        if (isRegistered)
+            requireContext().unregisterReceiver(downloadStatusReceiver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -408,7 +414,8 @@ class UserVideoListFragment : TimePassBaseFragment() {
             }
             if (isShareClick) {
                 dismissProgressBar()
-            }
+            }else
+                getString(R.string.download_completed).toast(requireContext())
         }
     }
 

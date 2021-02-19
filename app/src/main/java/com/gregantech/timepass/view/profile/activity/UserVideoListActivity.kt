@@ -3,8 +3,10 @@ package com.gregantech.timepass.view.profile.activity
 import android.Manifest
 import android.app.Activity
 import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.result.ActivityResult
@@ -30,6 +32,7 @@ import com.gregantech.timepass.network.response.Video
 import com.gregantech.timepass.util.NewPlayerViewAdapter
 import com.gregantech.timepass.util.constant.*
 import com.gregantech.timepass.util.extension.appendPostText
+import com.gregantech.timepass.util.extension.shareDownloadedFile
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
@@ -47,6 +50,7 @@ class UserVideoListActivity : TimePassBaseActivity() {
     var currentIndex = -1
     private val playerViewAdapter = NewPlayerViewAdapter()
     var downloadID: Long? = null
+    var isRegistered = false
 
     private val viewModel: UserVideoListActivityViewModel by lazy {
         requireNotNull(this) {
@@ -129,9 +133,36 @@ class UserVideoListActivity : TimePassBaseActivity() {
         }
     }
 
+
+    override fun onStart() {
+        super.onStart()
+        registerReceiver(
+            downloadStatusReceiver,
+            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        )
+        isRegistered = true
+    }
+
+
     override fun onDestroy() {
         super.onDestroy()
         playerViewAdapter.releaseAllPlayers()
+        if(isRegistered){
+            unregisterReceiver(downloadStatusReceiver)
+        }
+    }
+
+    private val downloadStatusReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            if (downloadID == id && isShareClick) {
+                shareDownloadedFile(downloadID!!)
+            }
+            if(isShareClick){
+                dismissProgressBar()
+            }else
+                getString(R.string.download_completed).toast(this@UserVideoListActivity)
+        }
     }
 
     private fun setupViewModelFactory() {

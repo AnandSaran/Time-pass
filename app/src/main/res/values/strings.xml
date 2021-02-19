@@ -18,6 +18,7 @@
     <string name="permission_message">we need permission for read images</string>
     <string name="permission_denied_message">If you reject permission,you can not use this service</string>
     <string name="download_started">Download started</string>
+    <string name="download_completed">Download Completed</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

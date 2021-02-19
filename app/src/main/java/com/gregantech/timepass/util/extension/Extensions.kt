@@ -6,6 +6,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
 import com.gregantech.timepass.BuildConfig
@@ -26,6 +27,7 @@ import kotlinx.coroutines.io.copyAndClose
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext
 import java.io.File
+import java.net.URLConnection
 import kotlin.math.roundToInt
 
 val globalContext: Context
@@ -74,6 +76,13 @@ fun Context.shareFile(filePath: String?) {
 
 
 fun Uri.getMimeTypeForIntent() = this.toString().run {
+
+    val fileType = URLConnection.guessContentTypeFromName(this)
+    Log.d("Ext", "getMimeTypeForIntent: guessed fileType $fileType")
+    if (!fileType.isNullOrEmpty()) {
+        return fileType
+    }
+
     when {
         contains(".doc", ignoreCase = true) || contains(
             ".docx",
