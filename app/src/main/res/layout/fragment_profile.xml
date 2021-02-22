@@ -77,7 +77,39 @@
                         app:layout_constraintTop_toBottomOf="@id/ivProfilePicture"
                         tools:text="@tools:sample/lorem/random" />
 
+                    <TextView
+                        android:id="@+id/tvBio"
+                        style="@style/RailItemTypeTitleStyle.SingleLine"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:fontFamily="@font/roboto_medium"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                        app:layout_constraintTop_toBottomOf="@id/tvName"
+                        tools:text="@tools:sample/lorem/random" />
+
+                    <com.gregantech.timepass.widget.UnderlineTextView
+                        android:id="@+id/tvYouTubeProfileUrl"
+                        style="@style/RailItemTypeTitleStyle.SingleLine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:drawablePadding="@dimen/dp_10"
+                        android:fontFamily="@font/roboto_medium"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        app:drawableStartCompat="@drawable/ic_youtube"
+                        app:layout_constraintBottom_toTopOf="@id/llUserFollowContent"
+                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                        app:layout_constraintTop_toBottomOf="@id/tvBio"
+                        tools:text="@tools:sample/lorem/random" />
+
                     <LinearLayout
+                        android:id="@+id/llUserFollowContent"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_10"
@@ -85,7 +117,7 @@
                         android:weightSum="3"
                         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
                         app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                        app:layout_constraintTop_toBottomOf="@id/tvName">
+                        app:layout_constraintTop_toBottomOf="@id/tvYouTubeProfileUrl">
 
                         <TextView
                             android:id="@+id/tvTotalPost"
@@ -101,9 +133,9 @@
                             android:id="@+id/tvTotalFollowing"
                             style="@style/RailItemTypeTitleStyle.DoubleLine"
                             android:layout_width="0dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:background="?attr/selectableItemBackgroundBorderless"
                             android:fontFamily="@font/roboto_medium"
                             android:gravity="center"
                             tools:text="@tools:sample/lorem/random" />
@@ -119,6 +151,26 @@
                             android:gravity="center"
                             tools:text="@tools:sample/lorem/random" />
                     </LinearLayout>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnLogout"
+                        style="@style/AppTheme.TextAppearance.RobotoRegular.Large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:backgroundTint="@color/colorAccent"
+                        android:drawablePadding="@dimen/dp_10"
+                        android:paddingLeft="@dimen/dp_20"
+                        android:paddingRight="@dimen/dp_20"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        app:drawableTint="@color/white"
+                        app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
+                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                        app:layout_constraintTop_toBottomOf="@id/llUserFollowContent"
+                        android:text="@string/label_logout"
+                        tools:visibility="visible" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>

@@ -26,5 +26,9 @@ data class User(
     val following: String = "",
     @NullToEmptyString
     val posts: String = "",
-    var isFollowed: Boolean? = false
+    var isFollowed: Boolean? = false,
+    @NullToEmptyString
+    val bio: String = "",
+    @NullToEmptyString
+    val youtube: String = ""
 ) : Parcelable

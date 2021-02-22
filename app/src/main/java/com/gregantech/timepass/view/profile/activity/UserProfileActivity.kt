@@ -24,6 +24,7 @@ import com.gregantech.timepass.network.response.User
 import com.gregantech.timepass.network.response.Video
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.*
+import com.gregantech.timepass.util.share.ShareUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.profile.viewmodel.UserProfileViewModel
 import com.gregantech.timepass.widget.GridPaginationScrollListener
@@ -124,12 +125,17 @@ class UserProfileActivity : TimePassBaseActivity() {
         binding.tvTotalPost.text = user.posts.appendPost()
         binding.tvTotalFollowers.text = user.followers.appendFollowers()
         binding.tvTotalFollowing.text = user.following.appendFollowing()
+        binding.tvBio.text = user.bio
+        binding.tvBio.visible(user.bio.isNotBlank())
+        binding.tvYouTubeProfileUrl.text = getString(R.string.label_youtube_profile)
+        binding.tvYouTubeProfileUrl.visible(user.youtube.isNotBlank())
         setFollowButton()
     }
 
     private fun setFollowButton() {
         user.isFollowed?.let {
-            binding.btnFollow.visible(true)
+            val isNotSameUser = user.userID != sharedPreferenceHelper.getUserId()
+            binding.btnFollow.visible(isNotSameUser)
             changeFollowIcon(it)
             when (it) {
                 true -> {
@@ -253,6 +259,9 @@ class UserProfileActivity : TimePassBaseActivity() {
     private fun onClick() {
         binding.btnFollow.setOnClickListener {
             onClickFollow()
+        }
+        binding.tvYouTubeProfileUrl.setOnClickListener {
+            ShareUtil.openYoutube(this, user.youtube)
         }
     }
 

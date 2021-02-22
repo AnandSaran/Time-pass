@@ -10,4 +10,6 @@ enum class SharedPreferenceKeyEnum(val value: String) {
     USER_TOTAL_POST("totalPost"),
     USER_FOLLOWERS("followers"),
     USER_FOLLOWING("Following"),
+    USER_BIO("bio"),
+    YOUTUBE_PROFILE_URL("youtube_profile_url"),
 }

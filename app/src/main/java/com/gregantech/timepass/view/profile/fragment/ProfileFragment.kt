@@ -19,17 +19,18 @@ import com.gregantech.timepass.databinding.FragmentProfileBinding
 import com.gregantech.timepass.general.UserListScreenTitleEnum
 import com.gregantech.timepass.general.UserListScreenTypeEnum
 import com.gregantech.timepass.model.RailBaseItemModel
-import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.LoginRepository
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeThreeModelList
 import com.gregantech.timepass.network.response.Video
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.*
+import com.gregantech.timepass.util.share.ShareUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.profile.activity.ProfileActivity
 import com.gregantech.timepass.view.profile.activity.UserVideoListActivity
 import com.gregantech.timepass.view.profile.viewmodel.ProfileFragmentViewModel
+import com.gregantech.timepass.view.splash.SplashActivity
 import com.gregantech.timepass.view.userlist.activity.UserListActivity
 import com.gregantech.timepass.widget.PaginationScrollListener
 
@@ -45,13 +46,11 @@ class ProfileFragment : TimePassBaseFragment() {
     private lateinit var railItemClickHandler: RailItemClickHandler
     private var railList: ArrayList<RailBaseItemModel> = arrayListOf()
 
-    var isShareClick = false
     private var isLastData: Boolean = false
     private var pageNo: Int = 1
 
     var isLastPage: Boolean = false
     var isLoading: Boolean = false
-    var railModel = RailItemTypeTwoModel()
     var currentIndex = -1
     private var videoList: ArrayList<Video> = arrayListOf()
 
@@ -109,7 +108,20 @@ class ProfileFragment : TimePassBaseFragment() {
 
     override fun onResume() {
         super.onResume()
+        resetUserVideoListData()
         fetchLogin()
+        fetchUserVideoList()
+    }
+
+    private fun resetUserVideoListData() {
+        railList.clear()
+        binding.rvUserVideoList.clearOnScrollListeners()
+        isLastData = false
+        pageNo = 1
+        isLastPage = false
+        isLoading = false
+        currentIndex = -1
+        videoList.clear()
     }
 
     private fun fetchLogin() {
@@ -139,6 +151,13 @@ class ProfileFragment : TimePassBaseFragment() {
         binding.tvTotalPost.text = sharedPreferenceHelper.getTotalPost().appendPost()
         binding.tvTotalFollowers.text = sharedPreferenceHelper.getFollowers().appendFollowers()
         binding.tvTotalFollowing.text = sharedPreferenceHelper.getFollowing().appendFollowing()
+
+        binding.tvBio.text = sharedPreferenceHelper.getBio()
+        binding.tvBio.visible(sharedPreferenceHelper.getBio().isNotBlank())
+        binding.tvYouTubeProfileUrl.text = getString(R.string.label_youtube_profile)
+        binding.tvYouTubeProfileUrl.visible(
+            sharedPreferenceHelper.getYouTubeProfileUrl().isNotBlank()
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -149,12 +168,11 @@ class ProfileFragment : TimePassBaseFragment() {
                 LoginRepository(),
                 SharedPreferenceHelper
             )
-        setupViewModelObserver()
         setUserData()
         setupOnClick()
     }
 
-    private fun setupViewModelObserver() {
+    private fun fetchUserVideoList() {
         viewModel.getUserVideoList(pageNo)
             .observe(viewLifecycleOwner, Observer { categoryListResponse ->
                 when (categoryListResponse.status) {
@@ -223,6 +241,12 @@ class ProfileFragment : TimePassBaseFragment() {
         binding.tvTotalFollowing.setOnClickListener {
             showUserListPage(UserListScreenTitleEnum.FOLLOWING, UserListScreenTypeEnum.FOLLOWING)
         }
+        binding.tvYouTubeProfileUrl.setOnClickListener {
+            ShareUtil.openYoutube(ctxt, sharedPreferenceHelper.getYouTubeProfileUrl())
+        }
+        binding.btnLogout.setOnClickListener {
+            logout()
+        }
     }
 
     private fun showUserListPage(
@@ -286,5 +310,11 @@ class ProfileFragment : TimePassBaseFragment() {
 
     private fun addVideoList(video: List<Video>) {
         videoList.addAll(video)
+    }
+
+    private fun logout() {
+        sharedPreferenceHelper.clearAll()
+        SplashActivity.present(ctxt)
+        activity?.finish()
     }
 }

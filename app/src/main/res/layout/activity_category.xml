@@ -20,11 +20,20 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:defaultNavHost="true"
-            app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+            app:layout_constraintBottom_toTopOf="@id/bottomNavigationDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tbCategory"
             app:navGraph="@navigation/nav_graph" />
+        <View
+            android:layout_width="match_parent"
+            android:id="@+id/bottomNavigationDivider"
+            app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/bottom_navigation_divider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nav_host_fragment"
+            android:layout_height="1.5dp"/>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigation"
@@ -32,6 +41,7 @@
             android:layout_height="wrap_content"
             android:elevation="4dp"
             app:itemIconSize="@dimen/bottom_navigation_icon_size"
+            android:background="@color/white"
             app:itemIconTint="@drawable/selector_bottom_bar"
             app:labelVisibilityMode="unlabeled"
             app:layout_constraintBottom_toBottomOf="parent"

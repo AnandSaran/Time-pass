@@ -49,6 +49,8 @@ object SharedPreferenceHelper {
         setTotalPost(user.posts)
         setFollowers(user.followers)
         setFollowing(user.following)
+        setBio(user.bio)
+        setYouTubeProfileUrl(user.youtube)
     }
 
     private fun setUserId(value: String) {
@@ -77,6 +79,14 @@ object SharedPreferenceHelper {
         return SharedPreferenceUtil.getStringValue(SharedPreferenceKeyEnum.USER_FOLLOWING.value)
     }
 
+    fun getBio(): String {
+        return SharedPreferenceUtil.getStringValue(SharedPreferenceKeyEnum.USER_BIO.value)
+    }
+
+    fun getYouTubeProfileUrl(): String {
+        return SharedPreferenceUtil.getStringValue(SharedPreferenceKeyEnum.YOUTUBE_PROFILE_URL.value)
+    }
+
     private fun setFollowers(value: String) {
         SharedPreferenceUtil.putStringValue(
             key = SharedPreferenceKeyEnum.USER_FOLLOWERS.value,
@@ -87,6 +97,20 @@ object SharedPreferenceHelper {
     private fun setFollowing(value: String) {
         SharedPreferenceUtil.putStringValue(
             key = SharedPreferenceKeyEnum.USER_FOLLOWING.value,
+            value = value
+        )
+    }
+
+    private fun setBio(value: String) {
+        SharedPreferenceUtil.putStringValue(
+            key = SharedPreferenceKeyEnum.USER_BIO.value,
+            value = value
+        )
+    }
+
+    private fun setYouTubeProfileUrl(value: String) {
+        SharedPreferenceUtil.putStringValue(
+            key = SharedPreferenceKeyEnum.YOUTUBE_PROFILE_URL.value,
             value = value
         )
     }

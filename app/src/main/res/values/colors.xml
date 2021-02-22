@@ -8,6 +8,7 @@
     <color name="transparent">#00915E5E</color>
     <color name="text_color">#000000</color>
     <color name="gray">#838383</color>
+    <color name="bottom_navigation_divider">#CCCACA</color>
     <color name="ucrop_color_toolbar">@color/colorPrimary</color>
     <color name="ucrop_color_statusbar">@color/colorPrimaryDark</color>
     <!--  <color name="ucrop_color_toolbar_widget">#000000</color>

@@ -15,6 +15,7 @@ class ProfileRepository : TimePassBaseRepository() {
     suspend fun updateProfile(
         userName: String,
         emailID: String,
+        bio: String, youtube: String,
         profileImage: File?,
         userID: String
     ) = getResult {
@@ -22,13 +23,17 @@ class ProfileRepository : TimePassBaseRepository() {
             profileService.updateProfile(
                 generateMultiPartString(userName),
                 generateMultiPartString(emailID),
-                generateMultiPartString(userID)
+                generateMultiPartString(userID),
+                generateMultiPartString(bio),
+                generateMultiPartString(youtube)
             )
         } else {
             profileService.updateProfile(
                 generateMultiPartString(userName),
                 generateMultiPartString(emailID),
                 generateMultiPartString(userID),
+                generateMultiPartString(bio),
+                generateMultiPartString(youtube),
                 generateMultiPartImage(profileImage)
             )
         }

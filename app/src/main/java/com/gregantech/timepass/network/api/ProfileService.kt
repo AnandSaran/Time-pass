@@ -17,6 +17,8 @@ interface ProfileService {
         @Part("userName") userName: RequestBody,
         @Part("emailID") emailID: RequestBody,
         @Part("userID") userID: RequestBody,
+        @Part("bio") bio: RequestBody,
+        @Part("youtube") youtube: RequestBody,
         @Part("profileImage\"; filename=\"profileImage.png") profileImage: RequestBody
     ): Response<LoginResponse>
 
@@ -25,7 +27,9 @@ interface ProfileService {
     suspend fun updateProfile(
         @Part("userName") userName: RequestBody,
         @Part("emailID") emailID: RequestBody,
-        @Part("userID") userID: RequestBody
+        @Part("userID") userID: RequestBody,
+        @Part("bio") bio: RequestBody,
+        @Part("youtube") youtube: RequestBody
     ): Response<LoginResponse>
 
     @POST("othersProfile_api.php")

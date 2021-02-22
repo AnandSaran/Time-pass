@@ -16,12 +16,14 @@ class ProfileViewModel(
     private val profileScreenRepository: ProfileScreenRepository
 ) : ViewModel() {
 
-    fun updateProfile(userName: String, emailID: String, profileImage: Uri?) =
+    fun updateProfile(userName: String, emailID: String, bio: String, youTubeProfileUrl: String, profileImage: Uri?) =
         liveData<TimePassBaseResult<LoginResponse>>(Dispatchers.IO) {
             emit(TimePassBaseResult.loading(null))
             val result = profileRepository.updateProfile(
                 userName,
                 emailID,
+                bio,
+                youTubeProfileUrl,
                 profileScreenRepository.getCompressedImage(profileImage),
                 profileScreenRepository.getUserId()
             )

@@ -34,6 +34,7 @@ import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import com.yalantis.ucrop.UCrop
 import java.io.File
+import java.util.regex.Pattern.compile
 
 
 class ProfileActivity : TimePassBaseActivity() {
@@ -97,6 +98,8 @@ class ProfileActivity : TimePassBaseActivity() {
             viewModel.updateProfile(
                 binding.edtName.text.toString(),
                 binding.edtEmail.text.toString(),
+                binding.edtBio.text.toString(),
+                binding.edtYouTubeLink.text.toString(),
                 filePath
             ).observe(this, Observer {
                 when (it.status) {
@@ -129,8 +132,19 @@ class ProfileActivity : TimePassBaseActivity() {
             binding.tilEmail.error = getString(R.string.invalid_email)
             count++
         }
+        if (!isValidYouTubeUrl(binding.edtYouTubeLink.text.toString())) {
+            binding.tilYouTubeLink.error = getString(R.string.invalid_youtube_profile)
+            count++
+        }
 
         return count == 0
+    }
+
+    private fun isValidYouTubeUrl(youTubeUrl: String): Boolean {
+        val success: Boolean
+        val pattern = compile("^(http(s)?:\\/\\/)?((w){3}.)?youtu(be|.be)?(\\.com)?\\/.+")
+        success = youTubeUrl.isBlank() || pattern.matcher(youTubeUrl).matches()
+        return success
     }
 
 
@@ -204,6 +218,8 @@ class ProfileActivity : TimePassBaseActivity() {
         binding.edtName.setText(sharedPreferenceHelper.getUserName())
         binding.edtEmail.setText(sharedPreferenceHelper.getUserEmailId())
         binding.edtMobileNumber.setText(sharedPreferenceHelper.getUserMobileNumber())
+        binding.edtBio.setText(sharedPreferenceHelper.getBio())
+        binding.edtYouTubeLink.setText(sharedPreferenceHelper.getYouTubeProfileUrl())
     }
 
     private fun callGalleryPic() {
