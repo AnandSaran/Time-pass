@@ -25,6 +25,7 @@ import com.gregantech.timepass.adapter.rail.InstagramAdapter
 import com.gregantech.timepass.base.TimePassBaseFragment
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.FragmentCategoryDetailBinding
+import com.gregantech.timepass.general.PostMoreOptionNavigationEnum
 import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
 import com.gregantech.timepass.model.RailBaseItemModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
@@ -41,7 +42,9 @@ import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.categorydetail.viewmodel.CategoryDetailFragmentViewModel
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.player.activity.PlayerActivity
+import com.gregantech.timepass.view.uservideolist.viewmodel.UserPostViewModel
 import com.gregantech.timepass.widget.PaginationScrollListener
+import com.gregantech.timepass.widget.dialog.BottomSheetDialogPostMoreOption
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 
@@ -66,6 +69,15 @@ class CategoryDetailFragment : TimePassBaseFragment() {
     var currentIndex = -1
     var downloadID: Long? = null
     private val playerViewAdapter = NewPlayerViewAdapter()
+
+    private lateinit var userPostViewModelFactory: UserPostViewModel.Factory
+
+    private val userPostViewModel: UserPostViewModel by lazy {
+        requireNotNull(this.activity) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, userPostViewModelFactory).get(UserPostViewModel::class.java)
+    }
 
     private var permissionListener: PermissionListener = object : PermissionListener {
         override fun onPermissionGranted() {
@@ -129,6 +141,13 @@ class CategoryDetailFragment : TimePassBaseFragment() {
                 VideoListRepository(),
                 SharedPreferenceHelper
             )
+
+        userPostViewModelFactory =
+            UserPostViewModel.Factory(
+                VideoListRepository(),
+                SharedPreferenceHelper
+            )
+
         arguments?.apply {
             categoryId = getString(CategoryDetailBundleKeyEnum.CATEGORY_ID.value) ?: EMPTY_STRING
         }
@@ -226,10 +245,9 @@ class CategoryDetailFragment : TimePassBaseFragment() {
         railItemClickHandler.clickComment = { railModel ->
             onClickComment(railModel as RailItemTypeTwoModel)
         }
-        railItemClickHandler.clickDownload = { railModel ->
-            isShareClick = false
-            this.railModel = railModel as RailItemTypeTwoModel
-            askPermission()
+
+        railItemClickHandler.clickMore = { railModel ->
+            showPostMoreDialog(railModel as RailItemTypeTwoModel)
         }
     }
 
@@ -239,9 +257,9 @@ class CategoryDetailFragment : TimePassBaseFragment() {
             if (downloadID == id && isShareClick) {
                 requireContext().shareDownloadedFile(downloadID!!)
             }
-            if(isShareClick){
+            if (isShareClick) {
                 dismissProgressBar()
-            }else
+            } else
                 getString(R.string.download_completed).toast(requireContext())
         }
     }
@@ -345,11 +363,12 @@ class CategoryDetailFragment : TimePassBaseFragment() {
     }
 
     private fun downloadVideo(request: DownloadManager.Request) {
-        if(isShareClick){
+        if (isShareClick) {
             showProgressBar()
         }
         getString(R.string.download_started).toast(ctxt)
-        val manager = requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val manager =
+            requireActivity().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         downloadID = manager.enqueue(request)
     }
 
@@ -410,4 +429,31 @@ class CategoryDetailFragment : TimePassBaseFragment() {
         )
     }
 
+
+    private fun showPostMoreDialog(railModel: RailItemTypeTwoModel) {
+        BottomSheetDialogPostMoreOption(
+            ctxt,
+            userPostViewModel.generatePostMoreOptionContentModel(railModel, true),
+            onPostMoreOptionClick(),
+            railModel
+        ).show()
+    }
+
+    private fun onPostMoreOptionClick(): (Any, PostMoreOptionNavigationEnum) -> Unit =
+        { data: Any, postMoreOptionNavigationEnum: PostMoreOptionNavigationEnum ->
+            val railModel = data as RailBaseItemModel
+            when (postMoreOptionNavigationEnum) {
+                PostMoreOptionNavigationEnum.NAVIGATION_EDIT -> {
+
+                }
+                PostMoreOptionNavigationEnum.NAVIGATION_DELETE -> {
+                }
+                PostMoreOptionNavigationEnum.NAVIGATION_DOWNLOAD -> {
+                    isShareClick = false
+                    this.railModel = railModel as RailItemTypeTwoModel
+                    askPermission()
+                }
+
+            }
+        }
 }

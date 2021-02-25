@@ -15,7 +15,7 @@
             android:id="@+id/ivLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/splash_logo"
+            android:src="@drawable/logo_emboss"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -113,9 +113,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:digits="0123456789"
-                    android:maxLength="6"
                     android:hint="@string/label_otp"
                     android:inputType="number"
+                    android:maxLength="6"
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 

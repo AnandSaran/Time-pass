@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDownload"
+            style="@style/BottomSheetItem"
+            android:background="?attr/selectableItemBackground"
+            android:drawableStart="@drawable/ic_download_black"
+            android:text="@string/label_download"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvEdit"
+            style="@style/BottomSheetItem"
+            android:background="?attr/selectableItemBackground"
+            android:drawableStart="@drawable/ic_edit"
+            android:visibility="gone"
+            android:text="@string/label_edit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDownload" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvDelete"
+            style="@style/BottomSheetItem"
+            android:background="?attr/selectableItemBackground"
+            android:drawableStart="@drawable/ic_delete"
+            android:text="@string/label_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvEdit" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCancel"
+            style="@style/BottomSheetItem"
+            android:background="?attr/selectableItemBackground"
+            android:drawableStart="@drawable/ic_close"
+            android:text="@string/label_cancel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDelete" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

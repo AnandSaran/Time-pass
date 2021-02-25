@@ -25,6 +25,7 @@ import com.gregantech.timepass.network.repository.bridge.toRailItemTypeThreeMode
 import com.gregantech.timepass.network.response.Video
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.*
+import com.gregantech.timepass.util.recyclerview.itemdecoration.GridItemDecoration
 import com.gregantech.timepass.util.share.ShareUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.profile.activity.ProfileActivity
@@ -45,6 +46,7 @@ class ProfileFragment : TimePassBaseFragment() {
     private lateinit var viewModelFactory: ProfileFragmentViewModel.Factory
     private lateinit var railItemClickHandler: RailItemClickHandler
     private var railList: ArrayList<RailBaseItemModel> = arrayListOf()
+    private lateinit var itemDecoration: GridItemDecoration
 
     private var isLastData: Boolean = false
     private var pageNo: Int = 1
@@ -79,7 +81,7 @@ class ProfileFragment : TimePassBaseFragment() {
             context?.let {
                 ctxt = it
             }
-
+            generateItemDecoration()
         }
         onClickRailListItem()
         return binding.root
@@ -194,6 +196,9 @@ class ProfileFragment : TimePassBaseFragment() {
     }
 
     private fun setupRecyclerView(categoryVideoList: ArrayList<RailBaseItemModel>) {
+        if (::itemDecoration.isInitialized) {
+            binding.rvUserVideoList.removeItemDecoration(itemDecoration)
+        }
         // binding.rvCategoryVideoList.setMediaObjects(categoryVideoList)
         binding.rvUserVideoList.apply {
             //generateRailItemDecoration(RailItemDecorationTypeEnum.TYPE_RAIL_ITEM_DECORATION_TWO)
@@ -202,6 +207,8 @@ class ProfileFragment : TimePassBaseFragment() {
                 categoryVideoList,
                 railItemClickHandler = railItemClickHandler
             )
+
+            addItemDecoration(itemDecoration)
         }
         // setUpSnapShot()
         setupRecyclerViewScrollListener()
@@ -316,5 +323,13 @@ class ProfileFragment : TimePassBaseFragment() {
         sharedPreferenceHelper.clearAll()
         SplashActivity.present(ctxt)
         activity?.finish()
+    }
+
+    private fun generateItemDecoration() {
+        itemDecoration = GridItemDecoration(
+            spacingHorizontal = ctxt.resources.getDimensionPixelOffset(R.dimen.dp_4),
+            spacingVertical = ctxt.resources.getDimensionPixelOffset(R.dimen.dp_2),
+            spanCount = ctxt.resources.getInteger(R.integer.span_count_user_profile_post)
+        )
     }
 }

@@ -7,6 +7,7 @@
     <!-- app:layout_constraintGuide_begin="@dimen/dp_44"-->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
+        android:background="@color/background_color_grey_light"
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout

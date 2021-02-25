@@ -24,6 +24,7 @@ import com.gregantech.timepass.network.response.User
 import com.gregantech.timepass.network.response.Video
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.*
+import com.gregantech.timepass.util.recyclerview.itemdecoration.GridItemDecoration
 import com.gregantech.timepass.util.share.ShareUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.profile.viewmodel.UserProfileViewModel
@@ -35,6 +36,8 @@ class UserProfileActivity : TimePassBaseActivity() {
     private lateinit var binding: ActivityUserProfileBinding
     private var sharedPreferenceHelper = SharedPreferenceHelper
     private lateinit var viewModelFactory: UserProfileViewModel.Factory
+    private lateinit var itemDecoration: GridItemDecoration
+
     private val viewModel: UserProfileViewModel by lazy {
         requireNotNull(this) {
             VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
@@ -71,6 +74,7 @@ class UserProfileActivity : TimePassBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initDataBinding()
+        generateItemDecoration()
         setupToolBar()
         setupViewModelFactory()
         getUserData()
@@ -188,11 +192,15 @@ class UserProfileActivity : TimePassBaseActivity() {
     }
 
     private fun setupRecyclerView(categoryVideoList: ArrayList<RailBaseItemModel>) {
+        if (::itemDecoration.isInitialized) {
+            binding.rvUserVideoList.removeItemDecoration(itemDecoration)
+        }
         binding.rvUserVideoList.apply {
             adapter = RailAdapter(
                 categoryVideoList,
                 railItemClickHandler
             )
+            addItemDecoration(itemDecoration)
             setupRecyclerViewScrollListener()
         }
     }
@@ -323,4 +331,11 @@ class UserProfileActivity : TimePassBaseActivity() {
         videoList.addAll(video)
     }
 
+    private fun generateItemDecoration() {
+        itemDecoration = GridItemDecoration(
+            spacingHorizontal = resources.getDimensionPixelOffset(R.dimen.dp_4),
+            spacingVertical = resources.getDimensionPixelOffset(R.dimen.dp_2),
+            spanCount = resources.getInteger(R.integer.span_count_user_profile_post)
+        )
+    }
 }

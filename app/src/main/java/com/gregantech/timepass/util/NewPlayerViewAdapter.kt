@@ -26,6 +26,14 @@ class NewPlayerViewAdapter() {
         }
     }
 
+    fun clearMap() {
+        playersMap.clear()
+    }
+
+    fun resetCurrentPlayer() {
+        currentPlayingVideo = null
+    }
+
     fun pauseAllPlayers() {
         playersMap.map {
             it.value.playWhenReady = false
@@ -141,4 +149,5 @@ class NewPlayerViewAdapter() {
             }
         })
     }
+
 }

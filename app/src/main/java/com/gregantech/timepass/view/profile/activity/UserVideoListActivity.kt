@@ -21,6 +21,7 @@ import com.gregantech.timepass.adapter.rail.InstagramAdapter
 import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityUserVideoListBinding
+import com.gregantech.timepass.general.PostMoreOptionNavigationEnum
 import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
 import com.gregantech.timepass.general.bundklekey.UserVideoListActivityBundleKeyEnum
 import com.gregantech.timepass.model.RailBaseItemModel
@@ -31,6 +32,7 @@ import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelL
 import com.gregantech.timepass.network.response.User
 import com.gregantech.timepass.network.response.Video
 import com.gregantech.timepass.util.NewPlayerViewAdapter
+import com.gregantech.timepass.util.Run
 import com.gregantech.timepass.util.constant.*
 import com.gregantech.timepass.util.extension.appendPostText
 import com.gregantech.timepass.util.extension.shareDownloadedFile
@@ -40,7 +42,9 @@ import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.player.activity.ImageViewActivity
 import com.gregantech.timepass.view.player.activity.PlayerActivity
 import com.gregantech.timepass.view.profile.viewmodel.UserVideoListActivityViewModel
+import com.gregantech.timepass.view.uservideolist.viewmodel.UserPostViewModel
 import com.gregantech.timepass.widget.PaginationScrollListener
+import com.gregantech.timepass.widget.dialog.BottomSheetDialogPostMoreOption
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 
@@ -52,6 +56,15 @@ class UserVideoListActivity : TimePassBaseActivity() {
     private val playerViewAdapter = NewPlayerViewAdapter()
     var downloadID: Long? = null
     var isRegistered = false
+
+    private lateinit var userPostViewModelFactory: UserPostViewModel.Factory
+
+    private val userPostViewModel: UserPostViewModel by lazy {
+        requireNotNull(this) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, userPostViewModelFactory).get(UserPostViewModel::class.java)
+    }
 
     private val viewModel: UserVideoListActivityViewModel by lazy {
         requireNotNull(this) {
@@ -148,7 +161,7 @@ class UserVideoListActivity : TimePassBaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         playerViewAdapter.releaseAllPlayers()
-        if(isRegistered){
+        if (isRegistered) {
             unregisterReceiver(downloadStatusReceiver)
         }
     }
@@ -159,9 +172,9 @@ class UserVideoListActivity : TimePassBaseActivity() {
             if (downloadID == id && isShareClick) {
                 shareDownloadedFile(downloadID!!)
             }
-            if(isShareClick){
+            if (isShareClick) {
                 dismissProgressBar()
-            }else
+            } else
                 getString(R.string.download_completed).toast(this@UserVideoListActivity)
         }
     }
@@ -171,6 +184,11 @@ class UserVideoListActivity : TimePassBaseActivity() {
             VideoListRepository(),
             SharedPreferenceHelper
         )
+        userPostViewModelFactory =
+            UserPostViewModel.Factory(
+                VideoListRepository(),
+                SharedPreferenceHelper
+            )
     }
 
     private fun initDataBinding() {
@@ -257,11 +275,8 @@ class UserVideoListActivity : TimePassBaseActivity() {
             this.railModel = railModel as RailItemTypeTwoModel
             askPermission()
         }
-
-        railItemClickHandler.clickDownload = { railModel ->
-            isShareClick = false
-            this.railModel = railModel as RailItemTypeTwoModel
-            askPermission()
+        railItemClickHandler.clickMore = { railModel ->
+            showPostMoreDialog(railModel as RailItemTypeTwoModel)
         }
     }
 
@@ -392,7 +407,7 @@ class UserVideoListActivity : TimePassBaseActivity() {
     }
 
     private fun onClickDownload() {
-        if(isNotDownloaded(railModel.getStrippedFileName(), isShareClick))
+        if (isNotDownloaded(railModel.getStrippedFileName(), isShareClick))
             viewModel.createDownloadRequest(railModel, getString(R.string.app_name))
     }
 
@@ -430,6 +445,65 @@ class UserVideoListActivity : TimePassBaseActivity() {
         getString(R.string.download_started).toast(this)
         val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         downloadID = manager.enqueue(request)
+    }
+
+    private fun showPostMoreDialog(railModel: RailItemTypeTwoModel) {
+        BottomSheetDialogPostMoreOption(
+            this,
+            userPostViewModel.generatePostMoreOptionContentModel(railModel),
+            onPostMoreOptionClick(),
+            railModel
+        ).show()
+    }
+
+    private fun onPostMoreOptionClick(): (Any, PostMoreOptionNavigationEnum) -> Unit =
+        { data: Any, postMoreOptionNavigationEnum: PostMoreOptionNavigationEnum ->
+            val railModel = data as RailBaseItemModel
+            when (postMoreOptionNavigationEnum) {
+                PostMoreOptionNavigationEnum.NAVIGATION_EDIT -> {
+
+                }
+                PostMoreOptionNavigationEnum.NAVIGATION_DELETE -> {
+                    deletePost(railModel)
+                }
+                PostMoreOptionNavigationEnum.NAVIGATION_DOWNLOAD -> {
+                    isShareClick = false
+                    this.railModel = railModel as RailItemTypeTwoModel
+                    askPermission()
+                }
+
+            }
+        }
+
+    private fun deleteUserPostData(railModel: RailBaseItemModel) {
+        playerViewAdapter.releaseAllPlayers()
+        playerViewAdapter.clearMap()
+        playerViewAdapter.resetCurrentPlayer()
+        val position = railList.indexOf(railModel)
+        railList.remove(railModel)
+        if (position > -1) {
+            binding.rvUserVideoList.adapter?.notifyItemRemoved(position)
+        }
+        Run.after(500) { binding.rvUserVideoList.adapter?.notifyDataSetChanged() }
+    }
+
+    private fun deletePost(railModel: RailBaseItemModel) {
+        userPostViewModel.deleteUserPost(railModel)
+            .observe(this, Observer { userPostDeleteResponse ->
+                when (userPostDeleteResponse.status) {
+                    TimePassBaseResult.Status.LOADING -> {
+                        showProgressBar()
+                    }
+                    TimePassBaseResult.Status.SUCCESS -> {
+                        dismissProgressBar()
+                        deleteUserPostData(railModel)
+                    }
+                    TimePassBaseResult.Status.ERROR -> {
+                        dismissProgressBar()
+                        userPostDeleteResponse.message?.toast(this)
+                    }
+                }
+            })
     }
 
 }

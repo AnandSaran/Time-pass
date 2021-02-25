@@ -1,9 +1,6 @@
 package com.gregantech.timepass.network.api
 
-import com.gregantech.timepass.network.request.UserFollowRequest
-import com.gregantech.timepass.network.request.UserVideoListRequest
-import com.gregantech.timepass.network.request.VideoLikeRequest
-import com.gregantech.timepass.network.request.VideoListRequest
+import com.gregantech.timepass.network.request.*
 import com.gregantech.timepass.network.response.*
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -49,5 +46,8 @@ interface VideoService {
         @Part("videoDescription") videoDescription: RequestBody,
         @Part("imageFile\"; filename=\"imageFile.png") imageFile: RequestBody
     ): Response<VideoUploadResponse>
+
+    @POST("postDelete_api.php")
+    suspend fun deleteUserPost(@Body userPostDeleteRequest: UserPostDeleteRequest): Response<UserPostDeleteResponse>
 
 }

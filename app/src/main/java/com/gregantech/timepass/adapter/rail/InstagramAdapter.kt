@@ -116,12 +116,15 @@ class InstagramAdapter(
             binding.ivShare.setOnClickListener {
                 onClickShare(railItemClickHandler, railItem)
             }
-            binding.ivDownload.setOnClickListener {
+           /* binding.ivDownload.setOnClickListener {
                 onClickDownload(railItemClickHandler, railItem)
-            }
+            }*/
 
             binding.clProfile.setOnClickListener {
                 onClickProfile(railItemClickHandler, railItem)
+            }
+            binding.ivMore.setOnClickListener {
+                onClickMore(railItemClickHandler, railItem)
             }
         }
 
@@ -197,14 +200,14 @@ class InstagramAdapter(
 
     }
 
-    private fun onClickDownload(
+  /*  private fun onClickDownload(
         railItemClickHandler: RailItemClickHandler,
         railItem: RailItemTypeTwoModel
     ) {
         if (railItemClickHandler.isInitializedForDownloadClicking()) {
             railItemClickHandler.clickDownload(railItem)
         }
-    }
+    }*/
 
     private fun onClickProfile(
         railItemClickHandler: RailItemClickHandler,
@@ -212,6 +215,15 @@ class InstagramAdapter(
     ) {
         if (railItemClickHandler.isInitializedForProfileClicking()) {
             railItemClickHandler.clickProfile(railItem)
+        }
+    }
+
+    private fun onClickMore(
+        railItemClickHandler: RailItemClickHandler,
+        railItem: RailItemTypeTwoModel
+    ) {
+        if (railItemClickHandler.isInitializedForMoreClicking()) {
+            railItemClickHandler.clickMore(railItem)
         }
     }
 

@@ -27,6 +27,8 @@ import com.gregantech.timepass.adapter.rail.InstagramAdapter
 import com.gregantech.timepass.base.TimePassBaseFragment
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.FragmentUserVideoListBinding
+import com.gregantech.timepass.general.PostMoreOptionNavigationEnum
+import com.gregantech.timepass.general.PostMoreOptionNavigationEnum.*
 import com.gregantech.timepass.general.UserListScreenTitleEnum
 import com.gregantech.timepass.general.UserListScreenTypeEnum
 import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
@@ -39,6 +41,7 @@ import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
 import com.gregantech.timepass.network.response.Video
 import com.gregantech.timepass.util.NewPlayerViewAdapter
+import com.gregantech.timepass.util.Run
 import com.gregantech.timepass.util.URIPathHelper
 import com.gregantech.timepass.util.constant.EMPTY_LONG
 import com.gregantech.timepass.util.constant.EMPTY_STRING
@@ -56,8 +59,10 @@ import com.gregantech.timepass.view.player.activity.ImageViewActivity
 import com.gregantech.timepass.view.player.activity.PlayerActivity
 import com.gregantech.timepass.view.profile.activity.UserProfileActivity
 import com.gregantech.timepass.view.userlist.activity.UserListActivity
+import com.gregantech.timepass.view.uservideolist.viewmodel.UserPostViewModel
 import com.gregantech.timepass.view.uservideolist.viewmodel.UserVideoListViewModel
 import com.gregantech.timepass.widget.PaginationScrollListener
+import com.gregantech.timepass.widget.dialog.BottomSheetDialogPostMoreOption
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import com.yalantis.ucrop.UCrop
@@ -67,6 +72,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     private lateinit var binding: FragmentUserVideoListBinding
     private lateinit var ctxt: Context
     private lateinit var viewModelFactory: UserVideoListViewModel.Factory
+    private lateinit var userPostViewModelFactory: UserPostViewModel.Factory
     private lateinit var railItemClickHandler: RailItemClickHandler
     private val playerViewAdapter = NewPlayerViewAdapter()
     private var isRegistered = false
@@ -105,6 +111,13 @@ class UserVideoListFragment : TimePassBaseFragment() {
             VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
         }
         ViewModelProvider(this, viewModelFactory).get(UserVideoListViewModel::class.java)
+    }
+
+    private val userPostViewModel: UserPostViewModel by lazy {
+        requireNotNull(this.activity) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, userPostViewModelFactory).get(UserPostViewModel::class.java)
     }
 
     companion object {
@@ -149,6 +162,12 @@ class UserVideoListFragment : TimePassBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModelFactory =
             UserVideoListViewModel.Factory(
+                VideoListRepository(),
+                SharedPreferenceHelper
+            )
+
+        userPostViewModelFactory =
+            UserPostViewModel.Factory(
                 VideoListRepository(),
                 SharedPreferenceHelper
             )
@@ -286,13 +305,12 @@ class UserVideoListFragment : TimePassBaseFragment() {
             askPermission()
         }
 
-        railItemClickHandler.clickDownload = { railModel ->
-            isShareClick = false
-            this.railModel = railModel as RailItemTypeTwoModel
-            askPermission()
-        }
         railItemClickHandler.clickProfile = { railModel ->
             onClickProfile(railModel as RailItemTypeTwoModel)
+        }
+
+        railItemClickHandler.clickMore = { railModel ->
+            showPostMoreDialog(railModel as RailItemTypeTwoModel)
         }
     }
 
@@ -631,4 +649,62 @@ class UserVideoListFragment : TimePassBaseFragment() {
         }
     }
 
+    private fun showPostMoreDialog(railModel: RailItemTypeTwoModel) {
+        BottomSheetDialogPostMoreOption(
+            ctxt,
+            userPostViewModel.generatePostMoreOptionContentModel(railModel),
+            onPostMoreOptionClick(),
+            railModel
+        ).show()
+    }
+
+    private fun onPostMoreOptionClick(): (Any, PostMoreOptionNavigationEnum) -> Unit =
+        { data: Any, postMoreOptionNavigationEnum: PostMoreOptionNavigationEnum ->
+            val railModel = data as RailBaseItemModel
+            when (postMoreOptionNavigationEnum) {
+                NAVIGATION_EDIT -> {
+
+                }
+                NAVIGATION_DELETE -> {
+                    deletePost(railModel)
+                }
+                NAVIGATION_DOWNLOAD -> {
+                    isShareClick = false
+                    this.railModel = railModel as RailItemTypeTwoModel
+                    askPermission()
+                }
+
+            }
+        }
+
+    private fun deleteUserPostData(railModel: RailBaseItemModel) {
+        playerViewAdapter.releaseAllPlayers()
+        playerViewAdapter.clearMap()
+        playerViewAdapter.resetCurrentPlayer()
+        val position = railList.indexOf(railModel)
+        railList.remove(railModel)
+        if (position > -1) {
+            binding.rvUserVideoList.adapter?.notifyItemRemoved(position)
+        }
+        Run.after(500) { binding.rvUserVideoList.adapter?.notifyDataSetChanged() }
+    }
+
+    private fun deletePost(railModel: RailBaseItemModel) {
+        userPostViewModel.deleteUserPost(railModel)
+            .observe(viewLifecycleOwner, Observer { userPostDeleteResponse ->
+                when (userPostDeleteResponse.status) {
+                    TimePassBaseResult.Status.LOADING -> {
+                        showProgressBar()
+                    }
+                    TimePassBaseResult.Status.SUCCESS -> {
+                        dismissProgressBar()
+                        deleteUserPostData(railModel)
+                    }
+                    TimePassBaseResult.Status.ERROR -> {
+                        dismissProgressBar()
+                        userPostDeleteResponse.message?.toast(ctxt)
+                    }
+                }
+            })
+    }
 }

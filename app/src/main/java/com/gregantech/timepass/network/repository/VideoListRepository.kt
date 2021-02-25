@@ -3,10 +3,7 @@ package com.gregantech.timepass.network.repository
 import com.gregantech.timepass.base.TimePassBaseRepository
 import com.gregantech.timepass.network.RetrofitClient
 import com.gregantech.timepass.network.api.VideoService
-import com.gregantech.timepass.network.request.UserFollowRequest
-import com.gregantech.timepass.network.request.UserVideoListRequest
-import com.gregantech.timepass.network.request.VideoLikeRequest
-import com.gregantech.timepass.network.request.VideoListRequest
+import com.gregantech.timepass.network.request.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
@@ -20,6 +17,10 @@ class VideoListRepository : TimePassBaseRepository() {
 
     suspend fun fetchUserVideoList(videoListRequest: UserVideoListRequest) = getResult {
         videoService.getUserVideo(videoListRequest)
+    }
+
+    suspend fun deleteUserPost(userPostDeleteRequest: UserPostDeleteRequest) = getResult {
+        videoService.deleteUserPost(userPostDeleteRequest)
     }
 
     suspend fun fetchAllUserVideoList(videoListRequest: UserVideoListRequest) = getResult {

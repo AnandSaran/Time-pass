@@ -6,6 +6,7 @@ import com.gregantech.timepass.model.RailItemTypeThreeModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.network.response.Category
 import com.gregantech.timepass.network.response.Video
+import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 
 fun List<Category>.toRailItemTypeOneModelList(): ArrayList<RailBaseItemModel> {
     return ArrayList(this.map { category ->
@@ -42,7 +43,7 @@ fun Video.toRailItemTypeTwoModel(
         followerId = followerId,
         isFollowed = isFollowed,
         isLiked = isLiked,
-        isShowFollow = isShowFollow,
+        isShowFollow = generateIsToShowFollow(isShowFollow, followerId),
         isShowProfile = isShowProfile,
         userName = userName,
         userImage = userImage
@@ -64,4 +65,12 @@ fun Video.toRailItemTypeThreeModel(): RailItemTypeThreeModel {
         image = image,
         isImage = isImage ?: false
     )
+}
+
+private fun generateIsToShowFollow(showFollow: Boolean, followerId: String): Boolean {
+    return if (showFollow) {
+        !SharedPreferenceHelper.isPostUserAreSameUser(followerId)
+    } else {
+        false
+    }
 }

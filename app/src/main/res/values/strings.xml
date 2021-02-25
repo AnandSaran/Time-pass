@@ -48,4 +48,8 @@
     <string name="label_youtube_profile">YouTube Profile</string>
     <string name="invalid_youtube_profile">Invalid YouTube Profile</string>
     <string name="label_logout">Logout</string>
+    <string name="label_download">Download</string>
+    <string name="label_edit">Edit</string>
+    <string name="label_delete">Delete</string>
+    <string name="label_cancel">Cancel</string>
 </resources>

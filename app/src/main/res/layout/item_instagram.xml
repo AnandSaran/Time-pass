@@ -36,32 +36,68 @@
                     android:id="@+id/clProfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/dp_10"
                     android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageView
-                        android:id="@+id/ivUserProfile"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/circle"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <com.gregantech.timepass.widget.UnderlineTextView
-                        android:id="@+id/tvUserName"
-                        style="@style/RailItemTypeTitleStyle.SingleLine"
-                        android:layout_width="wrap_content"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/clProfileContent"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:singleLine="true"
-                        android:text="@{dataModel.userName}"
-                        android:textColor="@android:color/black"
-                        app:layout_constraintBottom_toBottomOf="@id/ivUserProfile"
-                        app:layout_constraintStart_toEndOf="@+id/ivUserProfile"
-                        app:layout_constraintTop_toTopOf="@id/ivUserProfile"
-                        tools:text="John Doe" />
+                        android:padding="@dimen/dp_10"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/ivUserProfile"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/circle"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvUserName"
+                            style="@style/RailItemTypeTitleStyle.SingleLine"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:singleLine="true"
+                            android:text="@{dataModel.userName}"
+                            android:textColor="@android:color/black"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="@id/ivUserProfile"
+                            app:layout_constraintEnd_toStartOf="@id/ivFollow"
+                            app:layout_constraintStart_toEndOf="@+id/ivUserProfile"
+                            app:layout_constraintTop_toTopOf="@id/ivUserProfile"
+                            tools:text="John Doe" />
+
+
+                        <ImageView
+                            android:id="@+id/ivFollow"
+                            android:layout_width="@dimen/dp_44"
+                            android:layout_height="@dimen/dp_44"
+                            android:layout_marginStart="@dimen/dp_10"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:padding="@dimen/dp_10"
+                            android:src="@{dataModel.followed ? @drawable/ic_followed : @drawable/ic_follow_black}"
+                            app:layout_constraintBottom_toBottomOf="@id/ivUserProfile"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/ivUserProfile"
+                            tools:ignore="ContentDescription" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <View
+                        android:id="@+id/bottomNavigationDivider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1.5dp"
+                        android:layout_marginTop="@dimen/dp_5"
+                        android:layout_marginBottom="@dimen/dp_1"
+                        android:background="@color/bottom_navigation_divider"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/clProfileContent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -182,26 +218,14 @@
                     tools:ignore="ContentDescription" />
 
                 <ImageView
-                    android:id="@+id/ivDownload"
+                    android:id="@+id/ivMore"
                     android:layout_width="@dimen/dp_44"
                     android:layout_height="@dimen/dp_44"
                     android:layout_marginStart="@dimen/dp_10"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="@dimen/dp_10"
-                    android:src="@drawable/ic_download_black"
-                    app:layout_constraintStart_toEndOf="@id/ivShare"
-                    app:layout_constraintTop_toBottomOf="@id/clMeidaContent"
-                    tools:ignore="ContentDescription" />
-
-                <ImageView
-                    android:id="@+id/ivFollow"
-                    android:layout_width="@dimen/dp_44"
-                    android:layout_height="@dimen/dp_44"
-                    android:layout_marginStart="@dimen/dp_10"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="@dimen/dp_10"
-                    android:src="@{dataModel.followed ? @drawable/ic_followed : @drawable/ic_follow_black}"
-                    app:layout_constraintStart_toEndOf="@id/ivDownload"
+                    android:src="@drawable/ic_more"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/clMeidaContent"
                     tools:ignore="ContentDescription" />
 

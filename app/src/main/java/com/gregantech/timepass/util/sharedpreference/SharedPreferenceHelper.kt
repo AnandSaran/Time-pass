@@ -165,4 +165,8 @@ object SharedPreferenceHelper {
             value = value
         )
     }
+
+    fun isPostUserAreSameUser(followerId: String): Boolean {
+        return getUserId() == followerId
+    }
 }

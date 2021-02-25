@@ -10,6 +10,7 @@ class RailItemClickHandler {
     lateinit var clickShare: (railItem: RailBaseItemModel) -> Unit
     lateinit var clickDownload: (railItem: RailBaseItemModel) -> Unit
     lateinit var clickProfile: (railItem: RailBaseItemModel) -> Unit
+    lateinit var clickMore: (railItem: RailBaseItemModel) -> Unit
 
     fun isInitializedForPosterClicking(): Boolean {
         return ::clickPoster.isInitialized
@@ -37,5 +38,9 @@ class RailItemClickHandler {
 
     fun isInitializedForProfileClicking(): Boolean {
         return ::clickProfile.isInitialized
+    }
+
+    fun isInitializedForMoreClicking(): Boolean {
+        return ::clickMore.isInitialized
     }
 }
