@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data />
-    <!-- app:layout_constraintGuide_begin="@dimen/dp_44"-->
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:background="@color/background_color_grey_light"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/background_color_grey_light">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -100,11 +100,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_10"
+                        android:drawablePadding="@dimen/dp_10"
                         android:fontFamily="@font/roboto_medium"
                         android:gravity="center"
-                        app:drawableStartCompat="@drawable/ic_youtube"
                         android:visibility="gone"
-                        android:drawablePadding="@dimen/dp_10"
+                        app:drawableStartCompat="@drawable/ic_youtube"
                         app:layout_constraintBottom_toTopOf="@id/llUserFollowContent"
                         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
                         app:layout_constraintStart_toStartOf="@id/guidelineStart"
@@ -123,7 +123,7 @@
                         app:layout_constraintTop_toBottomOf="@id/tvYouTubeProfileUrl">
 
                         <TextView
-                            android:id="@+id/tvTotalPost"
+                            android:id="@+id/tvTotalFollowing"
                             style="@style/RailItemTypeTitleStyle.DoubleLine"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -133,7 +133,7 @@
                             tools:text="@tools:sample/lorem/random" />
 
                         <TextView
-                            android:id="@+id/tvTotalFollowing"
+                            android:id="@+id/tvTotalPost"
                             style="@style/RailItemTypeTitleStyle.DoubleLine"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -153,6 +153,16 @@
                             tools:text="@tools:sample/lorem/random" />
                     </LinearLayout>
 
+                    <View
+                        android:id="@+id/followDivider"
+                        android:layout_width="0dp"
+                        android:layout_height="1.5dp"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:background="@color/bottom_navigation_divider"
+                        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                        app:layout_constraintTop_toBottomOf="@id/llUserFollowContent" />
+
                     <androidx.appcompat.widget.AppCompatButton
                         android:id="@+id/btnFollow"
                         style="@style/AppTheme.TextAppearance.RobotoRegular.Large"
@@ -161,16 +171,16 @@
                         android:layout_marginTop="@dimen/dp_10"
                         android:backgroundTint="@color/colorAccent"
                         android:drawablePadding="@dimen/dp_10"
-                        android:visibility="gone"
                         android:paddingLeft="@dimen/dp_20"
                         android:paddingRight="@dimen/dp_20"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
+                        android:visibility="gone"
                         app:drawableTint="@color/white"
                         app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
                         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
                         app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                        app:layout_constraintTop_toBottomOf="@id/llUserFollowContent"
+                        app:layout_constraintTop_toBottomOf="@id/followDivider"
                         tools:text="@string/label_submit"
                         tools:visibility="visible" />
                 </androidx.constraintlayout.widget.ConstraintLayout>

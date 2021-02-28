@@ -64,6 +64,7 @@
     <style name="AppTheme.TextAppearance.RobotoRegular.Small">
         <item name="android:textSize">12sp</item>
     </style>
+
     <style name="AppTheme.TextAppearance.RobotoRegular.ExtraSmall">
         <item name="android:textSize">13sp</item>
     </style>
@@ -166,7 +167,8 @@
         <item name="android:layout_marginBottom">4dp</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginEnd">4dp</item>
-        <item name="android:textAppearance">@style/AppTheme.TextAppearance.RobotoRegular.Medium</item>
+        <item name="android:textAppearance">@style/AppTheme.TextAppearance.RobotoRegular.Medium
+        </item>
     </style>
 
     <style name="RailItemTypeSubtitleStyle">
@@ -176,14 +178,17 @@
         <item name="android:layout_marginBottom">4dp</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_marginEnd">4dp</item>
-        <item name="android:textAppearance">@style/AppTheme.TextAppearance.RobotoRegular.ExtraSmall</item>
+        <item name="android:textAppearance">
+            @style/AppTheme.TextAppearance.RobotoRegular.ExtraSmall
+        </item>
     </style>
 
     <style name="RailItemTotalLikeStyle">
         <item name="android:layout_marginStart">4dp</item>
         <item name="android:layout_marginEnd">4dp</item>
         <item name="android:maxLines">1</item>
-        <item name="android:textAppearance">@style/AppTheme.TextAppearance.RobotoRegular.Regular</item>
+        <item name="android:textAppearance">@style/AppTheme.TextAppearance.RobotoRegular.Regular
+        </item>
     </style>
 
     <style name="RailItemTypeTitleStyle.DoubleLine">
