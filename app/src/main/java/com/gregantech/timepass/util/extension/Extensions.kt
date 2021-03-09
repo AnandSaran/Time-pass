@@ -6,10 +6,10 @@ import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Environment
 import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
+import com.google.android.gms.ads.AdRequest
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.model.DownloadResult
 import com.gregantech.timepass.util.constant.BODY
@@ -173,6 +173,8 @@ suspend fun HttpClient.downloadFile(file: File, url: String): Flow<DownloadResul
     }
 }
 
+// -> replace/add your deviceId
+val testDeviceList = arrayListOf(AdRequest.DEVICE_ID_EMULATOR, "2F14BC616837FB4F44DA919217E0A95A")
 
 fun Activity.openFile(file: File) {
     Intent(Intent.ACTION_VIEW).apply {

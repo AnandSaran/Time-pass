@@ -1,10 +1,13 @@
 package com.gregantech.timepass.base
 
 import android.app.Application
+import android.util.Log
 import androidx.work.WorkManager
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor
 import com.google.android.exoplayer2.upstream.cache.SimpleCache
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.initialization.InitializationStatus
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
@@ -27,6 +30,13 @@ class TimePassApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        MobileAds.initialize(
+            this
+        ) { initializationStatus: InitializationStatus? ->
+            Log.d("TimePassApp", "onCreate: ${initializationStatus}")
+        }
+
         startKoin {
             androidContext(this@TimePassApplication)
             modules(module {

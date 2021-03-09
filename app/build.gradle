@@ -52,10 +52,14 @@ android {
             applicationIdSuffix ".dev"
             resValue "string", "app_name", "Time pass DEV"
             buildConfigField "String", "BASEURL", "\"http://timepass.net.in/app-api/\""
+            buildConfigField "String", "AD_BANNER", "\"ca-app-pub-3940256099942544/6300978111/\""
+            buildConfigField "String", "AD_NATIVE", "\"ca-app-pub-3940256099942544/2247696110/\""
         }
         prod {
             resValue "string", "app_name", "Time pass"
             buildConfigField "String", "BASEURL", "\"http://timepass.net.in/app-api/\""
+            buildConfigField "String", "AD_BANNER", "\"ca-app-pub-3940256099942544/6300978111/\""
+            buildConfigField "String", "AD_NATIVE", "\"ca-app-pub-3940256099942544/2247696110/\""
         }
     }
 
@@ -205,4 +209,6 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-core:$version_test_espresso"
     // Testing Navigation
     androidTestImplementation "androidx.navigation:navigation-testing:$version_navigation"
+    //googleAds
+    implementation "com.google.android.gms:play-services-ads:$version_ad_mob"
 }

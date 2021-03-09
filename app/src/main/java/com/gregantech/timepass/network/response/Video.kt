@@ -26,6 +26,7 @@ data class Video(
     val isFollowed: Boolean = false,
     val isLiked: Boolean = false,
     val isImage: Boolean? = false,
+    var viewType: Int = 0,
     @NullToEmptyString
     val videoImage: String = EMPTY_STRING,
     @NullToEmptyString

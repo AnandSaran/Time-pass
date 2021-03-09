@@ -46,7 +46,8 @@ fun Video.toRailItemTypeTwoModel(
         isShowFollow = generateIsToShowFollow(isShowFollow, followerId),
         isShowProfile = isShowProfile,
         userName = userName,
-        userImage = userImage
+        userImage = userImage,
+        viewType = viewType
     )
 }
 
