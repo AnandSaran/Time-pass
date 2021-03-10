@@ -1,12 +1,9 @@
 package com.gregantech.timepass.network.repository
 
 import com.gregantech.timepass.base.TimePassBaseRepository
-import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.network.RetrofitClient
 import com.gregantech.timepass.network.api.VideoService
 import com.gregantech.timepass.network.request.*
-import com.gregantech.timepass.network.response.Video
-import com.gregantech.timepass.network.response.VideoListResponse
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.File
@@ -26,18 +23,8 @@ class VideoListRepository : TimePassBaseRepository() {
         videoService.deleteUserPost(userPostDeleteRequest)
     }
 
-    suspend fun fetchAllUserVideoList(videoListRequest: UserVideoListRequest): TimePassBaseResult<VideoListResponse> {
-        val result = getResult { videoService.getAllUserVideo(videoListRequest) }
-        if (result.status == TimePassBaseResult.Status.SUCCESS) {
-            val videoList = result.data?.video as MutableList
-            //skip 0'th position
-            for (i in 1..videoList.size) {
-                if (i % 4 == 0) // add after 3rd item
-                    videoList.add(i - 1, Video(viewType = 1))
-            }
-            result.data.video = videoList
-        }
-        return result
+    suspend fun fetchAllUserVideoList(videoListRequest: UserVideoListRequest) = getResult {
+        videoService.getAllUserVideo(videoListRequest)
     }
 
     suspend fun setVideoLike(videoLikeRequest: VideoLikeRequest) = getResult {

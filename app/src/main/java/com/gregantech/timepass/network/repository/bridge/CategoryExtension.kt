@@ -22,7 +22,12 @@ fun List<Video>.toRailItemTypeTwoModelList(
     isShowFollow: Boolean = true,
     isShowProfile: Boolean = false
 ): ArrayList<RailBaseItemModel> {
-    return ArrayList(this.map { video ->
+    val rawList = this as MutableList
+    for (i in 1..rawList.size) {
+        if (i % 4 == 0) // add after 3rd item
+            rawList.add(i - 1, Video(viewType = 1))
+    }
+    return ArrayList(rawList.map { video ->
         video.toRailItemTypeTwoModel(isShowFollow, isShowProfile)
     })
 }
