@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.gregantech.timepass.R
-import com.gregantech.timepass.adapter.AdBaseAdapter
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
+import com.gregantech.timepass.base.TimePassBaseAdAdapter
 import com.gregantech.timepass.databinding.ItemAdsBinding
 import com.gregantech.timepass.databinding.ItemInstagramBinding
 import com.gregantech.timepass.model.RailBaseItemModel
@@ -21,11 +21,11 @@ import java.util.*
 /**
  * A custom adapter to use with the RecyclerView widget.
  */
-class InstagramAdapter(
+class InstagramAdAdapter(
     private var modelList: ArrayList<RailBaseItemModel>,
     private val railItemClickHandler: RailItemClickHandler,
     private val playerViewAdapter: NewPlayerViewAdapter
-) : AdBaseAdapter() {
+) : TimePassBaseAdAdapter() {
 
     override fun onCreateViewHolder(
         viewGroup: ViewGroup,

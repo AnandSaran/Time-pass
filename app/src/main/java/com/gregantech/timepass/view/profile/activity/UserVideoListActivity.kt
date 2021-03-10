@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
-import com.gregantech.timepass.adapter.rail.InstagramAdapter
+import com.gregantech.timepass.adapter.rail.InstagramAdAdapter
 import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityUserVideoListBinding
@@ -282,7 +282,7 @@ class UserVideoListActivity : TimePassBaseActivity() {
 
     private fun setupRecyclerView(categoryVideoList: ArrayList<RailBaseItemModel>) {
         binding.rvUserVideoList.apply {
-            adapter = InstagramAdapter(
+            adapter = InstagramAdAdapter(
                 categoryVideoList,
                 railItemClickHandler,
                 playerViewAdapter

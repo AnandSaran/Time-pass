@@ -7,8 +7,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="@color/background_color_grey_light"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/background_color_grey_light">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineTop"
@@ -27,14 +27,23 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvCategory"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:clipToPadding="false"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
+            app:layout_constraintBottom_toTopOf="@id/frmCatBannerContainer"
             app:layout_constraintTop_toBottomOf="@id/guidelineTop"
             app:spanCount="@integer/span_count_category"
             tools:listitem="@layout/item_rail_type_one" />
+
+        <FrameLayout
+            android:id="@+id/frmCatBannerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_5"
+            app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
+            app:layout_constraintTop_toBottomOf="@+id/rvCategory" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

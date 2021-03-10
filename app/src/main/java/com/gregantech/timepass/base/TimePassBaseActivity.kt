@@ -1,6 +1,11 @@
 package com.gregantech.timepass.base
 
+import android.util.Log
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.ads.*
+import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.model.DownloadResult
 import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.util.constant.RAW_DOWNLOAD_PATH
@@ -66,6 +71,45 @@ abstract class TimePassBaseActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    protected fun initBannerAd(bannerContainer: FrameLayout?) {
+
+        if (bannerContainer == null)
+            return
+
+        val adView = AdView(this).apply {
+            adSize = AdSize.BANNER
+            adUnitId = BuildConfig.AD_BANNER
+            adListener = bannerAdListener
+        }
+
+        with(bannerContainer) {
+            if (childCount > 0)
+                removeAllViews()
+            if (parent != null)
+                (parent as ViewGroup).removeView(adView)
+
+            addView(adView)
+        }
+
+        val requestConfiguration = RequestConfiguration.Builder()
+            .setTestDeviceIds(testDeviceList)
+            .build()
+        MobileAds.setRequestConfiguration(requestConfiguration)
+        adView.loadAd(AdRequest.Builder().build())
+    }
+
+    private val bannerAdListener = object : AdListener() {
+        override fun onAdLoaded() {
+            super.onAdLoaded()
+            Log.d(TAG, "onAdLoaded: ")
+        }
+
+        override fun onAdFailedToLoad(error: LoadAdError?) {
+            super.onAdFailedToLoad(error)
+            Log.e(TAG, "onAdFailedToLoad: error $error")
         }
     }
 }

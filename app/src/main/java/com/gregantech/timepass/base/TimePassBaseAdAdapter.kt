@@ -1,4 +1,4 @@
-package com.gregantech.timepass.adapter
+package com.gregantech.timepass.base
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +16,7 @@ import com.gregantech.timepass.R
 import com.gregantech.timepass.databinding.ItemAdsBinding
 import com.gregantech.timepass.util.extension.testDeviceList
 
-abstract class AdBaseAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class TimePassBaseAdAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class AdViewHolder(private val binding: ItemAdsBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -44,7 +44,7 @@ abstract class AdBaseAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                     val error =
                         "domain: ${loadAdError.domain}, code: ${loadAdError.code}, message: ${loadAdError.message}"
-                    Log.e("InstaAdapter", "onAdFailedToLoad: error $error")
+                    Log.e("TimePassBaseAdAdapter", "onAdFailedToLoad: error $error")
                 }
             }).build()
 

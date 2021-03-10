@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SnapHelper
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
-import com.gregantech.timepass.adapter.rail.InstagramAdapter
+import com.gregantech.timepass.adapter.rail.InstagramAdAdapter
 import com.gregantech.timepass.base.TimePassBaseFragment
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.FragmentCategoryDetailBinding
@@ -185,7 +185,7 @@ class CategoryDetailFragment : TimePassBaseFragment() {
         binding.rvCategoryVideoList.apply {
             //generateRailItemDecoration(RailItemDecorationTypeEnum.TYPE_RAIL_ITEM_DECORATION_TWO)
             setHasFixedSize(true)
-            adapter = InstagramAdapter(
+            adapter = InstagramAdAdapter(
                 modelList = categoryVideoList,
                 railItemClickHandler = railItemClickHandler,
                 playerViewAdapter = playerViewAdapter

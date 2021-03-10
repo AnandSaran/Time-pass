@@ -24,6 +24,7 @@ import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.generateRailItemDecoration
 import com.gregantech.timepass.view.home.viewmodel.CategoryFragmentViewModel
 import com.gregantech.timepass.view.home.viewmodel.HomeSharedViewModel
+import kotlinx.android.synthetic.main.fragment_category.*
 
 
 class CategoryFragment : TimePassBaseFragment() {
@@ -76,9 +77,9 @@ class CategoryFragment : TimePassBaseFragment() {
         if (!::viewModelFactory.isInitialized) {
             viewModelFactory = CategoryFragmentViewModel.Factory(CategoryRepository())
             homeSharedViewModelFactory = HomeSharedViewModel.Factory()
+            initBannerAd(frmCatBannerContainer)
             setupViewModelObserver()
         }
-
     }
 
     private fun setupViewModelObserver() {

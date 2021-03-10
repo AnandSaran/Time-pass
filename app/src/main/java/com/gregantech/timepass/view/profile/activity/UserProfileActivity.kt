@@ -117,6 +117,7 @@ class UserProfileActivity : TimePassBaseActivity() {
 
     private fun initDataBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_user_profile)
+        initBannerAd(binding.frmUsrProfileBannerContainer)
     }
 
     private fun setUserData() {
