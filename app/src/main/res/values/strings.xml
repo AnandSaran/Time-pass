@@ -54,7 +54,7 @@
     <string name="label_delete">Delete</string>
     <string name="label_cancel">Cancel</string>
     <string name="terms_policy">Agree to our Terms of Service and Privacy Policy</string>
-    <string name="terms_of_service">Terms of Service</string>
+    <string name="terms_of_use">Terms of Use</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="privacy_policy_url">http://timepass.net.in/privacy-policy.html</string>
     <string name="terms_and_conditions_url">http://timepass.net.in/terms-and-conditions.html</string>

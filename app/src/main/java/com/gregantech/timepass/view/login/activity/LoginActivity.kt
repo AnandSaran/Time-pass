@@ -148,13 +148,13 @@ class LoginActivity : TimePassBaseActivity() {
 
     private fun initHyperLinks() {
         tvTermsAndPrivacy.applyTextHyperLink(
-            arrayOf(getString(R.string.terms_of_service), getString(R.string.privacy_policy)),
+            arrayOf(getString(R.string.terms_of_use), getString(R.string.privacy_policy)),
             R.color.colorAccent,
             true,
             R.font.roboto_medium
         ) {
             when (it) {
-                getString(R.string.terms_of_service) -> openWebLink(getString(R.string.terms_and_conditions_url))
+                getString(R.string.terms_of_use) -> openWebLink(getString(R.string.terms_and_conditions_url))
                 getString(R.string.privacy_policy) -> openWebLink(getString(R.string.privacy_policy_url))
             }
         }
