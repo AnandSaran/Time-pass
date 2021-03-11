@@ -55,4 +55,5 @@ fun String.toTime(): String {
     }
 }
 
-fun CharSequence.isValidEmail() = !isNullOrEmpty() && Patterns.EMAIL_ADDRESS.matcher(this).matches()
+fun CharSequence.isValidEmail() =
+    if (isNullOrEmpty()) true else Patterns.EMAIL_ADDRESS.matcher(this).matches()
