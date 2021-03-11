@@ -54,12 +54,14 @@ android {
             buildConfigField "String", "BASEURL", "\"http://timepass.net.in/app-api/\""
             buildConfigField "String", "AD_BANNER", "\"ca-app-pub-3940256099942544/6300978111/\""
             buildConfigField "String", "AD_NATIVE", "\"ca-app-pub-3940256099942544/2247696110/\""
+            buildConfigField "String", "AD_INTERSTITIAL", "\"ca-app-pub-3940256099942544/1033173712/\""
         }
         prod {
             resValue "string", "app_name", "Time pass"
             buildConfigField "String", "BASEURL", "\"http://timepass.net.in/app-api/\""
             buildConfigField "String", "AD_BANNER", "\"ca-app-pub-3940256099942544/6300978111/\""
             buildConfigField "String", "AD_NATIVE", "\"ca-app-pub-3940256099942544/2247696110/\""
+            buildConfigField "String", "AD_INTERSTITIAL", "\"ca-app-pub-3940256099942544/1033173712/\""
         }
     }
 

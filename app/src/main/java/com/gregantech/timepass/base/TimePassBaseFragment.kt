@@ -4,8 +4,11 @@ import android.content.Context
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.NonNull
 import androidx.fragment.app.Fragment
 import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.util.constant.RAW_DOWNLOAD_PATH
@@ -20,6 +23,8 @@ import com.gregantech.timepass.util.extension.toast
 
 abstract class TimePassBaseFragment : Fragment() {
     protected val TAG = this::class.java.simpleName
+
+    private var mInterstitialAd: InterstitialAd? = null
 
     val baseActivity: TimePassBaseActivity
         get() = activity as TimePassBaseActivity
@@ -81,6 +86,55 @@ abstract class TimePassBaseFragment : Fragment() {
             super.onAdFailedToLoad(error)
             Log.e(TAG, "onAdFailedToLoad: error $error")
         }
+    }
+
+
+    protected fun loadInterstitial() {
+        InterstitialAd.load(
+            requireContext(),
+            BuildConfig.AD_INTERSTITIAL,
+            AdRequest.Builder().build(),
+            interstitialListener
+        )
+    }
+
+    private val interstitialListener = object : InterstitialAdLoadCallback() {
+        override fun onAdLoaded(@NonNull interstitialAd: InterstitialAd) {
+            Log.d(TAG, "onAdLoaded: ")
+            mInterstitialAd = interstitialAd
+            mInterstitialAd?.run {
+                fullScreenContentCallback = fullScreenCallback
+                show(requireActivity())
+            }
+        }
+
+        override fun onAdFailedToLoad(loadError: LoadAdError) {
+            super.onAdFailedToLoad(loadError)
+            Log.e(TAG, "onAdFailedToLoad: loadError ${loadError.message}")
+            mInterstitialAd = null
+        }
+    }
+
+    private val fullScreenCallback = object :
+        FullScreenContentCallback() {
+        override fun onAdDismissedFullScreenContent() {
+            super.onAdDismissedFullScreenContent()
+            mInterstitialAd = null
+        }
+
+        override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+            super.onAdFailedToShowFullScreenContent(adError)
+            mInterstitialAd = null
+        }
+
+        override fun onAdShowedFullScreenContent() {
+            super.onAdShowedFullScreenContent()
+            mInterstitialAd = null
+        }
+    }
+
+    protected fun releaseInterstitialAd() {
+        mInterstitialAd = null
     }
 
 }

@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SnapHelper
+import com.google.android.gms.ads.MobileAds
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
 import com.gregantech.timepass.adapter.rail.InstagramAdAdapter
@@ -102,11 +103,13 @@ class CategoryDetailFragment : TimePassBaseFragment() {
 
     override fun onStart() {
         super.onStart()
+        loadInterstitial()
         requireContext().registerReceiver(
             downloadStatusReceiver,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
         isRegistered = true
+
     }
 
     override fun onStop() {
@@ -148,12 +151,15 @@ class CategoryDetailFragment : TimePassBaseFragment() {
                 SharedPreferenceHelper
             )
 
+        MobileAds.initialize(requireContext())
+
         arguments?.apply {
             categoryId = getString(CategoryDetailBundleKeyEnum.CATEGORY_ID.value) ?: EMPTY_STRING
         }
         setupViewModelObserver()
 
     }
+
 
     private fun setupViewModelObserver() {
         viewModel.getCategoryVideoList(categoryId, pageNo)
@@ -224,6 +230,7 @@ class CategoryDetailFragment : TimePassBaseFragment() {
             }
         })
     }
+
 
     private fun onClickRailListItem() {
         railItemClickHandler = RailItemClickHandler()
@@ -397,6 +404,7 @@ class CategoryDetailFragment : TimePassBaseFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        releaseInterstitialAd()
         playerViewAdapter.releaseAllPlayers()
     }
 
