@@ -6,9 +6,9 @@ import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Environment
 import android.util.Log
 import android.webkit.MimeTypeMap
+import android.webkit.URLUtil
 import androidx.core.content.FileProvider
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.model.DownloadResult
@@ -195,4 +195,10 @@ fun Activity.openFile(file: File) {
 fun getMimeType(file: File): String? {
     val extension = file.extension
     return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
+}
+
+fun Context.openWebLink(link: String) {
+    if (URLUtil.isValidUrl(link)) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+    }
 }
