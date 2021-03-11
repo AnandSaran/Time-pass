@@ -34,6 +34,7 @@ import com.gregantech.timepass.view.profile.viewmodel.ProfileFragmentViewModel
 import com.gregantech.timepass.view.splash.SplashActivity
 import com.gregantech.timepass.view.userlist.activity.UserListActivity
 import com.gregantech.timepass.widget.PaginationScrollListener
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 
 /**
@@ -164,6 +165,7 @@ class ProfileFragment : TimePassBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initBannerAd(frmProfileBannerContainer)
         viewModelFactory =
             ProfileFragmentViewModel.Factory(
                 VideoListRepository(),

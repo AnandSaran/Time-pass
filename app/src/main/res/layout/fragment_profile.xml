@@ -4,197 +4,214 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data />
-    <!-- app:layout_constraintGuide_begin="@dimen/dp_44"-->
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background_color_grey_light">
+        android:background="@color/background_color_grey_light"
+        android:orientation="vertical">
 
-        <com.google.android.material.appbar.AppBarLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent">
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guidelineTop"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintGuide_begin="@dimen/activity_margin_vertical" />
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guidelineBottom"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintGuide_end="@dimen/activity_margin_vertical" />
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guidelineStart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_begin="@dimen/activity_margin_horizontal" />
+
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guidelineEnd"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_end="@dimen/activity_margin_horizontal" />
+
+                        <ImageView
+                            android:id="@+id/ivProfilePicture"
+                            android:layout_width="@dimen/avatar_width"
+                            android:layout_height="@dimen/avatar_height"
+                            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                            app:layout_constraintTop_toBottomOf="@id/guidelineTop"
+                            tools:ignore="ContentDescription"
+                            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+
+                        <TextView
+                            android:id="@+id/tvName"
+                            style="@style/RailItemTypeTitleStyle.SingleLine"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_10"
+                            android:fontFamily="@font/roboto_medium"
+                            android:gravity="center"
+                            android:textAppearance="@style/AppTheme.TextAppearance.RobotoRegular.DoubleExtraLarge"
+                            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                            app:layout_constraintTop_toBottomOf="@id/ivProfilePicture"
+                            tools:text="@tools:sample/lorem/random" />
+
+                        <TextView
+                            android:id="@+id/tvBio"
+                            style="@style/RailItemTypeTitleStyle.SingleLine"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_10"
+                            android:fontFamily="@font/roboto_medium"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                            app:layout_constraintTop_toBottomOf="@id/tvName"
+                            tools:text="@tools:sample/lorem/random" />
+
+                        <com.gregantech.timepass.widget.UnderlineTextView
+                            android:id="@+id/tvYouTubeProfileUrl"
+                            style="@style/RailItemTypeTitleStyle.SingleLine"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_10"
+                            android:drawablePadding="@dimen/dp_10"
+                            android:fontFamily="@font/roboto_medium"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            app:drawableStartCompat="@drawable/ic_youtube"
+                            app:layout_constraintBottom_toTopOf="@id/llUserFollowContent"
+                            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                            app:layout_constraintTop_toBottomOf="@id/tvBio"
+                            tools:text="@tools:sample/lorem/random" />
+
+                        <LinearLayout
+                            android:id="@+id/llUserFollowContent"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_10"
+                            android:orientation="horizontal"
+                            android:weightSum="3"
+                            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                            app:layout_constraintTop_toBottomOf="@id/tvYouTubeProfileUrl">
+
+                            <TextView
+                                android:id="@+id/tvTotalFollowing"
+                                style="@style/RailItemTypeTitleStyle.DoubleLine"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:fontFamily="@font/roboto_medium"
+                                android:gravity="center"
+                                tools:text="@tools:sample/lorem/random" />
+
+                            <TextView
+                                android:id="@+id/tvTotalPost"
+                                style="@style/RailItemTypeTitleStyle.DoubleLine"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/roboto_medium"
+                                android:gravity="center"
+                                tools:text="@tools:sample/lorem/random" />
+
+                            <TextView
+                                android:id="@+id/tvTotalFollowers"
+                                style="@style/RailItemTypeTitleStyle.DoubleLine"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:fontFamily="@font/roboto_medium"
+                                android:gravity="center"
+                                tools:text="@tools:sample/lorem/random" />
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/followDivider"
+                            android:layout_width="0dp"
+                            android:layout_height="1.5dp"
+                            android:layout_marginTop="@dimen/dp_10"
+                            android:background="@color/bottom_navigation_divider"
+                            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                            app:layout_constraintTop_toBottomOf="@id/llUserFollowContent" />
+
+                        <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/btnLogout"
+                            style="@style/AppTheme.TextAppearance.RobotoRegular.Large"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_10"
+                            android:backgroundTint="@color/colorAccent"
+                            android:drawablePadding="@dimen/dp_10"
+                            android:paddingLeft="@dimen/dp_20"
+                            android:paddingRight="@dimen/dp_20"
+                            android:text="@string/label_logout"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white"
+                            app:drawableTint="@color/white"
+                            app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
+                            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                            app:layout_constraintTop_toBottomOf="@id/followDivider"
+                            tools:visibility="visible" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvUserVideoList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="@dimen/dp_20"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:spanCount="@integer/span_count_user_profile_post"
+                tools:listitem="@layout/item_rail_type_three" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <FrameLayout
+            android:id="@+id/frmProfileBannerContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/transparent">
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/dp_5" />
 
-              <com.google.android.material.appbar.CollapsingToolbarLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:background="@color/transparent"
-                  app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guidelineTop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_begin="@dimen/activity_margin_vertical" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guidelineBottom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_end="@dimen/activity_margin_vertical" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guidelineStart"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_begin="@dimen/activity_margin_horizontal" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guidelineEnd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_end="@dimen/activity_margin_horizontal" />
-
-                <ImageView
-                    android:id="@+id/ivProfilePicture"
-                    android:layout_width="@dimen/avatar_width"
-                    android:layout_height="@dimen/avatar_height"
-                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                    app:layout_constraintTop_toBottomOf="@id/guidelineTop"
-                    tools:ignore="ContentDescription"
-                    tools:srcCompat="@tools:sample/backgrounds/scenic" />
-
-
-                <TextView
-                    android:id="@+id/tvName"
-                    style="@style/RailItemTypeTitleStyle.SingleLine"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:fontFamily="@font/roboto_medium"
-                    android:gravity="center"
-                    android:textAppearance="@style/AppTheme.TextAppearance.RobotoRegular.DoubleExtraLarge"
-                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                    app:layout_constraintTop_toBottomOf="@id/ivProfilePicture"
-                    tools:text="@tools:sample/lorem/random" />
-
-                <TextView
-                    android:id="@+id/tvBio"
-                    style="@style/RailItemTypeTitleStyle.SingleLine"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:fontFamily="@font/roboto_medium"
-                    android:gravity="center"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                    app:layout_constraintTop_toBottomOf="@id/tvName"
-                    tools:text="@tools:sample/lorem/random" />
-
-                <com.gregantech.timepass.widget.UnderlineTextView
-                    android:id="@+id/tvYouTubeProfileUrl"
-                    style="@style/RailItemTypeTitleStyle.SingleLine"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:drawablePadding="@dimen/dp_10"
-                    android:fontFamily="@font/roboto_medium"
-                    android:gravity="center"
-                    android:visibility="gone"
-                    app:drawableStartCompat="@drawable/ic_youtube"
-                    app:layout_constraintBottom_toTopOf="@id/llUserFollowContent"
-                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                    app:layout_constraintTop_toBottomOf="@id/tvBio"
-                    tools:text="@tools:sample/lorem/random" />
-
-                <LinearLayout
-                    android:id="@+id/llUserFollowContent"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:orientation="horizontal"
-                    android:weightSum="3"
-                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                    app:layout_constraintTop_toBottomOf="@id/tvYouTubeProfileUrl">
-
-                    <TextView
-                        android:id="@+id/tvTotalFollowing"
-                        style="@style/RailItemTypeTitleStyle.DoubleLine"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:fontFamily="@font/roboto_medium"
-                        android:gravity="center"
-                        tools:text="@tools:sample/lorem/random" />
-
-                    <TextView
-                        android:id="@+id/tvTotalPost"
-                        style="@style/RailItemTypeTitleStyle.DoubleLine"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/roboto_medium"
-                        android:gravity="center"
-                        tools:text="@tools:sample/lorem/random" />
-
-                    <TextView
-                        android:id="@+id/tvTotalFollowers"
-                        style="@style/RailItemTypeTitleStyle.DoubleLine"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:fontFamily="@font/roboto_medium"
-                        android:gravity="center"
-                        tools:text="@tools:sample/lorem/random" />
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/followDivider"
-                    android:layout_width="0dp"
-                    android:layout_height="1.5dp"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:background="@color/bottom_navigation_divider"
-                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                    app:layout_constraintTop_toBottomOf="@id/llUserFollowContent" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btnLogout"
-                    style="@style/AppTheme.TextAppearance.RobotoRegular.Large"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:backgroundTint="@color/colorAccent"
-                    android:drawablePadding="@dimen/dp_10"
-                    android:paddingLeft="@dimen/dp_20"
-                    android:paddingRight="@dimen/dp_20"
-                    android:text="@string/label_logout"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    app:drawableTint="@color/white"
-                    app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
-                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                    app:layout_constraintTop_toBottomOf="@id/followDivider"
-                    tools:visibility="visible" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvUserVideoList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/dp_20"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:spanCount="@integer/span_count_user_profile_post"
-        tools:listitem="@layout/item_rail_type_three" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout></layout>
+    </LinearLayout>
+</layout>
