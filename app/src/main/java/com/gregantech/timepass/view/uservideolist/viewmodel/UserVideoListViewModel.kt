@@ -140,36 +140,6 @@ class UserVideoListViewModel(
         downloadRequest.value = request
     }
 
-    fun getSearchVideoList(searchKey: String) =
-        liveData<TimePassBaseResult<VideoListResponse>>(Dispatchers.IO) {
-            emit(TimePassBaseResult.loading(null))
-            val result =
-                videoListRepository.getSearchVideoList(
-                    generateSearchVideosRequest(searchKey)
-                )
-            when (result.status) {
-                TimePassBaseResult.Status.SUCCESS -> {
-                    emit(result)
-                }
-                TimePassBaseResult.Status.ERROR -> {
-                    Log.e("", "getSearchVideoList: error ${result.message}")
-                    onFetchUserFollowingListFail()
-                }
-                else -> {
-                    Log.e("", "getSearchVideoList: error2 ${result.message}")
-                    onFetchUserFollowingListFail()
-                }
-            }
-        }
-
-    private fun generateSearchVideosRequest(searchKey: String): SearchVideosRequest {
-        return SearchVideosRequest(sharedPreferenceHelper.getUserId(), searchKey)
-    }
-
-    private suspend fun LiveDataScope<TimePassBaseResult<VideoListResponse>>.onFetchUserFollowingListFail() {
-        emit(TimePassBaseResult.error(ErrorMessage.PLEASE_TRY_AGAIN.value))
-    }
-
     @Suppress(ANNOTATION_UNCHECKED_CAST)
     class Factory(
         private val videoListRepository: VideoListRepository,
