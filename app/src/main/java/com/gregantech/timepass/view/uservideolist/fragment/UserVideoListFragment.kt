@@ -142,36 +142,40 @@ class UserVideoListFragment : TimePassBaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_user_video_list,
-            container,
-            false
-        )
-        context?.let {
-            ctxt = it
-        }
+        if (!::binding.isInitialized) {
+            binding = DataBindingUtil.inflate(
+                inflater,
+                R.layout.fragment_user_video_list,
+                container,
+                false
+            )
+            context?.let {
+                ctxt = it
+            }
 
-        onClickCreateVideo()
-        onClickRailListItem()
+            onClickCreateVideo()
+            onClickRailListItem()
+        }
         return binding.root
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModelFactory =
-            UserVideoListViewModel.Factory(
-                VideoListRepository(),
-                SharedPreferenceHelper
-            )
+        if (!::viewModelFactory.isInitialized) {
+            viewModelFactory =
+                UserVideoListViewModel.Factory(
+                    VideoListRepository(),
+                    SharedPreferenceHelper
+                )
 
-        userPostViewModelFactory =
-            UserPostViewModel.Factory(
-                VideoListRepository(),
-                SharedPreferenceHelper
-            )
-        setupViewModelObserver()
+            userPostViewModelFactory =
+                UserPostViewModel.Factory(
+                    VideoListRepository(),
+                    SharedPreferenceHelper
+                )
+            setupViewModelObserver()
+        }
 
     }
 
