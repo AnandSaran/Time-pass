@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -158,7 +157,7 @@ class SearchVideoActivity : TimePassBaseActivity() {
 
     private fun initDataBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_search_video)
-        binding.tilSearchUser.editText?.requestFocus()
+        binding.tilSearchVideos.editText?.requestFocus()
     }
 
     private fun setupToolBar() {
@@ -185,7 +184,7 @@ class SearchVideoActivity : TimePassBaseActivity() {
     }
 
     private fun setupSearchTextWatcher() {
-        binding.tilSearchUser.editText?.doOnTextChanged { searchKey, start, before, count ->
+        binding.tilSearchVideos.editText?.doOnTextChanged { searchKey, start, before, count ->
             if (searchKey.toString().isEmpty())
                 exitSearchMode()
             else fetchVideoList(searchKey.toString())
@@ -217,11 +216,10 @@ class SearchVideoActivity : TimePassBaseActivity() {
         viewModel.getSearchVideoList(searchKey).observe(this, Observer { resultOf ->
             when (resultOf.status) {
                 TimePassBaseResult.Status.LOADING -> {
-                    Log.d(TAG, "fetchSearchUserList: loading")
                 }
                 TimePassBaseResult.Status.SUCCESS -> {
 
-                    if (binding.tilSearchUser.editText?.text?.isEmpty() == true) {
+                    if (binding.tilSearchVideos.editText?.text?.isEmpty() == true) {
                         exitSearchMode()
                         return@Observer
                     }
@@ -243,7 +241,6 @@ class SearchVideoActivity : TimePassBaseActivity() {
                     }
                 }
                 TimePassBaseResult.Status.ERROR -> {
-                    Log.d(TAG, "fetchSearchUserList: error")
                     resultOf.message?.toast(this)
                 }
             }

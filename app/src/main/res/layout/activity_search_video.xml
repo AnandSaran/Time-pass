@@ -16,12 +16,12 @@
             layout="@layout/toolbar" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilSearchUser"
+            android:id="@+id/tilSearchVideos"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_10"
-            android:hint="@string/search_videos"
+            android:hint="@string/search_video"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/rvSearchVid"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +29,7 @@
             app:layout_constraintTop_toBottomOf="@id/tbVideoList">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtSearchUser"
+                android:id="@+id/edtSearchVideo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionSearch"
@@ -44,7 +44,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tilSearchUser" />
+            app:layout_constraintTop_toBottomOf="@id/tilSearchVideos" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

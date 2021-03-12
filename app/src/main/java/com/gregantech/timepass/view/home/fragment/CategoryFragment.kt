@@ -117,13 +117,13 @@ class CategoryFragment : TimePassBaseFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_user_video_list, menu)
+        inflater.inflate(R.menu.menu_search_videos, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.miSearch -> showSearchScreen()
+            R.id.miSearchVideo -> showSearchScreen()
         }
         return true
     }
