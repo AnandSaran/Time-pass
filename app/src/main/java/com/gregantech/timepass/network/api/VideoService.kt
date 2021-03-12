@@ -20,6 +20,9 @@ interface VideoService {
     @POST("homePageList_api.php")
     suspend fun getAllUserVideo(@Body videoListRequest: UserVideoListRequest): Response<VideoListResponse>
 
+    @POST("postSearchList.php")
+    suspend fun searchVideo(@Body searchVideoRequest: SearchVideosRequest): Response<VideoListResponse>
+
     @POST("videoLike_api.php")
     suspend fun setAdminVideoLike(@Body videoLikeRequest: VideoLikeRequest): Response<VideoLikeResponse>
 

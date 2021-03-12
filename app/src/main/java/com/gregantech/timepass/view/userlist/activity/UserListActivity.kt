@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.inputmethod.EditorInfo
 import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -21,6 +22,7 @@ import com.gregantech.timepass.network.repository.bridge.toRailItemTypeFourModel
 import com.gregantech.timepass.network.response.userlist.Following
 import com.gregantech.timepass.util.constant.EMPTY_STRING
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+import com.gregantech.timepass.util.extension.hideSoftKeyboard
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.extension.visible
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
@@ -95,6 +97,12 @@ class UserListActivity : TimePassBaseActivity() {
 
     private fun initDataBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_user_list)
+        binding.edtSearchUser.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideSoftKeyboard()
+                true
+            } else false
+        }
     }
 
     private fun setupToolBar() {
