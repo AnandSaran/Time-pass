@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.inputmethod.EditorInfo
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.doOnTextChanged
@@ -36,6 +37,7 @@ import com.gregantech.timepass.util.NewPlayerViewAdapter
 import com.gregantech.timepass.util.Run
 import com.gregantech.timepass.util.constant.EMPTY_LONG
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+import com.gregantech.timepass.util.extension.hideSoftKeyboard
 import com.gregantech.timepass.util.extension.shareDownloadedFile
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
@@ -184,6 +186,14 @@ class SearchVideoActivity : TimePassBaseActivity() {
     }
 
     private fun setupSearchTextWatcher() {
+
+        binding.edtSearchVideo.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideSoftKeyboard()
+                true
+            } else false
+        }
+
         binding.tilSearchVideos.editText?.doOnTextChanged { searchKey, start, before, count ->
             if (searchKey.toString().isEmpty())
                 exitSearchMode()
