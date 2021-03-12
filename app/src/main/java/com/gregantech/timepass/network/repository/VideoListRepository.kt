@@ -39,6 +39,10 @@ class VideoListRepository : TimePassBaseRepository() {
         videoService.setUserFollow(userFollowRequest)
     }
 
+    suspend fun getSearchVideoList(searchVideoRequest: SearchVideosRequest) = getResult {
+        videoService.searchVideo(searchVideoRequest)
+    }
+
     suspend fun uploadVideo(
         userID: String,
         videoTitle: String,

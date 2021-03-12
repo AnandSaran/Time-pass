@@ -2,9 +2,7 @@ package com.gregantech.timepass.view.home.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -15,6 +13,8 @@ import com.gregantech.timepass.adapter.rail.RailAdapter
 import com.gregantech.timepass.base.TimePassBaseFragment
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.FragmentCategoryBinding
+import com.gregantech.timepass.general.UserListScreenTitleEnum
+import com.gregantech.timepass.general.UserListScreenTypeEnum
 import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
 import com.gregantech.timepass.model.RailBaseItemModel
 import com.gregantech.timepass.model.RailItemDecorationTypeEnum
@@ -22,6 +22,7 @@ import com.gregantech.timepass.network.repository.CategoryRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeOneModelList
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.generateRailItemDecoration
+import com.gregantech.timepass.view.categoryvideosearch.activity.SearchVideoActivity
 import com.gregantech.timepass.view.home.viewmodel.CategoryFragmentViewModel
 import com.gregantech.timepass.view.home.viewmodel.HomeSharedViewModel
 
@@ -49,6 +50,11 @@ class CategoryFragment : TimePassBaseFragment() {
 
     companion object {
         fun newInstance() = CategoryFragment()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -108,6 +114,26 @@ class CategoryFragment : TimePassBaseFragment() {
                 railItemClickHandler = railItemClickHandler
             )
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_user_video_list, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.miSearch -> showSearchScreen()
+        }
+        return true
+    }
+
+    private fun showSearchScreen() {
+        SearchVideoActivity.present(
+            ctxt,
+            UserListScreenTitleEnum.SEARCH,
+            UserListScreenTypeEnum.SEARCH
+        )
     }
 
     private fun onClickRailListItem() {

@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class VideoListResponse(
-    val is_last: Boolean,
-    val status: String,
+    val is_last: Boolean = false, //Modified for search
+    val status: String? = null, //Modified for search
     var video: List<Video> = arrayListOf()
 ) : Parcelable

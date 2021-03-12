@@ -43,6 +43,7 @@
     <string name="video">Video</string>
     <string name="under_line_text"><u>%1$s</u></string>
     <string name="search_user">Search user</string>
+    <string name="search_videos">Search videos</string>
     <string name="label_bio">Bio</string>
     <string name="label_youtube_link">YouTube profile link</string>
     <string name="label_youtube_profile">YouTube Profile</string>
@@ -52,4 +53,5 @@
     <string name="label_edit">Edit</string>
     <string name="label_delete">Delete</string>
     <string name="label_cancel">Cancel</string>
+    <string name="search">Search</string>
 </resources>
