@@ -41,11 +41,11 @@ import com.gregantech.timepass.util.extension.hideSoftKeyboard
 import com.gregantech.timepass.util.extension.shareDownloadedFile
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
+import com.gregantech.timepass.view.categorydetail.viewmodel.CategoryDetailFragmentViewModel
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.player.activity.ImageViewActivity
 import com.gregantech.timepass.view.player.activity.PlayerActivity
 import com.gregantech.timepass.view.uservideolist.viewmodel.UserPostViewModel
-import com.gregantech.timepass.view.uservideolist.viewmodel.UserVideoListViewModel
 import com.gregantech.timepass.widget.PaginationScrollListener
 import com.gregantech.timepass.widget.dialog.BottomSheetDialogPostMoreOption
 import com.gun0912.tedpermission.PermissionListener
@@ -68,14 +68,14 @@ class SearchVideoActivity : TimePassBaseActivity() {
     private var railList: ArrayList<RailBaseItemModel> = arrayListOf()
 
     private val playerViewAdapter = NewPlayerViewAdapter()
-    private lateinit var viewModelFactory: UserVideoListViewModel.Factory
+    private lateinit var viewModelFactory: CategoryDetailFragmentViewModel.Factory
     private lateinit var userPostViewModelFactory: UserPostViewModel.Factory
 
-    private val viewModel: UserVideoListViewModel by lazy {
+    private val viewModel: CategoryDetailFragmentViewModel by lazy {
         requireNotNull(this) {
             VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
         }
-        ViewModelProvider(this, viewModelFactory).get(UserVideoListViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(CategoryDetailFragmentViewModel::class.java)
     }
 
     private val userPostViewModel: UserPostViewModel by lazy {
@@ -173,7 +173,7 @@ class SearchVideoActivity : TimePassBaseActivity() {
 
     private fun setupViewModelFactory() {
         viewModelFactory =
-            UserVideoListViewModel.Factory(VideoListRepository(), SharedPreferenceHelper)
+            CategoryDetailFragmentViewModel.Factory(VideoListRepository(), SharedPreferenceHelper)
         userPostViewModelFactory =
             UserPostViewModel.Factory(VideoListRepository(), SharedPreferenceHelper)
         setupViewModelObserver()
@@ -374,7 +374,7 @@ class SearchVideoActivity : TimePassBaseActivity() {
     private fun showCommentPage(railItemTypeTwoModel: RailItemTypeTwoModel) {
         CommentActivity.present(
             this,
-            railItemTypeTwoModel.contentId, isUserPost = true
+            railItemTypeTwoModel.contentId, isAdminPost = true
         )
     }
 
