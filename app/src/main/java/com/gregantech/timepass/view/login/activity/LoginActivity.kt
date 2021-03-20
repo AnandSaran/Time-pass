@@ -23,12 +23,15 @@ import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityLoginBinding
 import com.gregantech.timepass.network.repository.LoginRepository
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+import com.gregantech.timepass.util.extension.applyTextHyperLink
+import com.gregantech.timepass.util.extension.openWebLink
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.extension.visible
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.home.activity.HomeActivity
 import com.gregantech.timepass.view.login.viewmodel.LoginViewModel
 import com.gregantech.timepass.view.profile.activity.ProfileActivity
+import kotlinx.android.synthetic.main.activity_login.*
 import java.util.concurrent.TimeUnit
 
 class LoginActivity : TimePassBaseActivity() {
@@ -131,6 +134,7 @@ class LoginActivity : TimePassBaseActivity() {
     private fun showMobileNumberView(isShow: Boolean = true) {
         binding.btnGetOtp.visible(isShow)
         binding.llMobileNumber.visible(isShow)
+        binding.llTermsAndPrivacy.visible(isShow)
     }
 
     private fun showToast(message: String) {
@@ -139,6 +143,21 @@ class LoginActivity : TimePassBaseActivity() {
 
     private fun initDataBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        initHyperLinks()
+    }
+
+    private fun initHyperLinks() {
+        tvTermsAndPrivacy.applyTextHyperLink(
+            arrayOf(getString(R.string.terms_of_use), getString(R.string.privacy_policy)),
+            R.color.colorAccent,
+            true,
+            R.font.roboto_medium
+        ) {
+            when (it) {
+                getString(R.string.terms_of_use) -> openWebLink(getString(R.string.terms_and_conditions_url))
+                getString(R.string.privacy_policy) -> openWebLink(getString(R.string.privacy_policy_url))
+            }
+        }
     }
 
     private fun setupOnClickListener() {
@@ -151,11 +170,31 @@ class LoginActivity : TimePassBaseActivity() {
     }
 
     private fun onClickGenerateOtp() {
-        if (binding.edtMobileNumber.text.toString().isNotBlank()) {
+        if (isValidated()) {
             binding.btnGetOtp.isEnabled = false
             startPhoneNumberVerification(getMobileNumber())
-        } else {
-            binding.tilMobileNumber.error = getString(R.string.enter_mobile_number)
+        }
+    }
+
+    private fun isValidated(): Boolean {
+        return when {
+            binding.edtMobileNumber.text.toString().isEmpty() -> {
+                binding.tilMobileNumber.error = getString(R.string.enter_mobile_number)
+                false
+            }
+            binding.edtMobileNumber.text.toString().length <= 6 -> {
+                binding.tilMobileNumber.error = getString(R.string.invalid_phone_number)
+                false
+            }
+            !binding.chkTermsAndPrivacy.isChecked -> {
+                binding.tilMobileNumber.error = null
+                showToast(getString(R.string.agree_to_terms_and_privacy))
+                false
+            }
+            else -> {
+                binding.tilMobileNumber.error = null
+                true
+            }
         }
     }
 

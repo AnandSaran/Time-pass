@@ -25,7 +25,6 @@ import com.ahmedbadereldin.videotrimmer.customVideoViews.CustomRangeSeekBar
 import com.ahmedbadereldin.videotrimmer.customVideoViews.OnRangeSeekBarChangeListener
 import com.daasuu.mp4compose.FillMode
 import com.daasuu.mp4compose.composer.Mp4Composer
-import com.daasuu.mp4compose.filter.GlFilterGroup
 import com.daasuu.mp4compose.filter.GlWatermarkFilter
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseActivity
@@ -45,7 +44,7 @@ class VideoTrimmerActivity : TimePassBaseActivity(),
     private var mEndPosition = 0
 
     // set your max video trim seconds
-    private val mMaxDuration = 30
+    private val mMaxDuration = 60
     private val mHandler = Handler()
     var srcFile: String? = null
     var dstFile: String? = null

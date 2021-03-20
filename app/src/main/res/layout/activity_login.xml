@@ -74,6 +74,35 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/llTermsAndPrivacy"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_15"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/llMobileNumber"
+            app:layout_constraintStart_toStartOf="@+id/llMobileNumber"
+            app:layout_constraintTop_toBottomOf="@+id/llMobileNumber">
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/chkTermsAndPrivacy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_10"
+                android:checked="true" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvTermsAndPrivacy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto"
+                android:text="@string/terms_policy"
+                android:textColor="@android:color/black" />
+
+        </LinearLayout>
+
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnGetOtp"
             style="@style/AppTheme.TextAppearance.RobotoRegular.Large"
@@ -85,7 +114,7 @@
             android:textColor="@color/white"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/llMobileNumber"
+            app:layout_constraintTop_toBottomOf="@id/llTermsAndPrivacy"
             tools:visibility="visible" />
 
         <LinearLayout

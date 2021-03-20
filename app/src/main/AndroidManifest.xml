@@ -24,6 +24,7 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />
 
+
         <activity
             android:name=".view.userlist.activity.UserListActivity"
             android:screenOrientation="portrait" />
@@ -82,6 +83,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.home.activity.HomeActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".view.categoryvideosearch.activity.SearchVideoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
 

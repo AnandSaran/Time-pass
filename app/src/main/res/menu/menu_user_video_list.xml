@@ -4,6 +4,6 @@
     <item
         android:id="@+id/miSearch"
         android:icon="@drawable/ic_search"
-        android:title="@string/label_edit_profile"
+        android:title="@string/search_user"
         app:showAsAction="ifRoom" />
 </menu>

@@ -17,12 +17,16 @@ import android.widget.*
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.gregantech.timepass.R
+import com.klinker.android.link_builder.Link
+import com.klinker.android.link_builder.applyLinks
 import java.io.File
 
 /**
@@ -219,11 +223,39 @@ fun View.setMarginTop(marginTop: Int) {
     this.layoutParams = menuLayoutParams
 }
 
-fun RecyclerView.smoothSnapToPosition(position: Int, snapMode: Int = LinearSmoothScroller.SNAP_TO_START) {
+fun RecyclerView.smoothSnapToPosition(
+    position: Int,
+    snapMode: Int = LinearSmoothScroller.SNAP_TO_START
+) {
     val smoothScroller = object : LinearSmoothScroller(this.context) {
         override fun getVerticalSnapPreference(): Int = snapMode
         override fun getHorizontalSnapPreference(): Int = snapMode
     }
     smoothScroller.targetPosition = position
     layoutManager?.startSmoothScroll(smoothScroller)
+}
+
+fun AppCompatTextView.applyTextHyperLink(
+    entries: Array<CharSequence>,
+    linkTextColor: Int = R.color.colorAccent,
+    isUnderLined: Boolean = true,
+    hyperLinkTextFont: Int = R.font.roboto,
+    onItemClicked: (String?) -> Unit
+) {
+    val listOfHyperLinks = arrayListOf<Link>()
+
+    entries.forEach { txt ->
+        val link = Link(txt.toString())
+            .setTextColor(ContextCompat.getColor(context, linkTextColor))
+            .setUnderlined(isUnderLined)
+            .setTypeface(ResourcesCompat.getFont(context, hyperLinkTextFont)!!)
+            .setOnClickListener {
+                onItemClicked.invoke(it)
+            }
+        listOfHyperLinks.add(link)
+    }
+
+    if (listOfHyperLinks.isNotEmpty()) {
+        this.applyLinks(listOfHyperLinks)
+    }
 }
