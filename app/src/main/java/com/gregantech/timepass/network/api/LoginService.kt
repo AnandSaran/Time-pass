@@ -1,7 +1,6 @@
 package com.gregantech.timepass.network.api
 
 import com.gregantech.timepass.network.request.LoginRequest
-import com.gregantech.timepass.network.response.CategoryResponse
 import com.gregantech.timepass.network.response.LoginResponse
 import retrofit2.Response
 import retrofit2.http.Body
