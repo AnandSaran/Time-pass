@@ -265,7 +265,7 @@ class SearchVideoActivity : TimePassBaseActivity() {
                 modelList = categoryVideoList,
                 railItemClickHandler = railItemClickHandler,
                 playerViewAdapter = playerViewAdapter,
-                advertisementType = CARD_OTHER_USER_VIDEO_LIST
+                advertisementName = CARD_OTHER_USER_VIDEO_LIST
             )
         }
         setupRecyclerViewScrollListener()

@@ -197,7 +197,7 @@ class CategoryDetailFragment : TimePassBaseFragment() {
                 modelList = categoryVideoList,
                 railItemClickHandler = railItemClickHandler,
                 playerViewAdapter = playerViewAdapter,
-                advertisementType = CARD_ADMIN_VIDEO_LIST
+                advertisementName = CARD_ADMIN_VIDEO_LIST
             )
         }
         // setUpSnapShot()

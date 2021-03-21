@@ -239,7 +239,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
                 modelList = categoryVideoList,
                 railItemClickHandler = railItemClickHandler,
                 playerViewAdapter = playerViewAdapter,
-                advertisementType = CARD_HOME_VIDEO_LIST
+                advertisementName = CARD_HOME_VIDEO_LIST
             )
         }
         // setUpSnapShot()

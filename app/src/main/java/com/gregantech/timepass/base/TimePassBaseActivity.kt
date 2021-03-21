@@ -74,14 +74,14 @@ abstract class TimePassBaseActivity : AppCompatActivity() {
         }
     }
 
-    protected fun initBannerAd(bannerContainer: FrameLayout?, adType: Int) {
+    protected fun initBannerAd(bannerContainer: FrameLayout?, adName: String) {
 
-        if (bannerContainer == null || !AdvertisementHandler.isAdEnabled(adType.toString()))
+        if (bannerContainer == null || !AdvertisementHandler.isAdEnabled(adName))
             return
 
         val adView = AdView(this).apply {
             adSize = AdSize.BANNER
-            adUnitId = AdvertisementHandler.getAdUnitByType(adType)
+            adUnitId = AdvertisementHandler.getAdUnitByType(adName)
             adListener = bannerAdListener
         }
 

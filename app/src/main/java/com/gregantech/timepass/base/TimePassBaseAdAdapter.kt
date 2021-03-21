@@ -16,7 +16,7 @@ import com.gregantech.timepass.databinding.ItemAdsBinding
 import com.gregantech.timepass.util.AdvertisementHandler
 import com.gregantech.timepass.util.extension.testDeviceList
 
-abstract class TimePassBaseAdAdapter(val adType: Int) :
+abstract class TimePassBaseAdAdapter(val adName: String) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class AdViewHolder(private val binding: ItemAdsBinding) :
@@ -24,8 +24,8 @@ abstract class TimePassBaseAdAdapter(val adType: Int) :
 
         fun onBind() {
 
-            if (!AdvertisementHandler.isAdEnabled(adType.toString())) {
-                Log.e("TimePassBaseAdAdapter", "onBind: Ad is not enabled $adType")
+            if (!AdvertisementHandler.isAdEnabled(adName)) {
+                Log.e("TimePassBaseAdAdapter", "onBind: Ad is not enabled for $adName")
                 return
             }
 
@@ -33,7 +33,7 @@ abstract class TimePassBaseAdAdapter(val adType: Int) :
             var currentNativeAd: NativeAd? = null
 
             val builder =
-                AdLoader.Builder(itemView.context, AdvertisementHandler.getAdUnitByType(adType))
+                AdLoader.Builder(itemView.context, AdvertisementHandler.getAdUnitByType(adName))
                     .forNativeAd { nativeAd ->
                         // You must call destroy on old ads when you are done with them,
                         // otherwise you will have a memory leak.

@@ -3,7 +3,6 @@ package com.gregantech.timepass.view.home.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -14,7 +13,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.databinding.ActivityCategoryBinding
-import com.gregantech.timepass.util.AdvertisementHandler
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
 import com.gregantech.timepass.view.home.viewmodel.HomeSharedViewModel
@@ -67,7 +65,6 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
     }
 
     private fun initView() {
-        Log.d(TAG, "initView: adVisibilityResponse ${AdvertisementHandler.isAdEnabled("2")}")
         setupBottomNavMenu()
         setSupportActionBar(binding.tbCategory.toolbar)
         binding.tbCategory.toolbar.setTitleTextAppearance(this, R.style.logo_font)

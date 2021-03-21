@@ -38,13 +38,7 @@ class SplashActivity : TimePassBaseActivity() {
         viewModel.getAdStatus().observe(this, Observer { result ->
             when (result.status) {
                 TimePassBaseResult.Status.SUCCESS -> {
-                    /* Testing purpose */
-                    val tmp = result.data
-                    tmp?.adds?.forEach {
-                        it?.isVisible = true
-                    }
-                    /* Testing purpose */
-                    AdvertisementHandler.advertisementResponse = tmp
+                    AdvertisementHandler.advertisementResponse = result.data
                     Handler().postDelayed({ navigateNextScreen() }, 0)
                 }
                 TimePassBaseResult.Status.LOADING -> {

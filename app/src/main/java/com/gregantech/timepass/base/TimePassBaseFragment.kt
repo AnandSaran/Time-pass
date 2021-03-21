@@ -49,14 +49,14 @@ abstract class TimePassBaseFragment : Fragment() {
         } else true
 
 
-    protected fun initBannerAd(bannerContainer: FrameLayout?, adType: Int) {
+    protected fun initBannerAd(bannerContainer: FrameLayout?, adName: String) {
 
-        if (bannerContainer == null || !AdvertisementHandler.isAdEnabled(adType.toString()))
+        if (bannerContainer == null || !AdvertisementHandler.isAdEnabled(adName))
             return
 
         val adView = AdView(requireContext()).apply {
             adSize = AdSize.BANNER
-            adUnitId = AdvertisementHandler.getAdUnitByType(adType)
+            adUnitId = AdvertisementHandler.getAdUnitByType(adName)
             adListener = bannerAdListener
         }
 
@@ -89,11 +89,11 @@ abstract class TimePassBaseFragment : Fragment() {
     }
 
 
-    protected fun loadInterstitial(adType: Int) {
-        if (AdvertisementHandler.isAdEnabled(adType.toString())) {
+    protected fun loadInterstitial(adName: String) {
+        if (AdvertisementHandler.isAdEnabled(adName)) {
             InterstitialAd.load(
                 requireContext(),
-                AdvertisementHandler.getAdUnitByType(adType),
+                AdvertisementHandler.getAdUnitByType(adName),
                 AdRequest.Builder().build(),
                 interstitialListener
             )
