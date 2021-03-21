@@ -20,6 +20,7 @@ import com.gregantech.timepass.model.RailBaseItemModel
 import com.gregantech.timepass.model.RailItemDecorationTypeEnum
 import com.gregantech.timepass.network.repository.CategoryRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeOneModelList
+import com.gregantech.timepass.util.BANNER_ADMIN_VIDEO_CATEGORY
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.generateRailItemDecoration
 import com.gregantech.timepass.view.categoryvideosearch.activity.SearchVideoActivity
@@ -83,7 +84,7 @@ class CategoryFragment : TimePassBaseFragment() {
         if (!::viewModelFactory.isInitialized) {
             viewModelFactory = CategoryFragmentViewModel.Factory(CategoryRepository())
             homeSharedViewModelFactory = HomeSharedViewModel.Factory()
-            initBannerAd(frmCatBannerContainer)
+            initBannerAd(frmCatBannerContainer, BANNER_ADMIN_VIDEO_CATEGORY)
             setupViewModelObserver()
         }
     }

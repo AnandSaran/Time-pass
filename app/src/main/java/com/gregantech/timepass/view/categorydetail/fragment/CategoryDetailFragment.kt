@@ -33,6 +33,8 @@ import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.model.getStrippedFileName
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
+import com.gregantech.timepass.util.CARD_ADMIN_VIDEO_LIST
+import com.gregantech.timepass.util.FULL_SCREEN_ADMIN_VIDEO_LIST
 import com.gregantech.timepass.util.NewPlayerViewAdapter
 import com.gregantech.timepass.util.constant.EMPTY_LONG
 import com.gregantech.timepass.util.constant.EMPTY_STRING
@@ -103,7 +105,7 @@ class CategoryDetailFragment : TimePassBaseFragment() {
 
     override fun onStart() {
         super.onStart()
-        loadInterstitial()
+        loadInterstitial(FULL_SCREEN_ADMIN_VIDEO_LIST)
         requireContext().registerReceiver(
             downloadStatusReceiver,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
@@ -194,7 +196,8 @@ class CategoryDetailFragment : TimePassBaseFragment() {
             adapter = InstagramAdAdapter(
                 modelList = categoryVideoList,
                 railItemClickHandler = railItemClickHandler,
-                playerViewAdapter = playerViewAdapter
+                playerViewAdapter = playerViewAdapter,
+                advertisementType = CARD_ADMIN_VIDEO_LIST
             )
         }
         // setUpSnapShot()

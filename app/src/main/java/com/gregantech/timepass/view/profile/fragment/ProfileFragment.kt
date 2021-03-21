@@ -23,6 +23,7 @@ import com.gregantech.timepass.network.repository.LoginRepository
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeThreeModelList
 import com.gregantech.timepass.network.response.Video
+import com.gregantech.timepass.util.BANNER_OTHER_USER_PROFILE
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.*
 import com.gregantech.timepass.util.recyclerview.itemdecoration.GridItemDecoration
@@ -31,7 +32,7 @@ import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.profile.activity.ProfileActivity
 import com.gregantech.timepass.view.profile.activity.UserVideoListActivity
 import com.gregantech.timepass.view.profile.viewmodel.ProfileFragmentViewModel
-import com.gregantech.timepass.view.splash.SplashActivity
+import com.gregantech.timepass.view.splash.activity.SplashActivity
 import com.gregantech.timepass.view.userlist.activity.UserListActivity
 import com.gregantech.timepass.widget.PaginationScrollListener
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -165,7 +166,7 @@ class ProfileFragment : TimePassBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initBannerAd(frmProfileBannerContainer)
+        initBannerAd(frmProfileBannerContainer, BANNER_OTHER_USER_PROFILE)
         viewModelFactory =
             ProfileFragmentViewModel.Factory(
                 VideoListRepository(),

@@ -22,6 +22,7 @@ import com.gregantech.timepass.network.repository.bridge.toRailItemTypeThreeMode
 import com.gregantech.timepass.network.repository.local.UserProfileScreenRepository
 import com.gregantech.timepass.network.response.User
 import com.gregantech.timepass.network.response.Video
+import com.gregantech.timepass.util.BANNER_USER_PROFILE
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.*
 import com.gregantech.timepass.util.recyclerview.itemdecoration.GridItemDecoration
@@ -117,7 +118,7 @@ class UserProfileActivity : TimePassBaseActivity() {
 
     private fun initDataBinding() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_user_profile)
-        initBannerAd(binding.frmUsrProfileBannerContainer)
+        initBannerAd(binding.frmUsrProfileBannerContainer, BANNER_USER_PROFILE)
     }
 
     private fun setUserData() {

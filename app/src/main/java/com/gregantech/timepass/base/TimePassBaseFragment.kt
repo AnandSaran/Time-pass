@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.model.RailItemTypeTwoModel
+import com.gregantech.timepass.util.AdvertisementHandler
 import com.gregantech.timepass.util.constant.RAW_DOWNLOAD_PATH
 import com.gregantech.timepass.util.extension.isFileDownloaded
 import com.gregantech.timepass.util.extension.shareFile
@@ -49,14 +49,14 @@ abstract class TimePassBaseFragment : Fragment() {
         } else true
 
 
-    protected fun initBannerAd(bannerContainer: FrameLayout?) {
+    protected fun initBannerAd(bannerContainer: FrameLayout?, adType: Int) {
 
-        if (bannerContainer == null)
+        if (bannerContainer == null || !AdvertisementHandler.isAdEnabled(adType.toString()))
             return
 
         val adView = AdView(requireContext()).apply {
             adSize = AdSize.BANNER
-            adUnitId = BuildConfig.AD_BANNER
+            adUnitId = AdvertisementHandler.getAdUnitByType(adType)
             adListener = bannerAdListener
         }
 
@@ -89,13 +89,16 @@ abstract class TimePassBaseFragment : Fragment() {
     }
 
 
-    protected fun loadInterstitial() {
-        InterstitialAd.load(
-            requireContext(),
-            BuildConfig.AD_INTERSTITIAL,
-            AdRequest.Builder().build(),
-            interstitialListener
-        )
+    protected fun loadInterstitial(adType: Int) {
+        if (AdvertisementHandler.isAdEnabled(adType.toString())) {
+            InterstitialAd.load(
+                requireContext(),
+                AdvertisementHandler.getAdUnitByType(adType),
+                AdRequest.Builder().build(),
+                interstitialListener
+            )
+        } else
+            Log.e(TAG, "loadInterstitial: Full screen ad is not enabled")
     }
 
     private val interstitialListener = object : InterstitialAdLoadCallback() {

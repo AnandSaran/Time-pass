@@ -11,31 +11,39 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
-import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.databinding.ItemAdsBinding
+import com.gregantech.timepass.util.AdvertisementHandler
 import com.gregantech.timepass.util.extension.testDeviceList
 
-abstract class TimePassBaseAdAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class TimePassBaseAdAdapter(val adType: Int) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class AdViewHolder(private val binding: ItemAdsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun onBind() {
 
+            if (!AdvertisementHandler.isAdEnabled(adType.toString())) {
+                Log.e("TimePassBaseAdAdapter", "onBind: Ad is not enabled $adType")
+                return
+            }
+
+
             var currentNativeAd: NativeAd? = null
 
-            val builder = AdLoader.Builder(itemView.context, BuildConfig.AD_NATIVE)
-                .forNativeAd { nativeAd ->
-                    // You must call destroy on old ads when you are done with them,
-                    // otherwise you will have a memory leak.
-                    currentNativeAd?.destroy()
-                    currentNativeAd = nativeAd
-                    val layoutInflater = LayoutInflater.from(itemView.context)
-                    val adView = layoutInflater
-                        .inflate(R.layout.item_native_adview, null) as NativeAdView
-                    populateNativeAdView(nativeAd, adView)
-                    binding.frameAdContainer.removeAllViews()
+            val builder =
+                AdLoader.Builder(itemView.context, AdvertisementHandler.getAdUnitByType(adType))
+                    .forNativeAd { nativeAd ->
+                        // You must call destroy on old ads when you are done with them,
+                        // otherwise you will have a memory leak.
+                        currentNativeAd?.destroy()
+                        currentNativeAd = nativeAd
+                        val layoutInflater = LayoutInflater.from(itemView.context)
+                        val adView = layoutInflater
+                            .inflate(R.layout.item_native_adview, null) as NativeAdView
+                        populateNativeAdView(nativeAd, adView)
+                        binding.frameAdContainer.removeAllViews()
                     binding.frameAdContainer.addView(adView)
 
                 }

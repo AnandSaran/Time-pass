@@ -24,8 +24,9 @@ import java.util.*
 class InstagramAdAdapter(
     private var modelList: ArrayList<RailBaseItemModel>,
     private val railItemClickHandler: RailItemClickHandler,
-    private val playerViewAdapter: NewPlayerViewAdapter
-) : TimePassBaseAdAdapter() {
+    private val playerViewAdapter: NewPlayerViewAdapter,
+    advertisementType: Int
+) : TimePassBaseAdAdapter(advertisementType) {
 
     override fun onCreateViewHolder(
         viewGroup: ViewGroup,

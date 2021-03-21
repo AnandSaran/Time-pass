@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.ads.*
-import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.model.DownloadResult
 import com.gregantech.timepass.model.RailItemTypeTwoModel
+import com.gregantech.timepass.util.AdvertisementHandler
 import com.gregantech.timepass.util.constant.RAW_DOWNLOAD_PATH
 import com.gregantech.timepass.util.extension.*
 import com.gregantech.timepass.widget.CustomProgressbar
@@ -74,14 +74,14 @@ abstract class TimePassBaseActivity : AppCompatActivity() {
         }
     }
 
-    protected fun initBannerAd(bannerContainer: FrameLayout?) {
+    protected fun initBannerAd(bannerContainer: FrameLayout?, adType: Int) {
 
-        if (bannerContainer == null)
+        if (bannerContainer == null || !AdvertisementHandler.isAdEnabled(adType.toString()))
             return
 
         val adView = AdView(this).apply {
             adSize = AdSize.BANNER
-            adUnitId = BuildConfig.AD_BANNER
+            adUnitId = AdvertisementHandler.getAdUnitByType(adType)
             adListener = bannerAdListener
         }
 

@@ -31,6 +31,7 @@ import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
 import com.gregantech.timepass.network.response.User
 import com.gregantech.timepass.network.response.Video
+import com.gregantech.timepass.util.CARD_OTHER_USER_VIDEO_LIST
 import com.gregantech.timepass.util.NewPlayerViewAdapter
 import com.gregantech.timepass.util.Run
 import com.gregantech.timepass.util.constant.*
@@ -285,7 +286,8 @@ class UserVideoListActivity : TimePassBaseActivity() {
             adapter = InstagramAdAdapter(
                 categoryVideoList,
                 railItemClickHandler,
-                playerViewAdapter
+                playerViewAdapter,
+                CARD_OTHER_USER_VIDEO_LIST
             )
             layoutManager?.scrollToPosition(scrollToPosition)
             setupRecyclerViewScrollListener()

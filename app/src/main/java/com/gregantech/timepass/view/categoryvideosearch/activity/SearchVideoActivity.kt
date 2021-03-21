@@ -19,7 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
-import com.gregantech.timepass.adapter.rail.InstagramAdapter
+import com.gregantech.timepass.adapter.rail.InstagramAdAdapter
 import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivitySearchVideoBinding
@@ -33,6 +33,7 @@ import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.model.getStrippedFileName
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
+import com.gregantech.timepass.util.CARD_OTHER_USER_VIDEO_LIST
 import com.gregantech.timepass.util.NewPlayerViewAdapter
 import com.gregantech.timepass.util.Run
 import com.gregantech.timepass.util.constant.EMPTY_LONG
@@ -260,10 +261,11 @@ class SearchVideoActivity : TimePassBaseActivity() {
     private fun setupRecyclerView(categoryVideoList: ArrayList<RailBaseItemModel>) {
         binding.rvSearchVid.apply {
             setHasFixedSize(true)
-            adapter = InstagramAdapter(
+            adapter = InstagramAdAdapter(
                 modelList = categoryVideoList,
                 railItemClickHandler = railItemClickHandler,
-                playerViewAdapter = playerViewAdapter
+                playerViewAdapter = playerViewAdapter,
+                advertisementType = CARD_OTHER_USER_VIDEO_LIST
             )
         }
         setupRecyclerViewScrollListener()

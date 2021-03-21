@@ -17,3 +17,4 @@
 /.idea/compiler.xml
 /.idea/jarRepositories.xml
 /app/src/main/res/xml/file_path.xml
+/secret.properties

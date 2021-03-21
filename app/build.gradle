@@ -36,11 +36,13 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
         release {
             minifyEnabled false
+            debuggable true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
@@ -51,17 +53,21 @@ android {
         dev {
             applicationIdSuffix ".dev"
             resValue "string", "app_name", "Time pass DEV"
-            buildConfigField "String", "BASEURL", "\"http://timepass.net.in/app-api/\""
-            buildConfigField "String", "AD_BANNER", "\"ca-app-pub-3940256099942544/6300978111/\""
-            buildConfigField "String", "AD_NATIVE", "\"ca-app-pub-3940256099942544/2247696110/\""
-            buildConfigField "String", "AD_INTERSTITIAL", "\"ca-app-pub-3940256099942544/1033173712/\""
+            buildConfigField "String", "BASEURL",  "\"" + getDevBaseUrl() + "\""
+            buildConfigField "String", "BANNER_OTHER_USER_PROFILE",  "\"" + getDevBannerOtherUserProfileId() + "\""
+            buildConfigField "String", "BANNER_USER_PROFILE",  "\"" + getDevBannerUserProfileId() + "\""
+            buildConfigField "String", "BANNER_ADMIN_VIDEO_CATEGORY",  "\"" + getDevBannerAdminVideoCategoryId() + "\""
+            buildConfigField "String", "CARD_NATIVE",  "\"" + getDevNativeAdId() + "\""
+            buildConfigField "String", "FULL_SCREEN_ADMIN_VIDEO_LIST",  "\"" + getDevFullScreenId() + "\""
         }
         prod {
             resValue "string", "app_name", "Time pass"
-            buildConfigField "String", "BASEURL", "\"http://timepass.net.in/app-api/\""
-            buildConfigField "String", "AD_BANNER", "\"ca-app-pub-3940256099942544/6300978111/\""
-            buildConfigField "String", "AD_NATIVE", "\"ca-app-pub-3940256099942544/2247696110/\""
-            buildConfigField "String", "AD_INTERSTITIAL", "\"ca-app-pub-3940256099942544/1033173712/\""
+            buildConfigField "String", "BASEURL", "\"" + getProdBaseUrl() + "\""
+            buildConfigField "String", "BANNER_OTHER_USER_PROFILE",  "\"" + getProdBannerOtherUserProfileId() + "\""
+            buildConfigField "String", "BANNER_USER_PROFILE",  "\"" + getProdBannerUserProfileId() + "\""
+            buildConfigField "String", "BANNER_ADMIN_VIDEO_CATEGORY",  "\"" + getProdBannerAdminVideoCategoryId() + "\""
+            buildConfigField "String", "CARD_NATIVE",  "\"" + getProdNativeAdId() + "\""
+            buildConfigField "String", "FULL_SCREEN_ADMIN_VIDEO_LIST",  "\"" + getProdFullScreenId() + "\""
         }
     }
 
@@ -88,6 +94,80 @@ android {
         abortOnError false
     }
 }
+
+static def getDevBaseUrl() {
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('secret.properties')))
+    return props['DEV_BASE_URL']
+}
+
+static def getDevBannerOtherUserProfileId() {
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('secret.properties')))
+    return props['DEV_BANNER_OTHER_USER_PROFILE']
+}
+
+static def getDevBannerUserProfileId() {
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('secret.properties')))
+    return props['DEV_BANNER_USER_PROFILE']
+}
+
+static def getDevBannerAdminVideoCategoryId() {
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('secret.properties')))
+    return props['DEV_BANNER_ADMIN_VIDEO_CATEGORY']
+}
+
+static def getDevFullScreenId() {
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('secret.properties')))
+    return props['DEV_FULL_SCREEN_ADMIN_VIDEO_LIST']
+}
+
+static def getDevNativeAdId() {
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('secret.properties')))
+    return props['DEV_NATIVE_AD']
+}
+
+static def getProdBaseUrl() {
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('secret.properties')))
+    return props['PRODUCTION_BASE_URL']
+}
+
+static def getProdBannerOtherUserProfileId() {
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('secret.properties')))
+    return props['PRODUCTION_BANNER_OTHER_USER_PROFILE']
+}
+
+static def getProdBannerUserProfileId() {
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('secret.properties')))
+    return props['PRODUCTION_BANNER_USER_PROFILE']
+}
+
+static def getProdBannerAdminVideoCategoryId() {
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('secret.properties')))
+    return props['PRODUCTION_BANNER_ADMIN_VIDEO_CATEGORY']
+}
+
+static def getProdFullScreenId() {
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('secret.properties')))
+    return props['PRODUCTION_FULL_SCREEN_ADMIN_VIDEO_LIST']
+}
+
+static def getProdNativeAdId() {
+    Properties props = new Properties()
+    props.load(new FileInputStream(new File('secret.properties')))
+    return props['PRODUCTION_NATIVE_AD']
+}
+
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

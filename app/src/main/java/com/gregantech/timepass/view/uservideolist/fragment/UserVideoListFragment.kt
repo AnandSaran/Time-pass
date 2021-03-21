@@ -40,6 +40,7 @@ import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
 import com.gregantech.timepass.network.response.Video
+import com.gregantech.timepass.util.CARD_HOME_VIDEO_LIST
 import com.gregantech.timepass.util.NewPlayerViewAdapter
 import com.gregantech.timepass.util.Run
 import com.gregantech.timepass.util.URIPathHelper
@@ -237,7 +238,8 @@ class UserVideoListFragment : TimePassBaseFragment() {
             adapter = InstagramAdAdapter(
                 modelList = categoryVideoList,
                 railItemClickHandler = railItemClickHandler,
-                playerViewAdapter = playerViewAdapter
+                playerViewAdapter = playerViewAdapter,
+                advertisementType = CARD_HOME_VIDEO_LIST
             )
         }
         // setUpSnapShot()

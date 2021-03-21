@@ -22,8 +22,7 @@
         android:usesCleartextTraffic="true">
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
-
+            android:value="ca-app-pub-4941235250800500~2133375954" />
 
         <activity
             android:name=".view.userlist.activity.UserListActivity"
@@ -59,7 +58,7 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/FullScreen" />
         <activity
-            android:name=".view.splash.SplashActivity"
+            android:name=".view.splash.activity.SplashActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
