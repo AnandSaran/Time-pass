@@ -215,7 +215,12 @@ class UserVideoListFragment : TimePassBaseFragment() {
                     TimePassBaseResult.Status.SUCCESS -> {
                         categoryListResponse.data?.let {
                             isLastData = it.is_last
-                            railList.addAll(it.video.toRailItemTypeTwoModelList(isShowProfile = true))
+                            railList.addAll(
+                                it.video.toRailItemTypeTwoModelList(
+                                    isShowProfile = true,
+                                    advertisementName = CARD_HOME_VIDEO_LIST
+                                )
+                            )
                             setupRecyclerView(railList)
                         }
                     }
@@ -414,7 +419,12 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
                         categoryListResponse.data?.let {
                             isLastData = it.is_last
-                            addMoreVideoList(it.video.toRailItemTypeTwoModelList(isShowProfile = true))
+                            addMoreVideoList(
+                                it.video.toRailItemTypeTwoModelList(
+                                    isShowProfile = true,
+                                    advertisementName = CARD_HOME_VIDEO_LIST
+                                )
+                            )
                         }
                     }
                     TimePassBaseResult.Status.ERROR -> {

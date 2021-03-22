@@ -6,6 +6,7 @@ import com.gregantech.timepass.model.RailItemTypeThreeModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.network.response.Category
 import com.gregantech.timepass.network.response.Video
+import com.gregantech.timepass.util.AdvertisementHandler
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 
 fun List<Category>.toRailItemTypeOneModelList(): ArrayList<RailBaseItemModel> {
@@ -20,12 +21,16 @@ fun List<Category>.toRailItemTypeOneModelList(): ArrayList<RailBaseItemModel> {
 
 fun List<Video>.toRailItemTypeTwoModelList(
     isShowFollow: Boolean = true,
-    isShowProfile: Boolean = false
+    isShowProfile: Boolean = false,
+    advertisementName: String
 ): ArrayList<RailBaseItemModel> {
     val rawList = this as MutableList
-    for (i in 1..rawList.size) {
-        if (i % 4 == 0) // add after 3rd item
-            rawList.add(i - 1, Video(viewType = 1))
+
+    if (AdvertisementHandler.isAdEnabled(advertisementName)) {
+        for (i in 1..rawList.size) {
+            if (i % 4 == 0) // add after 3rd item
+                rawList.add(i - 1, Video(viewType = 1))
+        }
     }
     return ArrayList(rawList.map { video ->
         video.toRailItemTypeTwoModel(isShowFollow, isShowProfile)
