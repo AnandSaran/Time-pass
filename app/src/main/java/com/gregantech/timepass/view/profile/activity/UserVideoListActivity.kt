@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,6 +16,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
 import com.gregantech.timepass.adapter.rail.InstagramAdAdapter
@@ -57,6 +60,7 @@ class UserVideoListActivity : TimePassBaseActivity() {
     private val playerViewAdapter = NewPlayerViewAdapter()
     var downloadID: Long? = null
     var isRegistered = false
+    private var smoothScroller: RecyclerView.SmoothScroller? = null
 
     private lateinit var userPostViewModelFactory: UserPostViewModel.Factory
 
@@ -282,6 +286,13 @@ class UserVideoListActivity : TimePassBaseActivity() {
     }
 
     private fun setupRecyclerView(categoryVideoList: ArrayList<RailBaseItemModel>) {
+
+        smoothScroller = object : LinearSmoothScroller(this) {
+            override fun getVerticalSnapPreference(): Int {
+                return SNAP_TO_START
+            }
+        }
+
         binding.rvUserVideoList.apply {
             adapter = InstagramAdAdapter(
                 categoryVideoList,
@@ -289,7 +300,11 @@ class UserVideoListActivity : TimePassBaseActivity() {
                 playerViewAdapter,
                 CARD_OTHER_USER_VIDEO_LIST
             )
-            layoutManager?.scrollToPosition(scrollToPosition)
+            Log.d(TAG, "setupRecyclerView: scrollToPosition $scrollToPosition")
+            post {
+                smoothScroller?.targetPosition = scrollToPosition
+                layoutManager?.startSmoothScroll(smoothScroller)
+            }
             setupRecyclerViewScrollListener()
         }
     }

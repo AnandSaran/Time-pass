@@ -305,7 +305,13 @@ class ProfileFragment : TimePassBaseFragment() {
     }
 
     private fun displayUserVideoListPage(contentId: String) {
-        val scrollToPosition = videoList.indexOfFirst { it.Id == contentId }
+        var scrollToPosition = videoList.indexOfFirst { it.Id == contentId }
+
+        val intervalLevel = scrollToPosition / 3
+
+        if (scrollToPosition >= 3)
+            scrollToPosition += intervalLevel
+
         UserVideoListActivity.present(
             ctxt,
             SharedPreferenceHelper.getUserId(),
