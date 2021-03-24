@@ -212,7 +212,7 @@ class UserVideoListActivity : TimePassBaseActivity() {
         railList =
             (intent.getParcelableArrayListExtra<Video>(UserVideoListActivityBundleKeyEnum.VIDEO_LIST.value)
                 ?: arrayListOf())
-                .toRailItemTypeTwoModelList(false)
+                .toRailItemTypeTwoModelList(false, advertisementName = CARD_OTHER_USER_VIDEO_LIST)
         isLastData = intent.getBooleanExtra(
             UserVideoListActivityBundleKeyEnum.IS_LAST_DATA.value, EMPTY_BOOLEAN
         )
@@ -331,7 +331,12 @@ class UserVideoListActivity : TimePassBaseActivity() {
 
                         categoryListResponse.data?.let {
                             isLastData = it.is_last
-                            addMoreVideoList(it.video.toRailItemTypeTwoModelList(false))
+                            addMoreVideoList(
+                                it.video.toRailItemTypeTwoModelList(
+                                    false,
+                                    advertisementName = CARD_OTHER_USER_VIDEO_LIST
+                                )
+                            )
                         }
                     }
                     TimePassBaseResult.Status.ERROR -> {

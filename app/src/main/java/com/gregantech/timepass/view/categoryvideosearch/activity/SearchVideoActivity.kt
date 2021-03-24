@@ -34,6 +34,7 @@ import com.gregantech.timepass.model.getStrippedFileName
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
 import com.gregantech.timepass.util.CARD_OTHER_USER_VIDEO_LIST
+import com.gregantech.timepass.util.CARD_SEARCH_ADMIN_VIDEO_LIST
 import com.gregantech.timepass.util.NewPlayerViewAdapter
 import com.gregantech.timepass.util.Run
 import com.gregantech.timepass.util.constant.EMPTY_LONG
@@ -238,7 +239,12 @@ class SearchVideoActivity : TimePassBaseActivity() {
                     resultOf.data?.let {
                         railList.apply {
                             clear()
-                            addAll(it.video.toRailItemTypeTwoModelList(isShowProfile = false))
+                            addAll(
+                                it.video.toRailItemTypeTwoModelList(
+                                    isShowProfile = false,
+                                    advertisementName = CARD_SEARCH_ADMIN_VIDEO_LIST
+                                )
+                            )
                         }
                         playerViewAdapter.run {
                             releaseAllPlayers()

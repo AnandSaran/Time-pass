@@ -24,12 +24,6 @@ abstract class TimePassBaseAdAdapter(val adName: String) :
 
         fun onBind() {
 
-            if (!AdvertisementHandler.isAdEnabled(adName)) {
-                Log.e("TimePassBaseAdAdapter", "onBind: Ad is not enabled for $adName")
-                return
-            }
-
-
             var currentNativeAd: NativeAd? = null
 
             val builder =
