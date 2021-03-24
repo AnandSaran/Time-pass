@@ -21,7 +21,7 @@ const val ZERO = "0"
 const val JUST_NOW = "Just now"
 
 const val RAW_DOWNLOAD_PATH = "/storage/emulated/0/Movies/"
-
+const val APP_PLAYSTORE_LINK = "https://play.google.com/store/apps/details?id=com.adroit.timepass"
 const val SUBJECT = "Timepass"
 const val BODY =
     "This file is download from Timepass App \nhttps://play.google.com/store/apps/details?id=com.adroit.timepass"
