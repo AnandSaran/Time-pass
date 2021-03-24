@@ -3,7 +3,6 @@ package com.gregantech.timepass.view.home.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -53,17 +52,21 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
         super.onCreate(savedInstanceState)
         initDataBinding()
         setupViewModelFactory()
-        doFetchAppConfig()
         initView()
         setupDestinationChangedListener()
         initViewModelFactory()
         onClickBottomNavigation()
+    }
 
+    override fun onResume() {
+        super.onResume()
+        doFetchAppConfig()
     }
 
     private fun setupViewModelFactory() {
         appConfigViewModelFactory = AppConfigViewModel.Factory(AppConfigRepository())
     }
+
 
     private fun doFetchAppConfig() {
         appConfigViewModel.getAppConfig().observe(this, Observer { resultOf ->
@@ -71,13 +74,9 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
                 TimePassBaseResult.Status.LOADING -> {
                 }
                 TimePassBaseResult.Status.SUCCESS -> {
-                    resultOf.data?.app?.get(0)?.run {
+                    resultOf.data?.App?.get(0)?.run {
                         val newVersion = appVersion?.toInt() ?: 0
-                        Log.d(
-                            TAG,
-                            "doFetchAppConfig: newVersion $newVersion currentVersion ${BuildConfig.VERSION_CODE}"
-                        )
-                        if (newVersion < BuildConfig.VERSION_CODE)
+                        if (newVersion > BuildConfig.VERSION_CODE)
                             showUpdateDialog(this)
                     }
                 }
@@ -89,7 +88,7 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
     }
 
     private fun showUpdateDialog(appItem: AppConfigResponse.AppItem) {
-        with(AlertDialog.Builder(this, R.style.AlertDialogTheme)) {
+        with(AlertDialog.Builder(this)) {
             setCancelable(false)
             setTitle(appItem.title)
             setMessage(appItem.message)

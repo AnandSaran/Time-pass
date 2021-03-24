@@ -2,7 +2,7 @@ package com.gregantech.timepass.model
 
 
 data class AppConfigResponse(
-	val app: List<AppItem?>? = null
+	val App: List<AppItem?>? = null
 ) {
 	data class AppItem(
 		val appVersion: String? = null,
