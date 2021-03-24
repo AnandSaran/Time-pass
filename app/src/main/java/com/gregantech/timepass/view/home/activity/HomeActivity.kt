@@ -3,19 +3,29 @@ package com.gregantech.timepass.view.home.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseActivity
+import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityCategoryBinding
+import com.gregantech.timepass.model.AppConfigResponse
+import com.gregantech.timepass.network.repository.AppConfigRepository
+import com.gregantech.timepass.util.constant.APP_PLAYSTORE_LINK
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+import com.gregantech.timepass.util.extension.openWebLink
+import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
-import com.gregantech.timepass.view.home.viewmodel.HomeSharedViewModel
+import com.gregantech.timepass.view.home.viewmodel.AppConfigViewModel
 import com.gregantech.timepass.view.uservideolist.fragment.UserVideoListFragment
 
 
@@ -23,6 +33,7 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
     private lateinit var binding: ActivityCategoryBinding
     private lateinit var navController: NavController
     private var selectedIndex: Int = -1
+    private lateinit var appConfigViewModelFactory: AppConfigViewModel.Factory
 
     companion object {
         fun present(context: Context) {
@@ -31,21 +42,63 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
         }
     }
 
-    private val homeSharedViewModel: HomeSharedViewModel by lazy {
+    private val appConfigViewModel: AppConfigViewModel by lazy {
         requireNotNull(this) {
             VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
         }
-        ViewModelProvider(this).get(HomeSharedViewModel::class.java)
+        ViewModelProvider(this, appConfigViewModelFactory).get(AppConfigViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initDataBinding()
+        setupViewModelFactory()
+        doFetchAppConfig()
         initView()
         setupDestinationChangedListener()
         initViewModelFactory()
         onClickBottomNavigation()
 
+    }
+
+    private fun setupViewModelFactory() {
+        appConfigViewModelFactory = AppConfigViewModel.Factory(AppConfigRepository())
+    }
+
+    private fun doFetchAppConfig() {
+        appConfigViewModel.getAppConfig().observe(this, Observer { resultOf ->
+            when (resultOf.status) {
+                TimePassBaseResult.Status.LOADING -> {
+                }
+                TimePassBaseResult.Status.SUCCESS -> {
+                    resultOf.data?.app?.get(0)?.run {
+                        val newVersion = appVersion?.toInt() ?: 0
+                        Log.d(
+                            TAG,
+                            "doFetchAppConfig: newVersion $newVersion currentVersion ${BuildConfig.VERSION_CODE}"
+                        )
+                        if (newVersion < BuildConfig.VERSION_CODE)
+                            showUpdateDialog(this)
+                    }
+                }
+                TimePassBaseResult.Status.ERROR -> {
+                    resultOf.message?.toast(this)
+                }
+            }
+        })
+    }
+
+    private fun showUpdateDialog(appItem: AppConfigResponse.AppItem) {
+        with(AlertDialog.Builder(this, R.style.AlertDialogTheme)) {
+            setCancelable(false)
+            setTitle(appItem.title)
+            setMessage(appItem.message)
+            setPositiveButton(getString(R.string.update)) { dialog, which ->
+                openWebLink(APP_PLAYSTORE_LINK)
+                dialog.dismiss()
+            }
+            show()
+        }
     }
 
     override fun onSupportNavigateUp() =
