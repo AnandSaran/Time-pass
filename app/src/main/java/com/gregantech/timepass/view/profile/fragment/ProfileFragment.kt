@@ -23,7 +23,9 @@ import com.gregantech.timepass.network.repository.LoginRepository
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeThreeModelList
 import com.gregantech.timepass.network.response.Video
+import com.gregantech.timepass.util.AdvertisementHandler
 import com.gregantech.timepass.util.BANNER_OTHER_USER_PROFILE
+import com.gregantech.timepass.util.CARD_OTHER_USER_VIDEO_LIST
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.*
 import com.gregantech.timepass.util.recyclerview.itemdecoration.GridItemDecoration
@@ -307,10 +309,12 @@ class ProfileFragment : TimePassBaseFragment() {
     private fun displayUserVideoListPage(contentId: String) {
         var scrollToPosition = videoList.indexOfFirst { it.Id == contentId }
 
-        val intervalLevel = scrollToPosition / 3
+        if (AdvertisementHandler.isAdEnabled(CARD_OTHER_USER_VIDEO_LIST)) {
+            val intervalLevel = scrollToPosition / 3
 
-        if (scrollToPosition >= 3)
-            scrollToPosition += intervalLevel
+            if (scrollToPosition >= 3)
+                scrollToPosition += intervalLevel
+        }
 
         UserVideoListActivity.present(
             ctxt,
