@@ -80,8 +80,8 @@ fun Context.shareFile(filePath: String?, mimeType: String? = null) {
             action = Intent.ACTION_SEND
             type = mimeType ?: uri.getMimeTypeForIntent()
             putExtra(Intent.EXTRA_STREAM, uri)
-            putExtra(Intent.EXTRA_SUBJECT, SUBJECT)
-            putExtra(Intent.EXTRA_TEXT, BODY)
+            //putExtra(Intent.EXTRA_SUBJECT, SUBJECT)
+           // putExtra(Intent.EXTRA_TEXT, BODY)
         }
         startActivity(Intent.createChooser(shareIntent, "Share using"))
     }

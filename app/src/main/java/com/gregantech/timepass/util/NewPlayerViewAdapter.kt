@@ -3,6 +3,7 @@ package com.gregantech.timepass.util
 import android.net.Uri
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -77,7 +78,10 @@ class NewPlayerViewAdapter() {
         playerView: PlayerView
     ) {
         val context = playerView.context
-        val player = SimpleExoPlayer.Builder(context).build()
+        val loadControl =
+            DefaultLoadControl.Builder().setBufferDurationsMs(32 * 1024, 64 * 1024, 1024, 1024)
+                .createDefaultLoadControl()
+        val player = SimpleExoPlayer.Builder(context).setLoadControl(loadControl).build()
         player.playWhenReady = false
         player.repeatMode = Player.REPEAT_MODE_ALL
         // When changing track, retain the latest frame instead of showing a black screen
@@ -131,7 +135,7 @@ class NewPlayerViewAdapter() {
                     // set progress bar visible here
                     // set thumbnail visible
                     //  thumbnail.visibility = View.VISIBLE
-                    progressbar.visibility = View.VISIBLE
+                    progressbar.visibility = View.GONE
                 }
 
                 if (playbackState == Player.STATE_READY) {

@@ -11,14 +11,12 @@ import androidx.databinding.DataBindingUtil
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.*
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.BandwidthMeter
-import com.google.android.exoplayer2.upstream.DataSource
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.*
 import com.google.android.exoplayer2.util.Util
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseActivity
@@ -82,7 +80,14 @@ class PlayerActivity : TimePassBaseActivity() {
 
 
         // 2. Create the player
-        videoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
+       // videoPlayer = ExoPlayerFactory.newSimpleInstance(this, trackSelector)
+
+        val loadControl =
+            DefaultLoadControl.Builder().setBufferDurationsMs(32 * 1024, 64 * 1024, 1024, 1024)
+                .createDefaultLoadControl()
+         videoPlayer = SimpleExoPlayer.Builder(this).setLoadControl(loadControl).build()
+
+
         videoSurfaceView.useController = true
         videoSurfaceView.player = videoPlayer
     }
@@ -112,8 +117,9 @@ class PlayerActivity : TimePassBaseActivity() {
                 )
             )
         if (mediaUrl.isNotEmpty()) {
-            val videoSource: MediaSource = ExtractorMediaSource.Factory(dataSourceFactory)
+            val videoSource = ProgressiveMediaSource.Factory(DefaultHttpDataSourceFactory("Demo"))
                 .createMediaSource(Uri.parse(mediaUrl))
+
             videoPlayer.prepare(videoSource)
             videoPlayer.seekTo(resumePosition)
             videoPlayer.playWhenReady = true
