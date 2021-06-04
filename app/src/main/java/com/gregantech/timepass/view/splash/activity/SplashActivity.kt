@@ -39,6 +39,7 @@ class SplashActivity : TimePassBaseActivity() {
             when (result.status) {
                 TimePassBaseResult.Status.SUCCESS -> {
                     AdvertisementHandler.advertisementResponse = result.data
+                    SharedPreferenceHelper.setLiveEnabled(true) //dynamic
                     Handler().postDelayed({ navigateNextScreen() }, 0)
                 }
                 TimePassBaseResult.Status.LOADING -> {
