@@ -10,6 +10,8 @@ import android.util.Log
 import android.webkit.MimeTypeMap
 import android.webkit.URLUtil
 import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.model.DownloadResult
@@ -193,6 +195,10 @@ fun Activity.openFile(file: File) {
         }
 
     }
+}
+
+fun RecyclerView.horizontalView(context: Context) {
+    layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 }
 
 fun getMimeType(file: File): String? {
