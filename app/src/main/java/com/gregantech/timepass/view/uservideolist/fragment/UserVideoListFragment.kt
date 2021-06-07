@@ -284,8 +284,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     private fun onClickCreateVideo() {
         binding.fabCreateVideo.setOnClickListener {
-            startActivity(Intent(requireContext(), LiveVideoBroadCastActivity::class.java))
-            //askVideoPermission()
+            askVideoPermission()
         }
     }
 

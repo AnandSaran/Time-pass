@@ -3,10 +3,7 @@ package com.gregantech.timepass.view.live.activity
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.ActivityNotFoundException
-import android.content.ComponentName
-import android.content.Intent
-import android.content.ServiceConnection
+import android.content.*
 import android.content.res.Configuration
 import android.hardware.Camera
 import android.net.Uri
@@ -15,6 +12,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Message
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -27,9 +25,11 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.gregantech.timepass.R
 import com.gregantech.timepass.databinding.ActivityLiveVideoBroadCastBinding
+import com.gregantech.timepass.general.bundklekey.ProfileActivityBundleKeyEnum
 import com.gregantech.timepass.util.extension.gone
 import com.gregantech.timepass.util.extension.show
 import com.gregantech.timepass.view.live.fragment.CameraResolutionFragment
+import com.gregantech.timepass.view.profile.activity.ProfileActivity
 import io.antmedia.android.broadcaster.ILiveVideoBroadcaster
 import io.antmedia.android.broadcaster.LiveVideoBroadcaster
 import io.antmedia.android.broadcaster.utils.Resolution
@@ -55,6 +55,13 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
     private var isMuted = false
     private var isRecording = false
     private var RTMP = "rtmp://148.66.129.86/LiveApp/"
+
+    companion object {
+        fun present(context: Context) {
+            val intent = Intent(context, LiveVideoBroadCastActivity::class.java)
+            context.startActivity(intent)
+        }
+    }
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(className: ComponentName?, service: IBinder?) {
@@ -161,9 +168,7 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (cameraResolutionDialog?.isVisible == true) {
-            cameraResolutionDialog?.dismiss()
-        }
+        cameraResolutionDialog?.dismiss()
         liveVideoBroadCaster?.pause()
     }
 
@@ -181,7 +186,6 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
 
 
     public fun showSetResolutionDialog(v: View) {
-        Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()
         val ft = supportFragmentManager.beginTransaction()
         val fragDialog = supportFragmentManager.findFragmentByTag("dialog")
         fragDialog?.let {
@@ -189,6 +193,8 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
         }
 
         val sizeList = liveVideoBroadCaster?.previewSizeList
+
+        Log.d("LiveVideoBroadcast", "showSetResolutionDialog: sizeList ${sizeList?.size}")
 
         if (sizeList?.isNotEmpty() == true) {
             cameraResolutionDialog = CameraResolutionFragment()
@@ -292,6 +298,7 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
     }
 
     fun setResolution(size: Resolution) {
+        cameraResolutionDialog?.dismiss()
         liveVideoBroadCaster?.setResolution(size)
     }
 

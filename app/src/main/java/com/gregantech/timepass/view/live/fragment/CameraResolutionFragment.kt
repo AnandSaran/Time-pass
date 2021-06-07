@@ -1,7 +1,7 @@
 package com.gregantech.timepass.view.live.fragment
 
-import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +23,7 @@ class CameraResolutionFragment : DialogFragment(), AdapterView.OnItemClickListen
     private val SELECTED_SIZE_WIDTH = "SELECTED_SIZE_WIDTH"
     private val SELECTED_SIZE_HEIGHT = "SELECTED_SIZE_HEIGHT"
     private var cameraResolutionListView : ListView?=null
-    private var cameraResolutionAdapter : CameResolutionsAdapter?=null
+    private var cameraResolutionAdapter = CameResolutionsAdapter()
     private var cameraResolutions : ArrayList<Resolution?>?=null
     private var selectedSizeWidth = 0
     private var selectedSizeHeight = 0
@@ -44,6 +44,15 @@ class CameraResolutionFragment : DialogFragment(), AdapterView.OnItemClickListen
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.cameraResolutionsListview.apply {
+            adapter = cameraResolutionAdapter
+            onItemClickListener = this@CameraResolutionFragment
+            choiceMode = ListView.CHOICE_MODE_SINGLE
+        }
+    }
+
     fun setCameraResolutions(
         camResolution: ArrayList<Resolution?>,
         selectedSize: Resolution
@@ -51,7 +60,7 @@ class CameraResolutionFragment : DialogFragment(), AdapterView.OnItemClickListen
         this.cameraResolutions = camResolution
         this.selectedSizeWidth = selectedSize.width
         this.selectedSizeHeight = selectedSize.height
-        cameraResolutionAdapter?.setCameResolutions(cameraResolutions)
+        cameraResolutionAdapter.setCameResolutions(cameraResolutions)
     }
 
     private fun setCameraResolution(size: Resolution){
@@ -80,13 +89,13 @@ class CameraResolutionFragment : DialogFragment(), AdapterView.OnItemClickListen
                 selectedSizeWidth = getInt(SELECTED_SIZE_WIDTH)
                 selectedSizeHeight = getInt(SELECTED_SIZE_HEIGHT)
             }
-            cameraResolutionAdapter?.setCameResolutions(cameraResolutions)
+            cameraResolutionAdapter.setCameResolutions(cameraResolutions)
         }
     }
 
 
     override fun onItemClick(p0: AdapterView<*>?, p1: View?, i: Int, l: Long) {
-        cameraResolutionAdapter?.getItem(i)?.let {
+        cameraResolutionAdapter.getItem(i)?.let {
             setCameraResolution(it)
         }
     }
@@ -115,7 +124,10 @@ class CameraResolutionFragment : DialogFragment(), AdapterView.OnItemClickListen
             val holder: ViewHolder
 
             if (convertView == null) {
-                convertView = LayoutInflater.from(activity).inflate(android.R.layout.simple_list_item_single_choice, null)
+                convertView = LayoutInflater.from(activity).inflate(
+                    android.R.layout.simple_list_item_single_choice,
+                    null
+                )
                 holder = ViewHolder()
                 with(convertView){
                     holder.resolutionText =
@@ -134,6 +146,9 @@ class CameraResolutionFragment : DialogFragment(), AdapterView.OnItemClickListen
                 run { cameraResolutionListView?.setItemChecked(i, true) }
             }
             val resolutionText = size?.width.toString() + " x " + size?.height
+
+            Log.d("CameraResolution", "getView: resolutionText $resolutionText")
+
             // adding auto resolution adding it to the first
             holder.resolutionText!!.text = resolutionText
             return convertView
