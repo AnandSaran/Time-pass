@@ -15,6 +15,7 @@ import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SnapHelper
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
+import com.gregantech.timepass.adapter.live.LiveUserAdapter
 import com.gregantech.timepass.adapter.rail.InstagramAdAdapter
 import com.gregantech.timepass.base.TimePassBaseFragment
 import com.gregantech.timepass.base.TimePassBaseResult
@@ -47,6 +49,7 @@ import com.gregantech.timepass.util.URIPathHelper
 import com.gregantech.timepass.util.constant.EMPTY_LONG
 import com.gregantech.timepass.util.constant.EMPTY_STRING
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+import com.gregantech.timepass.util.extension.horizontalView
 import com.gregantech.timepass.util.extension.shareDownloadedFile
 import com.gregantech.timepass.util.extension.smoothSnapToPosition
 import com.gregantech.timepass.util.extension.toast
@@ -223,6 +226,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
                                 )
                             )
                             setupRecyclerView(railList)
+                            setRecyclerLiveList()
                         }
                     }
                     TimePassBaseResult.Status.ERROR -> {
@@ -252,12 +256,21 @@ class UserVideoListFragment : TimePassBaseFragment() {
         setupRecyclerViewScrollListener()
     }
 
+    private fun setRecyclerLiveList(){
+        /*binding.rvLiveUserList.apply {
+            setHasFixedSize(true)
+            horizontalView(requireContext())
+            adapter = LiveUserAdapter()
+        }*/
+    }
+
     private fun setUpSnapShot() {
         val snapHelper: SnapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(binding.rvUserVideoList)
     }
 
     private fun setupRecyclerViewScrollListener() {
+
         binding.rvUserVideoList.addOnScrollListener(object :
             PaginationScrollListener(binding.rvUserVideoList.layoutManager as LinearLayoutManager) {
             override fun isLastPage(): Boolean {
