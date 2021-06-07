@@ -152,7 +152,6 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
                 R.id.categoryFragment -> {
                     navController.popBackStack(R.id.categoryFragment, true)
                     onSelectTab(R.id.categoryFragment)
-
                 }
                 R.id.userProfileFragment -> {
                     navController.popBackStack(R.id.userProfileFragment, true)

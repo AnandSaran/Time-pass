@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.view.View
 import android.webkit.MimeTypeMap
 import android.webkit.URLUtil
 import androidx.core.content.FileProvider
@@ -204,4 +205,17 @@ fun Context.openWebLink(link: String) {
     if (URLUtil.isValidUrl(link)) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
+}
+
+
+fun View.show() {
+    visibility = View.VISIBLE
+}
+
+fun View.hide() {
+    visibility = View.INVISIBLE
+}
+
+fun View.gone() {
+    visibility = View.GONE
 }

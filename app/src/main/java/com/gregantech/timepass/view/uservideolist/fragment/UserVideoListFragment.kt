@@ -56,6 +56,7 @@ import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoTrimmerActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoUploadActivity
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
+import com.gregantech.timepass.view.live.activity.LiveVideoBroadCastActivity
 import com.gregantech.timepass.view.player.activity.ImageViewActivity
 import com.gregantech.timepass.view.player.activity.PlayerActivity
 import com.gregantech.timepass.view.profile.activity.UserProfileActivity
@@ -283,7 +284,8 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     private fun onClickCreateVideo() {
         binding.fabCreateVideo.setOnClickListener {
-            askVideoPermission()
+            startActivity(Intent(requireContext(), LiveVideoBroadCastActivity::class.java))
+            //askVideoPermission()
         }
     }
 

@@ -170,6 +170,7 @@ static def getProdNativeAdId() {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':liveVideoBroadcasterSDK')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.appcompat:appcompat:$version_appcompat"
     implementation "androidx.core:core-ktx:$version_core"
