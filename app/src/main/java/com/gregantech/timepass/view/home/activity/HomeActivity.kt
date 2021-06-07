@@ -23,6 +23,7 @@ import com.gregantech.timepass.util.constant.APP_PLAYSTORE_LINK
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.openWebLink
 import com.gregantech.timepass.util.extension.toast
+import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
 import com.gregantech.timepass.view.home.viewmodel.AppConfigViewModel
 import com.gregantech.timepass.view.uservideolist.fragment.UserVideoListFragment
@@ -108,8 +109,12 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        bottomNav?.setupWithNavController(navController)
+        findViewById<BottomNavigationView>(R.id.bottomNavigation)?.run {
+            if (!SharedPreferenceHelper.isLiveEnabled()) {
+                menu.removeItem(R.id.categoryBroadcast)
+            }
+            setupWithNavController(navController)
+        }
     }
 
     private fun initDataBinding() {
@@ -148,6 +153,9 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
                 R.id.userVideoListFragment -> {
                     navController.popBackStack(R.id.userVideoListFragment, true)
                     onSelectTab(R.id.userVideoListFragment)
+                }
+                R.id.categoryBroadcast -> {
+
                 }
                 R.id.categoryFragment -> {
                     navController.popBackStack(R.id.categoryFragment, true)

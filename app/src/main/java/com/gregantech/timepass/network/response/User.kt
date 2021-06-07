@@ -30,5 +30,6 @@ data class User(
     @NullToEmptyString
     val bio: String = "",
     @NullToEmptyString
-    val youtube: String = ""
+    val youtube: String = "",
+    var isLiveEnabled: Boolean = false
 ) : Parcelable

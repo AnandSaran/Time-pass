@@ -5,7 +5,11 @@
         android:enabled="true"
         android:icon="@drawable/ic_home"
         tools:ignore="MenuTitle" />
-
+    <item
+        android:id="@+id/categoryBroadcast"
+        android:enabled="true"
+        android:icon="@drawable/ic_broadcast"
+        tools:ignore="MenuTitle" />
     <item
         android:id="@+id/categoryFragment"
         android:enabled="true"
