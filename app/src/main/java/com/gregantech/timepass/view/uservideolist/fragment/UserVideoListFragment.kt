@@ -74,6 +74,7 @@ import com.yalantis.ucrop.UCrop
 import java.io.File
 
 class UserVideoListFragment : TimePassBaseFragment() {
+
     private lateinit var binding: FragmentUserVideoListBinding
     private lateinit var ctxt: Context
     private lateinit var viewModelFactory: UserVideoListViewModel.Factory
@@ -257,11 +258,11 @@ class UserVideoListFragment : TimePassBaseFragment() {
     }
 
     private fun setRecyclerLiveList(){
-        /*binding.rvLiveUserList.apply {
+        binding.rvLiveUserList.apply {
             setHasFixedSize(true)
             horizontalView(requireContext())
             adapter = LiveUserAdapter()
-        }*/
+        }
     }
 
     private fun setUpSnapShot() {
