@@ -26,9 +26,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".view.live.activity.LiveVideoPlayerActivity"></activity>
-        <activity android:name="io.antmedia.android.liveVideoPlayer.LiveVideoPlayerActivity" />
-        <activity android:name=".view.live.activity.LiveVideoBroadCastActivity" />
+        <activity
+            android:name=".view.live.activity.LiveVideoPlayerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.live.activity.LiveVideoBroadCastActivity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

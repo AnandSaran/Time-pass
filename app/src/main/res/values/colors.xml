@@ -7,6 +7,7 @@
     <color name="background_color_grey_light">#F6F6F6</color>
     <color name="transparent">#00915E5E</color>
     <color name="text_color">#000000</color>
+    <color name="black">#000000</color>
     <color name="gray">#838383</color>
     <color name="bottom_navigation_divider">#CCCACA</color>
     <color name="ucrop_color_toolbar">@color/colorPrimary</color>

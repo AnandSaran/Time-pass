@@ -309,5 +309,9 @@ dependencies {
     implementation "com.google.android.gms:play-services-ads:$version_ad_mob"
 
     //Hyperlink
-    implementation 'com.klinkerapps:link_builder:2.0.5'
+    implementation "com.klinkerapps:link_builder:$version_auto_link"
+
+    //RTMP client
+    implementation "net.butterflytv.utils:rtmp-client:$version_rtmp_client"
+    compile 'com.google.android.exoplayer:extension-rtmp:2.7.3'
 }
