@@ -8,6 +8,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.gregantech.timepass.R
 import com.gregantech.timepass.databinding.ActivityLiveVideoPlayerBinding
+import com.gregantech.timepass.general.bundklekey.LivePlayerBundleKey
+import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.showSystemUI
 import com.gregantech.timepass.view.live.fragment.LivePlayerContentContainerFragment
@@ -16,7 +18,7 @@ import com.singtel.cast.utils.navigation.FragmentNavigationUtil
 
 class LiveVideoPlayerActivity : AppCompatActivity() {
 
-    private lateinit var drModePlayerBinding: ActivityLiveVideoPlayerBinding
+    private lateinit var binding: ActivityLiveVideoPlayerBinding
     private lateinit var viewModelFactory: LivePlayerSharedViewModel.Factory
 
     private val viewModel: LivePlayerSharedViewModel by lazy {
@@ -28,11 +30,24 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
         )
     }
 
+    private val playBackInfoModel by lazy {
+        if (intent.hasExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value)) {
+            intent.getParcelableExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value) as PlaybackInfoModel
+        } else {
+            PlaybackInfoModel()
+        }
+    }
+
     companion object {
         fun present(
-            context: Context
+            context: Context,
+            playbackInfoModel: PlaybackInfoModel
         ) {
             val intent = Intent(context, LiveVideoPlayerActivity::class.java).apply {
+                putExtra(
+                    LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value,
+                    playbackInfoModel
+                )
             }
             context.startActivity(intent)
         }
@@ -41,23 +56,23 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window?.showSystemUI(false)
-        drModePlayerBinding =
+        binding =
             DataBindingUtil.setContentView(this, R.layout.activity_live_video_player)
         setupViewModel()
         updatePlayBackInfo()
         updateTitle()
 
         if (savedInstanceState == null) {
-            showDrModePlayerContentContainerFragment()
+            showLivePlayerContentContainerFragment()
         }
 
     }
 
-    private fun showDrModePlayerContentContainerFragment() {
-        val drModePlayerContentFragment = LivePlayerContentContainerFragment.newInstance()
+    private fun showLivePlayerContentContainerFragment() {
+        val livePlayerContentContainerFragment = LivePlayerContentContainerFragment.newInstance()
 
         FragmentNavigationUtil.commitFragment(
-            drModePlayerContentFragment,
+            livePlayerContentContainerFragment,
             supportFragmentManager,
             R.id.playerContainer
         )
@@ -68,10 +83,10 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
     }
 
     private fun updatePlayBackInfo() {
-        // viewModel.updatePlayBack(playbackInfoModel)
+        viewModel.updatePlayBack(playBackInfoModel)
     }
 
     private fun updateTitle() {
-        // viewModel.updateTitle(title)
+        viewModel.updateTitle(playBackInfoModel.title)
     }
 }

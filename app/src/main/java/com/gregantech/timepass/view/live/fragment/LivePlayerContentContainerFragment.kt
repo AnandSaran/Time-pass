@@ -40,11 +40,11 @@ class LivePlayerContentContainerFragment : TimePassBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showDrModePlayerFragment()
+        showLivePlayerFragment()
         showChatFragment()
     }
 
-    private fun showDrModePlayerFragment() {
+    private fun showLivePlayerFragment() {
         val playerFragment = LivePlayerFragment.newInstance()
 
         commitFragment(playerFragment, childFragmentManager, R.id.playerContainer)

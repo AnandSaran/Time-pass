@@ -15,7 +15,7 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
 
 
-class CastPlayerHelper(
+class TimePassPlayerHelper(
     private val context: Context
 ) {
     private lateinit var playbackInfo: PlaybackInfoModel

@@ -6,6 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class PlaybackInfoModel(
+    val title: String = EMPTY_STRING,
     val url: String = EMPTY_STRING,
     val isLive: Boolean = true
 ) : Parcelable

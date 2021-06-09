@@ -15,7 +15,7 @@ import com.google.android.exoplayer2.util.EventLogger
 import com.gregantech.timepass.R
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.widget.player.listener.PlayerListener
-import com.gregantech.timepass.widget.player.helper.CastPlayerHelper
+import com.gregantech.timepass.widget.player.helper.TimePassPlayerHelper
 
 class TimePassPlayerView : FrameLayout {
 
@@ -68,7 +68,7 @@ class TimePassPlayerView : FrameLayout {
      */
     private lateinit var eventLogger: EventLogger
 
-    var castPlayerHelper = CastPlayerHelper(context)
+    var castPlayerHelper = TimePassPlayerHelper(context)
 
     init {
         initPlayerView()
