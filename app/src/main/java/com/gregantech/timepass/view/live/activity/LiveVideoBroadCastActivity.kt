@@ -60,15 +60,19 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
             context.startActivity(intent)
         }
     }
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initWindow()
-        timerHandler = TimerHandler()
-        startService(liveVideoBroadcasterServiceIntent)
+        setAssets()
         initBinding()
         initView()
         initClicks()
+    }
+
+    private fun setAssets() {
+        timerHandler = TimerHandler()
+        startService(liveVideoBroadcasterServiceIntent)
     }
 
     private fun initClicks() {
@@ -239,12 +243,14 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
                     withContext(Dispatchers.IO){
 
                         val resAwait = async { liveVideoBroadCaster?.startBroadcasting(url) }
-                        val res = resAwait.await() as Boolean
+                        val res = resAwait.await()
+                        Log.d("LiveVideoBroadcast", "toggleBroadcasting: res $res")
+                        val value = res as Boolean
 
                         withContext(Dispatchers.Main){
                             contentProgressBar.hide()
-                            isRecording = res
-                            if(res){
+                            isRecording = value
+                            if(value){
                                 with(binding){
                                     streamLiveStatus.show()
                                     toggleBroadcasting.setText(R.string.stop_broadcasting)
