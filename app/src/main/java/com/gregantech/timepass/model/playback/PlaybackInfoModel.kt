@@ -1,0 +1,11 @@
+package com.gregantech.timepass.model.playback
+
+import android.os.Parcelable
+import com.gregantech.timepass.util.constant.EMPTY_STRING
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class PlaybackInfoModel(
+    val url: String = EMPTY_STRING,
+    val isLive: Boolean = true
+) : Parcelable
