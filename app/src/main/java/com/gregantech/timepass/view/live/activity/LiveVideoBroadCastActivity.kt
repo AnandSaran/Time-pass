@@ -15,7 +15,6 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -23,13 +22,12 @@ import androidx.core.widget.ContentLoadingProgressBar
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
+import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.databinding.ActivityLiveVideoBroadCastBinding
-import com.gregantech.timepass.general.bundklekey.ProfileActivityBundleKeyEnum
 import com.gregantech.timepass.util.extension.gone
 import com.gregantech.timepass.util.extension.show
 import com.gregantech.timepass.view.live.fragment.CameraResolutionFragment
-import com.gregantech.timepass.view.profile.activity.ProfileActivity
 import io.antmedia.android.broadcaster.ILiveVideoBroadcaster
 import io.antmedia.android.broadcaster.LiveVideoBroadcaster
 import io.antmedia.android.broadcaster.utils.Resolution
@@ -37,6 +35,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.bind
 import java.util.*
 
 class LiveVideoBroadCastActivity : AppCompatActivity() {
@@ -49,18 +48,63 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
     private var timerHandler :TimerHandler?=null
     private var elapsedTime = 0L
     private var liveVideoBroadCaster: ILiveVideoBroadcaster? = null
-    private val CONNECTION_LOST = 2
-    private val INCREASE_TIMER = 1
+    private val connectionLost = 2
+    private val increaseTimer = 1
     private var cameraResolutionDialog: CameraResolutionFragment? = null
     private var isMuted = false
     private var isRecording = false
-    private var RTMP = "rtmp://148.66.129.86/LiveApp/"
 
     companion object {
         fun present(context: Context) {
             val intent = Intent(context, LiveVideoBroadCastActivity::class.java)
             context.startActivity(intent)
         }
+    }
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initWindow()
+        timerHandler = TimerHandler()
+        startService(liveVideoBroadcasterServiceIntent)
+        initBinding()
+        initView()
+        initClicks()
+    }
+
+    private fun initClicks() {
+        with(binding){
+            arrayOf(settingsButton,
+                changeCameraButton,
+                micMuteButton,
+                toggleBroadcasting
+            ).forEach {
+                it.setOnClickListener(onClick)
+            }
+        }
+    }
+
+    private fun initWindow() {
+        window.apply {
+            addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        }
+    }
+
+    private fun initBinding() {
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_live_video_broad_cast)
+    }
+
+    private fun initView() {
+        binding.cameraPreviewSurfaceView.setEGLContextClientVersion(2)
+    }
+
+    private fun changeCamera() {
+        liveVideoBroadCaster?.changeCamera()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        bindService(liveVideoBroadcasterServiceIntent, serviceConnection, 0)
     }
 
     private val serviceConnection = object : ServiceConnection {
@@ -82,35 +126,13 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initWindow()
-        timerHandler = TimerHandler()
-        startService(liveVideoBroadcasterServiceIntent)
-        initBinding()
-        initView()
-    }
-
-    private fun initWindow() {
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-    }
-
-    private fun initBinding() {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_live_video_broad_cast)
-    }
-
-    private fun initView() {
-        binding.cameraPreviewSurfaceView.setEGLContextClientVersion(2)
-    }
-
-    public fun changeCamera(vw: View) {
-        liveVideoBroadCaster?.changeCamera()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        bindService(liveVideoBroadcasterServiceIntent, serviceConnection, 0)
+    private val onClick = View.OnClickListener{
+        when(it){
+            binding.settingsButton -> showSetResolutionDialog()
+            binding.changeCameraButton -> changeCamera()
+            binding.micMuteButton -> toggleMute()
+            binding.toggleBroadcasting -> toggleBroadcasting()
+        }
     }
 
     override fun onRequestPermissionsResult(
@@ -135,35 +157,34 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
                         )
                     ) {
                         liveVideoBroadCaster?.requestPermission()
-                    } else {
-                        AlertDialog.Builder(this@LiveVideoBroadCastActivity)
-                            .setTitle(R.string.permission)
-                            .setMessage(getString(R.string.app_doesnot_work_without_permissions))
-                            .setPositiveButton(
-                                android.R.string.yes
-                            ) { dialog, which ->
-                                try {
-                                    //Open the specific App Info page:
-                                    val intent =
-                                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                                    intent.data =
-                                        Uri.parse("package:" + applicationContext.packageName)
-                                    startActivity(intent)
-                                } catch (e: ActivityNotFoundException) {
-                                    //e.printStackTrace();
-
-                                    //Open the generic Apps page:
-                                    val intent =
-                                        Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS)
-                                    startActivity(intent)
-                                }
-                            }
-                            .show()
-                    }
+                    } else showPermissionDeniedDialog()
                 }
                 return
             }
         }
+    }
+
+    private fun showPermissionDeniedDialog() {
+        AlertDialog.Builder(this@LiveVideoBroadCastActivity)
+            .setTitle(R.string.permission)
+            .setMessage(getString(R.string.app_doesnot_work_without_permissions))
+            .setPositiveButton(
+                android.R.string.yes
+            ) { dialog, which ->
+                try {
+                    //Open the specific App Info page:
+                    val intent =
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    intent.data =
+                        Uri.parse("package:" + applicationContext.packageName)
+                    startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    val intent =
+                        Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS)
+                    startActivity(intent)
+                }
+            }
+            .show()
     }
 
     override fun onPause() {
@@ -185,7 +206,7 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
     }
 
 
-    public fun showSetResolutionDialog(v: View) {
+    private fun showSetResolutionDialog() {
         val ft = supportFragmentManager.beginTransaction()
         val fragDialog = supportFragmentManager.findFragmentByTag("dialog")
         fragDialog?.let {
@@ -193,8 +214,6 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
         }
 
         val sizeList = liveVideoBroadCaster?.previewSizeList
-
-        Log.d("LiveVideoBroadcast", "showSetResolutionDialog: sizeList ${sizeList?.size}")
 
         if (sizeList?.isNotEmpty() == true) {
             cameraResolutionDialog = CameraResolutionFragment()
@@ -210,10 +229,10 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
 
     }
 
-    public fun toggleBroadcasting(v: View) {
+    private fun toggleBroadcasting() {
         if(!isRecording){
             if(liveVideoBroadCaster  != null && liveVideoBroadCaster?.isConnected == false){
-                val url = RTMP+binding.streamNameEditText.text.toString()
+                val url = BuildConfig.ANT_URL+binding.streamNameEditText.text.toString()
                 val contentProgressBar = ContentLoadingProgressBar(this@LiveVideoBroadCastActivity)
                 contentProgressBar.show()
                 lifecycleScope.launch {
@@ -249,7 +268,7 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
             triggerStopRecording()
     }
 
-    public fun toggleMute(v: View) {
+    private fun toggleMute() {
         isMuted = !isMuted
         liveVideoBroadCaster?.setAudioEnable(!isMuted)
         binding.micMuteButton.setImageDrawable(
@@ -261,7 +280,7 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
         )
     }
 
-    public fun triggerStopRecording(){
+    private fun triggerStopRecording(){
         if(isRecording){
             binding.toggleBroadcasting.text = getString(R.string.start_broadcasting)
             binding.streamLiveStatus.apply {
@@ -283,9 +302,9 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
         timer?.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 elapsedTime += 1 //increase every sec
-                timerHandler?.obtainMessage(INCREASE_TIMER)?.sendToTarget()
+                timerHandler?.obtainMessage(increaseTimer)?.sendToTarget()
                 if (liveVideoBroadCaster == null || liveVideoBroadCaster?.isConnected == false) {
-                    timerHandler?.obtainMessage(CONNECTION_LOST)?.sendToTarget()
+                    timerHandler?.obtainMessage(connectionLost)?.sendToTarget()
                 }
             }
         }, 0, 1000)
@@ -309,14 +328,14 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             when (msg.what) {
-                INCREASE_TIMER -> binding.streamLiveStatus.setText(
+                increaseTimer -> binding.streamLiveStatus.setText(
                     String.format(
                         "%s - %s", getString(R.string.live_indicator), getDurationString(
                             elapsedTime
                         )
                     )
                 )
-                CONNECTION_LOST -> {
+                connectionLost -> {
                     triggerStopRecording()
                     AlertDialog.Builder(this@LiveVideoBroadCastActivity)
                         .setMessage(R.string.broadcast_connection_lost)
