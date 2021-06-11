@@ -311,7 +311,6 @@ dependencies {
     //Hyperlink
     implementation "com.klinkerapps:link_builder:$version_auto_link"
 
-    //RTMP client
-    implementation "net.butterflytv.utils:rtmp-client:$version_rtmp_client"
-    compile 'com.google.android.exoplayer:extension-rtmp:2.7.3'
+    //RTMP client version_exoplayer
+    implementation "com.google.android.exoplayer:extension-rtmp:$version_exoplayer"
 }
