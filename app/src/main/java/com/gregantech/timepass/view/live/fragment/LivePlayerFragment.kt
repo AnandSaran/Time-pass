@@ -41,9 +41,6 @@ class LivePlayerFragment : TimePassBaseFragment() {
         )
     }
 
-    private val playerEventListener = object : Player.EventListener {
-    }
-
     private val playerLifecycleActionListener = object : PlayerLifeCycleActionListener {
         override fun pausePlayer() {
             pauseVideoPlayer()
@@ -99,7 +96,6 @@ class LivePlayerFragment : TimePassBaseFragment() {
 
     private fun setupPlayer(playback: PlaybackInfoModel) {
         binding.player.preparePlayback(playback)
-        binding.player.castPlayerHelper.addErrorListener(playerEventListener)
     }
 
     private fun setupPlayerLifeCycleObserver() {

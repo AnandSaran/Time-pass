@@ -4,27 +4,24 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.*
 import android.widget.FrameLayout
-import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelection
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.SubtitleView
 import com.google.android.exoplayer2.util.EventLogger
 import com.gregantech.timepass.R
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
-import com.gregantech.timepass.widget.player.listener.PlayerListener
 import com.gregantech.timepass.widget.player.helper.TimePassPlayerHelper
+import com.gregantech.timepass.widget.player.listener.PlayerListener
+
 
 class TimePassPlayerView : FrameLayout {
 
     private val SURFACE_TYPE_NONE = 0
     private val SURFACE_TYPE_SURFACE_VIEW = 1
     private val SURFACE_TYPE_TEXTURE_VIEW = 2
-    private val drmSchemeUuid = C.WIDEVINE_UUID
 
-    // Todo - change to configurable filed in future for resize mode and surface.
     private var resizeMode: Int = AspectRatioFrameLayout.RESIZE_MODE_FIT
     private var surfaceType: Int = SURFACE_TYPE_SURFACE_VIEW
 
@@ -49,14 +46,13 @@ class TimePassPlayerView : FrameLayout {
     private lateinit var subtitleView: SubtitleView
 
     /**
+     * track selection factory
+     */
+    private var trackSelectionFactory = AdaptiveTrackSelection.Factory()
+    /**
      * default track selection
      */
     private lateinit var trackSelector: DefaultTrackSelector
-
-    /**
-     * track selection factory
-     */
-    private var trackSelectionFactory: TrackSelection.Factory = AdaptiveTrackSelection.Factory()
 
     /**
      * player listener
@@ -92,16 +88,16 @@ class TimePassPlayerView : FrameLayout {
         playbackInfoModel: PlaybackInfoModel
     ) {
         castPlayerHelper.setPlaybackInfoModel(playbackInfoModel)
-        setupPlayer(playbackInfoModel)
-        setupPlayerEventListener()
-        setupPlayerMediaSource()
+        setupPlayer()
+        castPlayerHelper.addPlayerEventListener(playerListener)
+        castPlayerHelper.setupPlayerMediaSource()
     }
 
     /**
      * init player UI
      */
     private fun initPlayerView() {
-        trackSelector = DefaultTrackSelector(context, trackSelectionFactory)
+        trackSelector = DefaultTrackSelector(context)
 
         LayoutInflater.from(context).inflate(R.layout.view_time_pass_player, this)
         contentFrame = findViewById(R.id.exo_content_frame)
@@ -137,7 +133,7 @@ class TimePassPlayerView : FrameLayout {
         //  aspectRatioFrame.setAspectRatio(16f / 9f)
     }
 
-    private fun setupPlayer(playbackInfoModel: PlaybackInfoModel) {
+    private fun setupPlayer() {
         if (!::player.isInitialized) {
             player = castPlayerHelper.generatePlayer(trackSelector)
 
@@ -151,16 +147,5 @@ class TimePassPlayerView : FrameLayout {
             player.removeListener(playerListener)
         }
         castPlayerHelper.setPlayer(player)
-    }
-
-    private fun setupPlayerEventListener() {
-        player.addListener(playerListener)
-    }
-
-    private fun setupPlayerMediaSource() {
-        val mediaSource = castPlayerHelper.createVideoMediaSource()
-        if (mediaSource != null) {
-            player.prepare(mediaSource, false, false)
-        }
     }
 }
