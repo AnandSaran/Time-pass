@@ -14,7 +14,6 @@ import android.os.Message
 import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -26,7 +25,9 @@ import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.databinding.ActivityLiveVideoBroadCastBinding
 import com.gregantech.timepass.util.extension.gone
+import com.gregantech.timepass.util.extension.keepScreenOn
 import com.gregantech.timepass.util.extension.show
+import com.gregantech.timepass.util.extension.showSystemUI
 import com.gregantech.timepass.view.live.fragment.CameraResolutionFragment
 import io.antmedia.android.broadcaster.ILiveVideoBroadcaster
 import io.antmedia.android.broadcaster.LiveVideoBroadcaster
@@ -35,7 +36,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.bind
+import java.net.CookieHandler
+import java.net.CookieManager
+import java.net.CookiePolicy
 import java.util.*
 
 class LiveVideoBroadCastActivity : AppCompatActivity() {
@@ -53,6 +56,7 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
     private var cameraResolutionDialog: CameraResolutionFragment? = null
     private var isMuted = false
     private var isRecording = false
+    private var DEFAULT_COOKIE_MANAGER : CookieManager?=null
 
     companion object {
         fun present(context: Context) {
@@ -63,11 +67,23 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        DEFAULT_COOKIE_MANAGER = CookieManager()
+        DEFAULT_COOKIE_MANAGER?.setCookiePolicy(CookiePolicy.ACCEPT_ORIGINAL_SERVER)
+        if (CookieHandler.getDefault() !== DEFAULT_COOKIE_MANAGER) {
+            CookieHandler.setDefault(DEFAULT_COOKIE_MANAGER)
+        }
         initWindow()
         setAssets()
         initBinding()
         initView()
         initClicks()
+    }
+
+    private fun initWindow() {
+        window?.apply {
+            showSystemUI(false)
+            keepScreenOn()
+        }
     }
 
     private fun setAssets() {
@@ -77,20 +93,14 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
 
     private fun initClicks() {
         with(binding){
-            arrayOf(settingsButton,
+            arrayOf(
+                settingsButton,
                 changeCameraButton,
                 micMuteButton,
                 toggleBroadcasting
             ).forEach {
                 it.setOnClickListener(onClick)
             }
-        }
-    }
-
-    private fun initWindow() {
-        window.apply {
-            addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         }
     }
 
@@ -216,9 +226,7 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
         fragDialog?.let {
             ft.remove(it)
         }
-
         val sizeList = liveVideoBroadCaster?.previewSizeList
-
         if (sizeList?.isNotEmpty() == true) {
             cameraResolutionDialog = CameraResolutionFragment()
             liveVideoBroadCaster?.previewSize?.let {
@@ -269,7 +277,11 @@ class LiveVideoBroadCastActivity : AppCompatActivity() {
                     }
                 }
             }else
-                Snackbar.make(binding.rootLayout, "liveVideoBroadCaster is null", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(
+                    binding.rootLayout,
+                    "liveVideoBroadCaster is null",
+                    Snackbar.LENGTH_LONG
+                ).show()
         }else
             triggerStopRecording()
     }

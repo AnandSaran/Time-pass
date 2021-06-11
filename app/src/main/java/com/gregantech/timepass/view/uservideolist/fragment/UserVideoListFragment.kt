@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SnapHelper
+import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
 import com.gregantech.timepass.adapter.live.LiveUserAdapter
@@ -37,6 +38,7 @@ import com.gregantech.timepass.general.bundklekey.CreateVideoBundleEnum
 import com.gregantech.timepass.model.RailBaseItemModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.model.getStrippedFileName
+import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
@@ -58,6 +60,7 @@ import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoTrimmerActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoUploadActivity
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
+import com.gregantech.timepass.view.live.activity.LiveVideoPlayerActivity
 import com.gregantech.timepass.view.player.activity.ImageViewActivity
 import com.gregantech.timepass.view.player.activity.PlayerActivity
 import com.gregantech.timepass.view.profile.activity.UserProfileActivity
@@ -259,8 +262,12 @@ class UserVideoListFragment : TimePassBaseFragment() {
         binding.rvLiveUserList.apply {
             setHasFixedSize(true)
             horizontalView(requireContext())
-            adapter = LiveUserAdapter()
+            adapter = LiveUserAdapter(::onLiveUserClicked)
         }
+    }
+
+    private fun onLiveUserClicked(){
+        LiveVideoPlayerActivity.present(requireContext(), PlaybackInfoModel("Streaming Live",BuildConfig.ANT_URL+"zzz",true))
     }
 
     private fun setUpSnapShot() {
