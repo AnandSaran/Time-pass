@@ -1,7 +1,7 @@
 package com.gregantech.timepass.widget.player.helper
 
 import android.content.Context
-import androidx.core.net.toUri
+import android.net.Uri
 import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.RenderersFactory
@@ -46,7 +46,7 @@ class TimePassPlayerHelper(
     }
 
 
-    fun addErrorListener(listener: Player.EventListener) {
+    fun addPlayerEventListener(listener: Player.EventListener) {
         if (::player.isInitialized) {
             player.addListener(listener)
         }
@@ -124,7 +124,7 @@ class TimePassPlayerHelper(
         val dataSourceFactory: DataSource.Factory =
             RtmpDataSourceFactory()
         return ProgressiveMediaSource.Factory(dataSourceFactory)
-            .createMediaSource(playbackInfo.url.toUri())
+            .createMediaSource(Uri.parse(playbackInfo.url))
     }
 
     fun generatePlayer(trackSelector: DefaultTrackSelector): SimpleExoPlayer {
@@ -132,5 +132,12 @@ class TimePassPlayerHelper(
         return SimpleExoPlayer.Builder(context, renderersFactory)
             .setTrackSelector(trackSelector)
             .build()
+    }
+
+    fun setupPlayerMediaSource() {
+        val mediaSource = createVideoMediaSource()
+        if (mediaSource != null) {
+            player.prepare(mediaSource, false, false)
+        }
     }
 }
