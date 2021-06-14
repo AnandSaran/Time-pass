@@ -65,4 +65,10 @@
     <string name="start_broadcasting">Start Broadcasting</string>
     <string name="stream_name">Stream Name</string>
     <string name="stream_not_started">Failed to start. Please check server url and security credentials.</string>
+    <string name="live">Live</string>
+    <string name="write_a_comment">Write a comment…</string>
+    <string name="exit">Exit</string>
+    <string name="exit_live_message">Are you sure to end Live?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TimePassIconTextView">
+        <attr name="tpBg" format="reference" />
+        <attr name="tpIcon" format="reference" />
+        <attr name="showIcon" format="boolean" />
+        <attr name="tpLabel" format="string" />
+        <attr name="tpLabelCapsAll" format="boolean" />
+    </declare-styleable>
+</resources>

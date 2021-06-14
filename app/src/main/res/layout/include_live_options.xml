@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include layout="@layout/guideline_10dp" />
+
+        <com.gregantech.timepass.widget.TimePassIconTextView
+            android:id="@+id/tpItvLive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:layout_constraintEnd_toStartOf="@+id/tpItvUsers"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintTop_toTopOf="@+id/guideline_top"
+            app:showIcon="false"
+            app:tpBg="@drawable/bg_red_rounded"
+            app:tpLabel="@string/live"
+            app:tpLabelCapsAll="true" />
+
+        <com.gregantech.timepass.widget.TimePassIconTextView
+            android:id="@+id/tpItvUsers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:layout_constraintEnd_toStartOf="@+id/tpItvLove"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toEndOf="@+id/tpItvLive"
+            app:layout_constraintTop_toTopOf="@+id/guideline_top"
+            app:tpBg="@drawable/bg_black_rounded"
+            app:tpIcon="@drawable/ic_live_user"
+            app:tpLabel="765" />
+
+        <com.gregantech.timepass.widget.TimePassIconTextView
+            android:id="@+id/tpItvLove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            app:layout_constraintEnd_toStartOf="@+id/ivClose"
+            app:layout_constraintStart_toEndOf="@+id/tpItvUsers"
+            app:layout_constraintTop_toTopOf="@+id/guideline_top"
+            app:tpBg="@drawable/bg_black_rounded"
+            app:tpIcon="@drawable/ic_love"
+            app:tpLabel="709" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivClose"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:gravity="center"
+            android:padding="@dimen/dp_10"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_end"
+            app:layout_constraintStart_toEndOf="@+id/tvLoves"
+            app:layout_constraintTop_toTopOf="@+id/guideline_top" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

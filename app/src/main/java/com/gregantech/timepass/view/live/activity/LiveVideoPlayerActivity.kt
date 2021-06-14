@@ -12,6 +12,7 @@ import com.gregantech.timepass.general.bundklekey.LivePlayerBundleKey
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.showSystemUI
+import com.gregantech.timepass.view.live.fragment.LiveChatFragment
 import com.gregantech.timepass.view.live.fragment.LivePlayerContentContainerFragment
 import com.gregantech.timepass.view.live.viewmodel.LivePlayerSharedViewModel
 import com.singtel.cast.utils.navigation.FragmentNavigationUtil
@@ -55,17 +56,28 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window?.showSystemUI(false)
-        binding =
-            DataBindingUtil.setContentView(this, R.layout.activity_live_video_player)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_live_video_player)
+        setupOnClick()
         setupViewModel()
         updatePlayBackInfo()
         updateTitle()
 
         if (savedInstanceState == null) {
             showLivePlayerContentContainerFragment()
+            //loadChatContainerFragment()
         }
 
+    }
+
+    override fun onResume() {
+        window?.showSystemUI(false)
+        super.onResume()
+    }
+
+    private fun setupOnClick() {
+        binding.liveOptions.ivClose.setOnClickListener {
+            finish()
+        }
     }
 
     private fun showLivePlayerContentContainerFragment() {
@@ -75,6 +87,16 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
             livePlayerContentContainerFragment,
             supportFragmentManager,
             R.id.playerContainer
+        )
+    }
+
+    private fun loadChatContainerFragment() {
+        val chatFragment = LiveChatFragment.newInstance()
+
+        FragmentNavigationUtil.commitFragment(
+            chatFragment,
+            supportFragmentManager,
+            R.id.chatContainer
         )
     }
 
