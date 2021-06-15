@@ -6,7 +6,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
 
         <include layout="@layout/guideline_10dp" />
 
@@ -16,38 +17,59 @@
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/dp_10"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/etComment"
+            app:layout_constraintBottom_toTopOf="@+id/inputLay"
             app:layout_constraintEnd_toEndOf="@+id/guideline_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toTopOf="@+id/guideline_top" />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/etComment"
+        <LinearLayout
+            android:id="@+id/inputLay"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_5"
             android:background="@drawable/bg_black_rounded"
-            android:fontFamily="@font/roboto"
-            android:hint="@string/write_a_comment"
-            android:imeOptions="actionDone"
-            android:inputType="text"
-            android:padding="@dimen/dp_10"
-            android:textColor="@color/white"
-            android:textColorHint="#BDBDBD"
-            android:textSize="@dimen/sp_16"
             app:layout_constraintBottom_toBottomOf="@+id/guideline_bottom"
             app:layout_constraintEnd_toStartOf="@+id/ivLove"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
-            app:layout_constraintTop_toBottomOf="@+id/rvChat" />
+            app:layout_constraintTop_toBottomOf="@+id/rvChat">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/etComment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/dp_5"
+                android:layout_weight="1"
+                android:background="@null"
+                android:fontFamily="@font/roboto"
+                android:hint="@string/write_a_comment"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:padding="@dimen/dp_10"
+                android:textColor="@color/white"
+                android:textColorHint="@color/hintColor"
+                android:textSize="@dimen/sp_16" />
+
+            <ImageButton
+                android:id="@+id/fabSend"
+                android:layout_width="@dimen/dp_35"
+                android:layout_height="@dimen/dp_35"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_5"
+                android:background="@drawable/selector_fab_bg"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/selector_fab_src" />
+
+        </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivLove"
             android:layout_width="@dimen/dp_35"
             android:layout_height="@dimen/dp_35"
             android:src="@drawable/love_action"
-            app:layout_constraintBottom_toBottomOf="@+id/etComment"
+            app:layout_constraintBottom_toBottomOf="@+id/inputLay"
             app:layout_constraintEnd_toEndOf="@+id/guideline_end"
-            app:layout_constraintTop_toTopOf="@+id/etComment" />
+            app:layout_constraintTop_toTopOf="@+id/inputLay" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -71,4 +71,7 @@
     <string name="exit_live_message">Are you sure to end Live?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="added">Added</string>
+    <string name="modified">Modified</string>
+    <string name="removed">Removed</string>
 </resources>

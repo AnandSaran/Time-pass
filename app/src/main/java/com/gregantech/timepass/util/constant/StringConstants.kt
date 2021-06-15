@@ -4,6 +4,8 @@ const val EMPTY_STRING = ""
 const val EMPTY_BOOLEAN = false
 const val EMPTY_LONG = 0L
 const val EMPTY_INT = 0
+const val CHAT_LIMIT = 15L
+
 
 //Annotation name value
 const val ANNOTATION_UNCHECKED_CAST = "UNCHECKED_CAST"
@@ -25,3 +27,7 @@ const val APP_PLAYSTORE_LINK = "https://play.google.com/store/apps/details?id=co
 const val SUBJECT = "Timepass"
 const val BODY =
     "This file is download from Timepass App \nhttps://play.google.com/store/apps/details?id=com.adroit.timepass"
+
+const val BROADCAST_COLLECTION_KEY = "Broadcast"
+const val CHAT_COLLECTION_KEY = "Chat"
+const val DATE_FIELD = "commentedDate"

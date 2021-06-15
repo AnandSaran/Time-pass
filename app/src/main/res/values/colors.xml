@@ -13,6 +13,8 @@
     <color name="ucrop_color_toolbar">@color/colorPrimary</color>
     <color name="ucrop_color_statusbar">@color/colorPrimaryDark</color>
     <color name="liveBg">#465A75</color>
+    <color name="hintColor">#BDBDBD</color>
+    <color name="chatBlackColor">#324156</color>
     <!--  <color name="ucrop_color_toolbar_widget">#000000</color>
 
       <color name="ucrop_color_widget_active">#f5f5f5</color>

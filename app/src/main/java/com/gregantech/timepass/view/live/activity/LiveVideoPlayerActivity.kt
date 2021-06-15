@@ -11,7 +11,6 @@ import com.gregantech.timepass.databinding.ActivityLiveVideoPlayerBinding
 import com.gregantech.timepass.general.bundklekey.LivePlayerBundleKey
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
-import com.gregantech.timepass.util.extension.showSystemUI
 import com.gregantech.timepass.view.live.fragment.LiveChatFragment
 import com.gregantech.timepass.view.live.fragment.LivePlayerContentContainerFragment
 import com.gregantech.timepass.view.live.viewmodel.LivePlayerSharedViewModel
@@ -63,15 +62,10 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
         updateTitle()
 
         if (savedInstanceState == null) {
-            showLivePlayerContentContainerFragment()
-            //loadChatContainerFragment()
+            //showLivePlayerContentContainerFragment()
+            loadChatContainerFragment()
         }
 
-    }
-
-    override fun onResume() {
-        window?.showSystemUI(false)
-        super.onResume()
     }
 
     private fun setupOnClick() {

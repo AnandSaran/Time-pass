@@ -117,5 +117,6 @@
     <dimen name="avatar_height">150dp</dimen>
     <dimen name="recyler_view_player_height">400dp</dimen>
     <dimen name="recyler_view_poster_min_height">200dp</dimen>
+    <dimen name="dp_38">38dp</dimen>
     <!--endregion-->
 </resources>

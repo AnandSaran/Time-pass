@@ -28,7 +28,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".view.live.activity.LiveVideoPlayerActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.live.activity.LiveVideoBroadCastActivity"
