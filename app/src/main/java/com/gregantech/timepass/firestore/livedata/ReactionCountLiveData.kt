@@ -6,19 +6,27 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.gregantech.timepass.base.TimePassBaseResult
+import com.gregantech.timepass.firestore.FireStoreConst
+import com.gregantech.timepass.firestore.REACTION
 import com.gregantech.timepass.model.ChatModel
 
-class ReactionCountLiveData(countRef: DocumentReference, reaction: REACTION) :
+class ReactionCountLiveData(private val broadDocRef: DocumentReference, reaction: REACTION) :
     LiveData<TimePassBaseResult<ChatModel>>(), OnSuccessListener<Void>,
     OnFailureListener {
 
     init {
         when (reaction) {
-            REACTION.LIKE -> countRef.update("like", FieldValue.increment(1))
-            REACTION.LOVE -> countRef.update("love", FieldValue.increment(1))
-            REACTION.SMILE -> countRef.update("smile", FieldValue.increment(1))
-            REACTION.ANGRY -> countRef.update("angry", FieldValue.increment(1))
+            REACTION.LIKE -> doUpdate(FireStoreConst.FIELD.LIKES)
+            REACTION.LOVE -> doUpdate(FireStoreConst.FIELD.LOVES)
+            REACTION.SMILE -> doUpdate(FireStoreConst.FIELD.SMILES)
+            REACTION.ANGRY -> doUpdate(FireStoreConst.FIELD.ANGRY)
         }
+    }
+
+    private fun doUpdate(fieldName: String) {
+        broadDocRef.update(fieldName, FieldValue.increment(1))
+            .addOnSuccessListener(this)
+            .addOnFailureListener(this)
     }
 
     override fun onSuccess(void: Void?) {
@@ -30,8 +38,4 @@ class ReactionCountLiveData(countRef: DocumentReference, reaction: REACTION) :
     }
 
 
-}
-
-enum class REACTION {
-    LIKE, LOVE, SMILE, ANGRY
 }

@@ -39,6 +39,11 @@ class TimePassIconTextView : ConstraintLayout {
         typedArray.recycle()
     }
 
+    fun setLabel(value: String?) {
+        view.tpItv_label.text = value
+        invalidate()
+    }
+
     private fun assignProps(typedArray: TypedArray) {
         with(typedArray) {
             getResourceId(R.styleable.TimePassIconTextView_tpBg, -1).let {

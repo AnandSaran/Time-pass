@@ -4,6 +4,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.gregantech.timepass.firestore.FireStoreConst.Keys.DATE_FIELD
+import com.gregantech.timepass.firestore.REACTION
 import com.gregantech.timepass.firestore.broadCastCollection
 import com.gregantech.timepass.firestore.chatCollection
 import com.gregantech.timepass.firestore.livedata.*
@@ -26,8 +27,12 @@ class LiveChatRepository {
         return BroadcastLiveData(fireStore.broadCastCollection())
     }
 
-    fun updateLikeCount(broadDocKey: String) =
-        ReactionCountLiveData(fireStore.broadCastCollection().document(broadDocKey), REACTION.LIKE)
+    fun updateReactionCount(broadDocKey: String, reaction: REACTION) =
+        ReactionCountLiveData(fireStore.broadCastCollection().document(broadDocKey), reaction)
+
+    fun getReactionCount(broadDocKey: String): ReactionListenerLiveData {
+        return ReactionListenerLiveData(fireStore.broadCastCollection().document(broadDocKey))
+    }
 
     fun geChatHistory(broadDocKey: String): IncomingMessageLiveData? {
         if (isLastProductReached)

@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseResult
@@ -24,6 +25,7 @@ import com.gregantech.timepass.view.live.viewmodel.LiveChatViewModel
 class LiveBroadCastActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBroadcastBinding
+    private var docKey: String? = null
 
     private lateinit var chatViewModelFactory: LiveChatViewModel.Factory
     private val chatViewModel: LiveChatViewModel by lazy {
@@ -53,6 +55,7 @@ class LiveBroadCastActivity : AppCompatActivity() {
         }
     }
 
+
     private fun initWindow() {
         window?.apply {
             showSystemUI(false)
@@ -80,6 +83,10 @@ class LiveBroadCastActivity : AppCompatActivity() {
             .show()
     }
 
+    override fun onBackPressed() {
+        showExitAlert()
+    }
+
     private fun setupViewModel() {
         chatViewModelFactory = LiveChatViewModel.Factory(LiveChatRepository())
     }
@@ -91,8 +98,10 @@ class LiveBroadCastActivity : AppCompatActivity() {
                 }
                 TimePassBaseResult.Status.SUCCESS -> {
                     Log.d("LiveBroadcastActivity", "obtainDocKey: DocId ${it.data.toString()}")
-                    loadChatContainerFragment(it.data)
-                    showBroadcastFragment(it.data)
+                    docKey = it.data.toString()
+                    loadChatContainerFragment()
+                    showBroadcastFragment()
+                    subscribeToChanges()
                 }
                 TimePassBaseResult.Status.ERROR -> {
                     it.message?.toast(this)
@@ -101,7 +110,26 @@ class LiveBroadCastActivity : AppCompatActivity() {
         })
     }
 
-    private fun showBroadcastFragment(docKey: String?) {
+    private fun subscribeToChanges() {
+        chatViewModel.obReactionCount(docKey!!).observe(this, Observer {
+            when (it.status) {
+                TimePassBaseResult.Status.SUCCESS -> {
+                    Log.d("LiveBroadCast", "listenToIncomingMsg: ${it?.data?.Loves} ")
+                    binding.liveOptions.tpItvLove.setLabel(it?.data?.Loves)
+                }
+                TimePassBaseResult.Status.ERROR -> Log.e(
+                    "LiveBroadCast",
+                    "listenToIncomingMsg: ${it.message}"
+                )
+                TimePassBaseResult.Status.LOADING -> {
+                }
+            }
+        })
+    }
+
+    private fun showBroadcastFragment() {
+        if (docKey.isNullOrEmpty())
+            return
         val broadcasterFragment = LiveBroadCasterFragment.newInstance(docKey = docKey)
         FragmentNavigationUtil.commitFragment(
             broadcasterFragment,
@@ -111,7 +139,9 @@ class LiveBroadCastActivity : AppCompatActivity() {
         binding.tpvSBc.setChildVisible()
     }
 
-    private fun loadChatContainerFragment(docKey: String?) {
+    private fun loadChatContainerFragment() {
+        if (docKey.isNullOrEmpty())
+            return
         val chatFragment = LiveChatFragment.newInstance(mode = 1, docKey = docKey)
         FragmentNavigationUtil.commitFragment(
             chatFragment,

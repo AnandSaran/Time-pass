@@ -4,8 +4,17 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ServerTimestamp
 
 
-data class BroadcastModel(var chatModel: ChatModel, var type: Int)
+data class BroadcastModel(
+    var Likes: String? = "0",
+    var Loves: String? = "0",
+    var Smiles: String? = "0",
+    var Angry: String? = "0"
+)
 
+data class ChatModelWrapper(
+    var chatModel: ChatModel,
+    var type: Int = -1
+)
 
 data class ChatModel(
     @Transient

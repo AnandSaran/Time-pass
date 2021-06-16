@@ -28,6 +28,4 @@ const val SUBJECT = "Timepass"
 const val BODY =
     "This file is download from Timepass App \nhttps://play.google.com/store/apps/details?id=com.adroit.timepass"
 
-const val BROADCAST_COLLECTION_KEY = "Broadcast"
-const val CHAT_COLLECTION_KEY = "Chat"
 

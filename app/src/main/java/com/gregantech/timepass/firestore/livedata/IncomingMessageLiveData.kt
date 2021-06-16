@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.firebase.firestore.*
 import com.gregantech.timepass.R
-import com.gregantech.timepass.model.BroadcastModel
 import com.gregantech.timepass.model.ChatModel
+import com.gregantech.timepass.model.ChatModelWrapper
 import com.gregantech.timepass.util.constant.CHAT_LIMIT
 import kotlin.reflect.KFunction1
 
@@ -13,7 +13,7 @@ class IncomingMessageLiveData(
     private val query: Query,
     private val lastVisibleCallback: KFunction1<DocumentSnapshot?, Unit>,
     private val lastProductReachedCallback: KFunction1<Boolean, Unit>
-) : LiveData<BroadcastModel>(), EventListener<QuerySnapshot> {
+) : LiveData<ChatModelWrapper>(), EventListener<QuerySnapshot> {
 
     private var listenerRegistration: ListenerRegistration? = null
 
@@ -37,19 +37,19 @@ class IncomingMessageLiveData(
                     val addedChat = it.document.toObject(ChatModel::class.java).apply {
                         id = it.document.id
                     }
-                    BroadcastModel(addedChat, R.string.added)
+                    ChatModelWrapper(addedChat, R.string.added)
                 }
                 DocumentChange.Type.MODIFIED -> {
                     val modifyChat = it.document.toObject(ChatModel::class.java).apply {
                         id = it.document.id
                     }
-                    BroadcastModel(modifyChat, R.string.modified)
+                    ChatModelWrapper(modifyChat, R.string.modified)
                 }
                 DocumentChange.Type.REMOVED -> {
                     val removeChat = it.document.toObject(ChatModel::class.java).apply {
                         id = it.document.id
                     }
-                    BroadcastModel(removeChat, R.string.removed)
+                    ChatModelWrapper(removeChat, R.string.removed)
                 }
             }
         }

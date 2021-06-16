@@ -2,6 +2,7 @@ package com.gregantech.timepass.view.live.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.gregantech.timepass.firestore.REACTION
 import com.gregantech.timepass.model.ChatModel
 import com.gregantech.timepass.network.repository.LiveChatRepository
 import com.gregantech.timepass.util.constant.ANNOTATION_UNCHECKED_CAST
@@ -15,6 +16,11 @@ class LiveChatViewModel(private val liveChatRepository: LiveChatRepository) : Vi
         liveChatRepository.sendMessage(chatModel, docKey)
 
     fun obCreateBroadcastDocument() = liveChatRepository.createBroadcastDoc()
+
+    fun obUpdateReactionCount(docKey: String, reaction: REACTION) =
+        liveChatRepository.updateReactionCount(docKey, reaction)
+
+    fun obReactionCount(docKey: String) = liveChatRepository.getReactionCount(docKey)
 
     @Suppress(ANNOTATION_UNCHECKED_CAST)
     class Factory(

@@ -6,6 +6,7 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.gregantech.timepass.base.TimePassBaseResult
+import com.gregantech.timepass.model.BroadcastModel
 
 class BroadcastLiveData(broadRef: CollectionReference) :
     LiveData<TimePassBaseResult<String?>>(), OnSuccessListener<DocumentReference>,
@@ -13,7 +14,7 @@ class BroadcastLiveData(broadRef: CollectionReference) :
 
     init {
         broadRef
-            .add({})
+            .add(BroadcastModel())
             .addOnSuccessListener(this)
             .addOnFailureListener(this)
     }

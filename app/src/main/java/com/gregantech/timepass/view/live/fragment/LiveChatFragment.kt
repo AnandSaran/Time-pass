@@ -18,6 +18,7 @@ import com.gregantech.timepass.base.TimePassBaseFragment
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.FragmentLiveChatBinding
 import com.gregantech.timepass.firestore.FireStoreConst
+import com.gregantech.timepass.firestore.REACTION
 import com.gregantech.timepass.model.ChatModel
 import com.gregantech.timepass.network.repository.LiveChatRepository
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
@@ -96,14 +97,39 @@ class LiveChatFragment : TimePassBaseFragment() {
     }
 
     private fun setupOnClick() {
-        binding.etComment.setOnEditorActionListener { textView, i, keyEvent ->
-            doSendMessage()
-            false
+        with(binding) {
+            etComment.setOnEditorActionListener { textView, i, keyEvent ->
+                doSendMessage()
+                false
+            }
+            etComment.addTextChangedListener(eventListener)
+            fabSend.setOnClickListener {
+                doSendMessage()
+            }
+            ivLove.setOnClickListener {
+                doIncreaseLoveCount()
+            }
         }
-        binding.fabSend.setOnClickListener {
-            doSendMessage()
-        }
-        binding.etComment.addTextChangedListener(eventListener)
+
+    }
+
+    private fun doIncreaseLoveCount() {
+        viewModel.obUpdateReactionCount(docKey!!, REACTION.LOVE).observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it.status) {
+                    TimePassBaseResult.Status.SUCCESS -> Log.d(
+                        TAG,
+                        "doIncreaseLoveCount: Count Updated!"
+                    )
+                    TimePassBaseResult.Status.ERROR -> Log.d(
+                        TAG,
+                        "doIncreaseLoveCount: Error updating count ${it.message}"
+                    )
+                    TimePassBaseResult.Status.LOADING -> {
+                    }
+                }
+            })
     }
 
     private val eventListener = object : TextWatcher {
@@ -167,7 +193,6 @@ class LiveChatFragment : TimePassBaseFragment() {
                 binding.rvChat.smoothScrollToPosition(if (itemCount > 0) itemCount - 1 else 0)
             }
         })
-
     }
 
     fun onBackPressed() {
