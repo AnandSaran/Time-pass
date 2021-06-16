@@ -160,9 +160,15 @@ public class LiveVideoBroadcaster extends Service implements ILiveVideoBroadcast
 
     @Override
     public void onDestroy() {
-        audioHandlerThread.quitSafely();
-        mRtmpHandlerThread.quitSafely();
-        mCameraHandler.invalidateHandler();
+        if (audioHandlerThread != null) {
+            audioHandlerThread.quitSafely();
+        }
+        if (mRtmpHandlerThread != null) {
+            mRtmpHandlerThread.quitSafely();
+        }
+        if (mCameraHandler != null) {
+            mCameraHandler.invalidateHandler();
+        }
         super.onDestroy();
     }
 

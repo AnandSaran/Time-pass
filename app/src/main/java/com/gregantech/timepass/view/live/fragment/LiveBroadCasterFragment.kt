@@ -348,26 +348,29 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
 
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-            when (msg.what) {
-                increaseTimer -> {
-                    /*   binding.tvStreamLiveStatus.text = String.format(
-                           "%s - %s", getString(R.string.live_indicator), getDurationString(
-                               elapsedTime
-                           )
-                       )*/
-                }
-                connectionLost -> {
-                    showAlert()
+            if (isAdded) {
+                when (msg.what) {
+                    increaseTimer -> {
+                        /*   binding.tvStreamLiveStatus.text = String.format(
+                               "%s - %s", getString(R.string.live_indicator), getDurationString(
+                                   elapsedTime
+                               )
+                           )*/
+                    }
+                    connectionLost -> {
+                        showAlert()
+                    }
                 }
             }
         }
     }
 
     private fun showAlert() {
-        AlertDialog.Builder(requireContext())
-            .setMessage(R.string.broadcast_connection_lost)
-            .setPositiveButton(android.R.string.yes, null)
-            .show()
+        if (isAdded)
+            AlertDialog.Builder(requireContext())
+                .setMessage(R.string.broadcast_connection_lost)
+                .setPositiveButton(android.R.string.yes, null)
+                .show()
     }
 
 

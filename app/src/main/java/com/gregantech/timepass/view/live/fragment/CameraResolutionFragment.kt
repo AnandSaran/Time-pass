@@ -13,7 +13,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import com.gregantech.timepass.R
 import com.gregantech.timepass.databinding.LayoutCameraResolutionsBinding
-import com.gregantech.timepass.view.live.activity.LiveVideoBroadCastActivity
 import io.antmedia.android.broadcaster.utils.Resolution
 
 class CameraResolutionFragment : DialogFragment(), AdapterView.OnItemClickListener {
@@ -64,9 +63,9 @@ class CameraResolutionFragment : DialogFragment(), AdapterView.OnItemClickListen
     }
 
     private fun setCameraResolution(size: Resolution){
-        if (activity is LiveVideoBroadCastActivity){
+     /*   if (activity is LiveVideoBroadCastActivity){
             (activity as LiveVideoBroadCastActivity?)?.setResolution(size)
-        }
+        }*/
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
