@@ -30,4 +30,4 @@ const val BODY =
 
 const val BROADCAST_COLLECTION_KEY = "Broadcast"
 const val CHAT_COLLECTION_KEY = "Chat"
-const val DATE_FIELD = "commentedDate"
+

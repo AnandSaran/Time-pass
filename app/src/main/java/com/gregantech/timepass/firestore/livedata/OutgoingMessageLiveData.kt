@@ -1,4 +1,4 @@
-package com.gregantech.timepass.view.live.viewmodel
+package com.gregantech.timepass.firestore.livedata
 
 import androidx.lifecycle.LiveData
 import com.google.android.gms.tasks.OnFailureListener

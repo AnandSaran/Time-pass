@@ -8,6 +8,8 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 
 class PlayerListener : Player.EventListener {
 
+    var playState: PlayState? = null
+
     // Player.EventListener implementation
     override fun onTracksChanged(
         tracks: TrackGroupArray,
@@ -21,21 +23,10 @@ class PlayerListener : Player.EventListener {
         playbackState: Int
     ) {
         when (playbackState) {
-            ExoPlayer.STATE_BUFFERING -> {
-
-            }
-            ExoPlayer.STATE_ENDED -> {
-
-            }
-            ExoPlayer.STATE_READY -> {
-                onPlayerReady()
-            }
-            ExoPlayer.STATE_IDLE -> {
-
-            }
-            else -> {
-
-            }
+            ExoPlayer.STATE_BUFFERING -> playState?.buffering()
+            ExoPlayer.STATE_ENDED -> playState?.onEnded()
+            ExoPlayer.STATE_READY -> playState?.onPlaying()
+            ExoPlayer.STATE_IDLE -> playState?.onIdle()
         }
     }
 
@@ -43,5 +34,14 @@ class PlayerListener : Player.EventListener {
     }
 
     private fun onPlayerReady() {
+
     }
+}
+
+interface PlayState {
+    fun buffering()
+    fun onPlaying()
+    fun onIdle()
+    fun onPlayerError(error: ExoPlaybackException)
+    fun onEnded()
 }

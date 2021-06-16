@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="@+id/guideline_top"
             app:tpBg="@drawable/bg_black_rounded"
             app:tpIcon="@drawable/ic_live_user"
-            app:tpLabel="765" />
+            app:tpLabel="0" />
 
         <com.gregantech.timepass.widget.TimePassIconTextView
             android:id="@+id/tpItvLove"
@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="@+id/guideline_top"
             app:tpBg="@drawable/bg_black_rounded"
             app:tpIcon="@drawable/ic_love"
-            app:tpLabel="709" />
+            app:tpLabel="0" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivClose"

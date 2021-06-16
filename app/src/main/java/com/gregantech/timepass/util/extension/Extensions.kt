@@ -1,6 +1,8 @@
 package com.gregantech.timepass.util.extension
 
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.app.DownloadManager
 import android.content.Context
@@ -16,17 +18,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.model.DownloadResult
-import com.gregantech.timepass.util.constant.BODY
 import com.gregantech.timepass.util.constant.RAW_DOWNLOAD_PATH
-import com.gregantech.timepass.util.constant.SUBJECT
 import com.yalantis.ucrop.util.FileUtils.getPath
-import io.ktor.client.HttpClient
-import io.ktor.client.call.call
-import io.ktor.client.request.url
-import io.ktor.http.HttpMethod
-import io.ktor.http.contentLength
-import io.ktor.http.isSuccess
-import io.ktor.util.cio.writeChannel
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.util.cio.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.io.copyAndClose
@@ -225,3 +223,13 @@ fun View.hide() {
 fun View.gone() {
     visibility = View.GONE
 }
+
+fun View.animShow() {
+    animate().alpha(1f).setDuration(300).setListener(object : AnimatorListenerAdapter() {
+        override fun onAnimationStart(animation: Animator) {
+            super.onAnimationStart(animation)
+            visibility = View.VISIBLE
+        }
+    })
+}
+

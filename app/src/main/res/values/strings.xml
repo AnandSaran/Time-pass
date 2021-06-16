@@ -74,4 +74,8 @@
     <string name="added">Added</string>
     <string name="modified">Modified</string>
     <string name="removed">Removed</string>
+    <string name="loading">Loading… Please wait</string>
+    <string name="connecting">Connecting… Please wait</string>
+    <string name="close_live_msg">Are you sure to Exit?</string>
+    <string name="video_stream_error">Stream unavailable to play</string>
 </resources>

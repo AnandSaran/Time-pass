@@ -9,9 +9,12 @@ import com.gregantech.timepass.util.constant.UNKNOWN_VIEW_MODEL_CLASS
 
 class LiveChatViewModel(private val liveChatRepository: LiveChatRepository) : ViewModel() {
 
-    fun obIncomingMessage() = liveChatRepository.geChatHistory()
+    fun obIncomingMessage(docKey: String) = liveChatRepository.geChatHistory(docKey)
 
-    fun obOutgoingMessage(chatModel: ChatModel) = liveChatRepository.sendMessage(chatModel)
+    fun obOutgoingMessage(chatModel: ChatModel, docKey: String) =
+        liveChatRepository.sendMessage(chatModel, docKey)
+
+    fun obCreateBroadcastDocument() = liveChatRepository.createBroadcastDoc()
 
     @Suppress(ANNOTATION_UNCHECKED_CAST)
     class Factory(
@@ -25,5 +28,6 @@ class LiveChatViewModel(private val liveChatRepository: LiveChatRepository) : Vi
             throw IllegalArgumentException(UNKNOWN_VIEW_MODEL_CLASS)
         }
     }
+
 
 }

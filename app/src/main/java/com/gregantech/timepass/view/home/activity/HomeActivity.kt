@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -27,7 +26,7 @@ import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
 import com.gregantech.timepass.view.home.viewmodel.AppConfigViewModel
-import com.gregantech.timepass.view.live.activity.LiveVideoBroadCastActivity
+import com.gregantech.timepass.view.live.activity.LiveBroadCastActivity
 import com.gregantech.timepass.view.uservideolist.fragment.UserVideoListFragment
 
 
@@ -157,7 +156,8 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
                     onSelectTab(R.id.userVideoListFragment)
                 }
                 R.id.categoryBroadcast -> {
-                    LiveVideoBroadCastActivity.present(this)
+                    LiveBroadCastActivity.present(this)
+                    //LiveVideoBroadCastActivity.present(this)
                 }
                 R.id.categoryFragment -> {
                     navController.popBackStack(R.id.categoryFragment, true)

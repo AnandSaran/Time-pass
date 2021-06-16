@@ -267,7 +267,14 @@ class UserVideoListFragment : TimePassBaseFragment() {
     }
 
     private fun onLiveUserClicked(){
-        LiveVideoPlayerActivity.present(requireContext(), PlaybackInfoModel("Streaming Live",BuildConfig.ANT_URL+"zzz",true))
+        LiveVideoPlayerActivity.present(
+            requireContext(), PlaybackInfoModel(
+                "Streaming Live",
+                BuildConfig.ANT_URL + "hRDb07r59TvtJ6CrlIUw",
+                "hRDb07r59TvtJ6CrlIUw",
+                true
+            )
+        )
     }
 
     private fun setUpSnapShot() {

@@ -8,5 +8,6 @@ import kotlinx.android.parcel.Parcelize
 data class PlaybackInfoModel(
     val title: String = EMPTY_STRING,
     val url: String = EMPTY_STRING,
+    val chatKey: String = EMPTY_STRING,
     val isLive: Boolean = true
 ) : Parcelable

@@ -69,7 +69,7 @@ class SplashActivity : TimePassBaseActivity() {
                     TimePassBaseResult.Status.SUCCESS -> {
                         dismissProgressBar()
                         it.data?.user?.let { user ->
-                            SharedPreferenceHelper.setUserData(user)
+                            SharedPreferenceHelper.setLiveEnabled(true)
                             Handler().post { navigateNextScreen() }
                         }
                     }

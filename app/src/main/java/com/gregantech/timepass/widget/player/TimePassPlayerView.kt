@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.util.EventLogger
 import com.gregantech.timepass.R
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.widget.player.helper.TimePassPlayerHelper
+import com.gregantech.timepass.widget.player.listener.PlayState
 import com.gregantech.timepass.widget.player.listener.PlayerListener
 
 
@@ -85,8 +86,10 @@ class TimePassPlayerView : FrameLayout {
      * @param playbackInfoModel playback information include playback url, drmToken, license url
      */
     fun preparePlayback(
-        playbackInfoModel: PlaybackInfoModel
+        playbackInfoModel: PlaybackInfoModel,
+        playState: PlayState
     ) {
+        playerListener.playState = playState
         castPlayerHelper.setPlaybackInfoModel(playbackInfoModel)
         setupPlayer()
         castPlayerHelper.addPlayerEventListener(playerListener)

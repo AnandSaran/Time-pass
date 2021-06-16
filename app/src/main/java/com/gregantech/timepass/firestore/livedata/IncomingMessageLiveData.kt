@@ -1,4 +1,4 @@
-package com.gregantech.timepass.view.live.viewmodel
+package com.gregantech.timepass.firestore.livedata
 
 import android.util.Log
 import androidx.lifecycle.LiveData

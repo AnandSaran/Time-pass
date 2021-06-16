@@ -11,10 +11,10 @@ import com.gregantech.timepass.databinding.ActivityLiveVideoPlayerBinding
 import com.gregantech.timepass.general.bundklekey.LivePlayerBundleKey
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
 import com.gregantech.timepass.view.live.fragment.LiveChatFragment
 import com.gregantech.timepass.view.live.fragment.LivePlayerContentContainerFragment
 import com.gregantech.timepass.view.live.viewmodel.LivePlayerSharedViewModel
-import com.singtel.cast.utils.navigation.FragmentNavigationUtil
 
 class LiveVideoPlayerActivity : AppCompatActivity() {
 
@@ -62,7 +62,7 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
         updateTitle()
 
         if (savedInstanceState == null) {
-            //showLivePlayerContentContainerFragment()
+            showLivePlayerContentContainerFragment()
             loadChatContainerFragment()
         }
 
@@ -76,7 +76,6 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
 
     private fun showLivePlayerContentContainerFragment() {
         val livePlayerContentContainerFragment = LivePlayerContentContainerFragment.newInstance()
-
         FragmentNavigationUtil.commitFragment(
             livePlayerContentContainerFragment,
             supportFragmentManager,
@@ -85,8 +84,7 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
     }
 
     private fun loadChatContainerFragment() {
-        val chatFragment = LiveChatFragment.newInstance()
-
+        val chatFragment = LiveChatFragment.newInstance(docKey = playBackInfoModel.chatKey)
         FragmentNavigationUtil.commitFragment(
             chatFragment,
             supportFragmentManager,

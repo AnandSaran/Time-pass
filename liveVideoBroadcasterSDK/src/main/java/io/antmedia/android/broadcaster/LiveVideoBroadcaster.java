@@ -22,7 +22,6 @@ import android.os.IBinder;
 import android.os.Process;
 import android.util.Log;
 import android.view.Surface;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -67,13 +66,12 @@ public class LiveVideoBroadcaster extends Service implements ILiveVideoBroadcast
     private volatile static boolean sCameraReleased;
     private ArrayList<Resolution> choosenPreviewsSizeList;
     private final IBinder mBinder = new LocalBinder();
-    private int currentCameraId= Camera.CameraInfo.CAMERA_FACING_BACK;
-
-    private int frameRate = 20;
+    private int currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+    private static final TextureMovieEncoder sVideoEncoder = new TextureMovieEncoder();
     public static final int PERMISSIONS_REQUEST = 8954;
 
     public final static int SAMPLE_AUDIO_RATE_IN_HZ = 44100;
-    private static TextureMovieEncoder sVideoEncoder = new TextureMovieEncoder();
+    private final int frameRate = 20;
     private Resolution previewSize;
     private AlertDialog mAlertDialog;
     private HandlerThread mRtmpHandlerThread;
@@ -81,6 +79,12 @@ public class LiveVideoBroadcaster extends Service implements ILiveVideoBroadcast
     private ConnectivityManager connectivityManager;
     private boolean adaptiveStreamingEnabled = false;
     private Timer adaptiveStreamingTimer = null;
+    private CameraCallback cameraCallback;
+
+
+    public void setCameraCallback(CameraCallback cameraCallback) {
+        this.cameraCallback = cameraCallback;
+    }
 
     public boolean isConnected() {
         if (mRtmpStreamer != null) {
@@ -104,7 +108,7 @@ public class LiveVideoBroadcaster extends Service implements ILiveVideoBroadcast
         //first making mGLView GONE is important otherwise
         //camera function is called after release exception may be thrown
         //especially in htc one x 4.4.2
-        mGLView.setVisibility(View.GONE);
+        //mGLView.setVisibility(View.GONE);
         stopBroadcasting();
 
         mGLView.queueEvent(new Runnable() {
@@ -192,10 +196,7 @@ public class LiveVideoBroadcaster extends Service implements ILiveVideoBroadcast
 
     public boolean hasConnection() {
         NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-        if (activeNetwork != null && activeNetwork.isConnected()) {
-            return true;
-        }
-        return false;
+        return activeNetwork != null && activeNetwork.isConnected();
     }
 
     public boolean startBroadcasting(String rtmpUrl) {
@@ -437,7 +438,7 @@ public class LiveVideoBroadcaster extends Service implements ILiveVideoBroadcast
 
 
         currentCameraId = cameraId;
-        mGLView.setVisibility(View.GONE);
+        //mGLView.setVisibility(View.GONE);
         new AsyncTask<Integer, Void, Camera.Parameters>() {
 
             @Override
@@ -492,7 +493,10 @@ public class LiveVideoBroadcaster extends Service implements ILiveVideoBroadcast
                     releaseCamera();
                 }
                 else if (sCameraProxy != null && parameters != null) {
-                    mGLView.setVisibility(View.VISIBLE);
+                    if (cameraCallback != null) {
+                        cameraCallback.onCameraConnected();
+                    }
+                    //mGLView.setVisibility(View.VISIBLE);
                     mGLView.onResume();
                     //mGLView.setAlpha(0.7f);
                     setRendererPreviewSize();
@@ -809,5 +813,9 @@ public class LiveVideoBroadcaster extends Service implements ILiveVideoBroadcast
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
+    }
+
+    public interface CameraCallback {
+        void onCameraConnected();
     }
 }

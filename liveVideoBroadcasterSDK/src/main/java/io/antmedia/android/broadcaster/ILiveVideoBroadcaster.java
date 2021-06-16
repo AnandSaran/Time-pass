@@ -37,12 +37,19 @@ public interface ILiveVideoBroadcaster {
 
     /**
      * Opens camera in an another thread and render camera view on GLSurfaceView
+     *
      * @param cameraId specifies which camera to open
      *                 can be
      *                 Camera.CameraInfo.CAMERA_FACING_BACK, Camera.CameraInfo.CAMERA_FACING_FRONT;
-     *
      */
     void openCamera(int cameraId);
+
+
+    /**
+     * Set camera opened callback
+     */
+
+    void setCameraCallback(LiveVideoBroadcaster.CameraCallback cameraCallback);
 
     /**
      * Changes the camera,

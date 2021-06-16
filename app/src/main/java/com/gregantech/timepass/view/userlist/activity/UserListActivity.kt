@@ -25,11 +25,11 @@ import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.hideSoftKeyboard
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.extension.visible
+import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.userlist.fragment.UserListFragment
 import com.gregantech.timepass.view.userlist.viewmodel.UserListActivityViewModel
 import com.gregantech.timepass.view.userlist.viewmodel.UserListSharedViewModel
-import com.singtel.cast.utils.navigation.FragmentNavigationUtil
 
 class UserListActivity : TimePassBaseActivity() {
     companion object {

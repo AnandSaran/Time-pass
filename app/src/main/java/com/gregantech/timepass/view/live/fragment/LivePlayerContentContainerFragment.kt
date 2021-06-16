@@ -10,21 +10,22 @@ import androidx.fragment.app.FragmentManager
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseFragment
 import com.gregantech.timepass.databinding.FragmentLivePlayerContentContainerBinding
-import com.singtel.cast.utils.navigation.FragmentNavigationUtil
+import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
 
 class LivePlayerContentContainerFragment : TimePassBaseFragment() {
+
+
+    private lateinit var mContext: Context
+    private lateinit var binding: FragmentLivePlayerContentContainerBinding
 
     companion object {
         fun newInstance() = LivePlayerContentContainerFragment()
     }
 
-    private lateinit var mContext: Context
-    private lateinit var binding: FragmentLivePlayerContentContainerBinding
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding =
             DataBindingUtil.inflate(
                 inflater,
