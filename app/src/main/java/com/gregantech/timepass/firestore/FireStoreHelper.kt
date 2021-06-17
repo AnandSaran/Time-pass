@@ -23,7 +23,7 @@ object FireStoreConst {
         const val LOVES = "loves"
         const val SMILES = "smiles"
         const val ANGRY = "angry"
-
+        const val BROADCAST_LIVE = "broadcast_live"
     }
 }
 

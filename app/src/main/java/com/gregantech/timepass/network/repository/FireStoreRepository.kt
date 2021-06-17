@@ -11,7 +11,7 @@ import com.gregantech.timepass.firestore.livedata.*
 import com.gregantech.timepass.model.ChatModel
 import com.gregantech.timepass.util.constant.CHAT_LIMIT
 
-class LiveChatRepository {
+class FireStoreRepository {
 
     private val fireStore = FirebaseFirestore.getInstance()
     private lateinit var query: Query
@@ -23,8 +23,8 @@ class LiveChatRepository {
         return OutgoingMessageLiveData(fireStore.chatCollection(broadDocKey), chatModel)
     }
 
-    fun createBroadcastDoc(): BroadcastLiveData {
-        return BroadcastLiveData(fireStore.broadCastCollection())
+    fun createBroadcastDoc(): BroadCastLiveData {
+        return BroadCastLiveData(fireStore.broadCastCollection())
     }
 
     fun updateReactionCount(broadDocKey: String, reaction: REACTION) =
@@ -33,6 +33,9 @@ class LiveChatRepository {
     fun getReactionCount(broadDocKey: String): ReactionListenerLiveData {
         return ReactionListenerLiveData(fireStore.broadCastCollection().document(broadDocKey))
     }
+
+    fun updateBroadcastState(broadDocKey: String, state: Boolean) =
+        BroadCastStatusLiveData(fireStore.broadCastCollection().document(broadDocKey), state)
 
     fun geChatHistory(broadDocKey: String): IncomingMessageLiveData? {
         if (isLastProductReached)

@@ -4,32 +4,35 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.gregantech.timepass.firestore.REACTION
 import com.gregantech.timepass.model.ChatModel
-import com.gregantech.timepass.network.repository.LiveChatRepository
+import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.util.constant.ANNOTATION_UNCHECKED_CAST
 import com.gregantech.timepass.util.constant.UNKNOWN_VIEW_MODEL_CLASS
 
-class LiveChatViewModel(private val liveChatRepository: LiveChatRepository) : ViewModel() {
+class LiveChatViewModel(private val fireStoreRepository: FireStoreRepository) : ViewModel() {
 
-    fun obIncomingMessage(docKey: String) = liveChatRepository.geChatHistory(docKey)
+    fun obIncomingMessage(docKey: String) = fireStoreRepository.geChatHistory(docKey)
 
     fun obOutgoingMessage(chatModel: ChatModel, docKey: String) =
-        liveChatRepository.sendMessage(chatModel, docKey)
+        fireStoreRepository.sendMessage(chatModel, docKey)
 
-    fun obCreateBroadcastDocument() = liveChatRepository.createBroadcastDoc()
+    fun obCreateBroadcastDocument() = fireStoreRepository.createBroadcastDoc()
 
     fun obUpdateReactionCount(docKey: String, reaction: REACTION) =
-        liveChatRepository.updateReactionCount(docKey, reaction)
+        fireStoreRepository.updateReactionCount(docKey, reaction)
 
-    fun obReactionCount(docKey: String) = liveChatRepository.getReactionCount(docKey)
+    fun obReactionCount(docKey: String) = fireStoreRepository.getReactionCount(docKey)
+
+    fun obUpdateBroadcastState(docKey: String, state: Boolean) =
+        fireStoreRepository.updateBroadcastState(docKey, state)
 
     @Suppress(ANNOTATION_UNCHECKED_CAST)
     class Factory(
-        private val liveChatRepository: LiveChatRepository
+        private val fireStoreRepository: FireStoreRepository
     ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(LiveChatViewModel::class.java)) {
-                return LiveChatViewModel(liveChatRepository) as T
+                return LiveChatViewModel(fireStoreRepository) as T
             }
             throw IllegalArgumentException(UNKNOWN_VIEW_MODEL_CLASS)
         }

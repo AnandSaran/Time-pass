@@ -8,7 +8,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.model.BroadcastModel
 
-class BroadcastLiveData(broadRef: CollectionReference) :
+class BroadCastLiveData(broadRef: CollectionReference) :
     LiveData<TimePassBaseResult<String?>>(), OnSuccessListener<DocumentReference>,
     OnFailureListener {
 

@@ -26,10 +26,11 @@ class ReactionListenerLiveData(broadDocRef: DocumentReference) :
         snapshot?.run {
             if (exists()) {
                 val broadcastModel = BroadcastModel().apply {
-                    Likes = get(FireStoreConst.FIELD.LIKES).toString()
-                    Loves = get(FireStoreConst.FIELD.LOVES).toString()
-                    Smiles = get(FireStoreConst.FIELD.SMILES).toString()
-                    Angry = get(FireStoreConst.FIELD.ANGRY).toString()
+                    likes = get(FireStoreConst.FIELD.LIKES).toString()
+                    loves = get(FireStoreConst.FIELD.LOVES).toString()
+                    smiles = get(FireStoreConst.FIELD.SMILES).toString()
+                    angry = get(FireStoreConst.FIELD.ANGRY).toString()
+                    broadcast_live = getBoolean(FireStoreConst.FIELD.BROADCAST_LIVE) ?: true
                 }
                 value = TimePassBaseResult.success(broadcastModel)
             }

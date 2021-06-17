@@ -5,10 +5,11 @@ import com.google.firebase.firestore.ServerTimestamp
 
 
 data class BroadcastModel(
-    var Likes: String? = "0",
-    var Loves: String? = "0",
-    var Smiles: String? = "0",
-    var Angry: String? = "0"
+    var likes: String? = "0",
+    var loves: String? = "0",
+    var smiles: String? = "0",
+    var angry: String? = "0",
+    var broadcast_live: Boolean = true
 )
 
 data class ChatModelWrapper(

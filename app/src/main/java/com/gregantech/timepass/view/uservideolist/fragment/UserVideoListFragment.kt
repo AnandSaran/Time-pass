@@ -270,8 +270,8 @@ class UserVideoListFragment : TimePassBaseFragment() {
         LiveVideoPlayerActivity.present(
             requireContext(), PlaybackInfoModel(
                 "Streaming Live",
-                BuildConfig.ANT_URL + "x18eNYEEzMw3dX7k9IOO",
-                "x18eNYEEzMw3dX7k9IOO",
+                BuildConfig.ANT_URL + "je6tqATOGJbdbKbNmVvQ",
+                "je6tqATOGJbdbKbNmVvQ",
                 true
             )
         )

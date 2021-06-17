@@ -20,7 +20,7 @@ import com.gregantech.timepass.databinding.FragmentLiveChatBinding
 import com.gregantech.timepass.firestore.FireStoreConst
 import com.gregantech.timepass.firestore.REACTION
 import com.gregantech.timepass.model.ChatModel
-import com.gregantech.timepass.network.repository.LiveChatRepository
+import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.gone
 import com.gregantech.timepass.util.extension.show
@@ -78,11 +78,11 @@ class LiveChatFragment : TimePassBaseFragment() {
         initVMF()
         initView()
         setupOnClick()
-        listenToIncomingMsg()
+        subscribeToChanges()
     }
 
     private fun initVMF() {
-        viewModelFactory = LiveChatViewModel.Factory(LiveChatRepository())
+        viewModelFactory = LiveChatViewModel.Factory(FireStoreRepository())
     }
 
     private fun initView() {
@@ -182,7 +182,7 @@ class LiveChatFragment : TimePassBaseFragment() {
         super.onDestroyView()
     }
 
-    private fun listenToIncomingMsg() {
+    private fun subscribeToChanges() {
         viewModel.obIncomingMessage(docKey!!)?.observe(viewLifecycleOwner, Observer {
             with(binding.rvChat.adapter as LiveChatAdapter) {
                 when (it.type) {

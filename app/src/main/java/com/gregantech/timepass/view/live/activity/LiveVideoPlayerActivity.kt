@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -13,7 +14,7 @@ import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityLiveVideoPlayerBinding
 import com.gregantech.timepass.general.bundklekey.LivePlayerBundleKey
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
-import com.gregantech.timepass.network.repository.LiveChatRepository
+import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
 import com.gregantech.timepass.view.live.fragment.LiveChatFragment
@@ -41,7 +42,6 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
         }
         ViewModelProvider(this, chatViewModelFactory).get(LiveChatViewModel::class.java)
     }
-
     private val playBackInfoModel by lazy {
         if (intent.hasExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value)) {
             intent.getParcelableExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value) as PlaybackInfoModel
@@ -82,7 +82,7 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
 
     private fun setupViewModel() {
         viewModelFactory = LivePlayerSharedViewModel.Factory()
-        chatViewModelFactory = LiveChatViewModel.Factory(LiveChatRepository())
+        chatViewModelFactory = LiveChatViewModel.Factory(FireStoreRepository())
     }
 
     private fun setupOnClick() {
@@ -95,14 +95,31 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
         chatViewModel.obReactionCount(playBackInfoModel.chatKey).observe(this, Observer {
             when (it.status) {
                 TimePassBaseResult.Status.SUCCESS -> {
-                    Log.d("LiveVideoPlayer", "listenToIncomingMsg: ${it?.data?.Loves} ")
-                    binding.liveOptions.tpItvLove.setLabel(it?.data?.Loves)
+                    Log.d("LiveVideoPlayer", "subscribeToChanges: ${it?.data?.loves} ")
+                    if (it?.data?.broadcast_live == false) {
+                        showLiveEndedAlert()
+                    } else
+                        binding.liveOptions.tpItvLove.setLabel(it?.data?.loves)
                 }
-                TimePassBaseResult.Status.ERROR -> Log.e("LiveVideoPlayer", "listenToIncomingMsg: ")
+                TimePassBaseResult.Status.ERROR -> Log.e("LiveVideoPlayer", "subscribeToChanges: ")
                 TimePassBaseResult.Status.LOADING -> {
                 }
             }
         })
+    }
+
+    private fun showLiveEndedAlert() {
+        AlertDialog.Builder(this)
+            .setMessage(R.string.video_ended)
+            .setCancelable(false)
+            .setPositiveButton(android.R.string.yes) { dialogInterface, i ->
+                finish()
+                dialogInterface.dismiss()
+            }
+            .setNegativeButton(android.R.string.no) { dialogInterface, i ->
+                dialogInterface.dismiss()
+            }
+            .show()
     }
 
 

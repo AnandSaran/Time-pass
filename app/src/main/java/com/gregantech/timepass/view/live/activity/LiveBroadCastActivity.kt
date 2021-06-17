@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityBroadcastBinding
-import com.gregantech.timepass.network.repository.LiveChatRepository
+import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.keepScreenOn
 import com.gregantech.timepass.util.extension.showSystemUI
@@ -47,7 +47,6 @@ class LiveBroadCastActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_broadcast)
-        initWindow()
         setupOnClick()
         setupViewModel()
         if (savedInstanceState == null) {
@@ -55,6 +54,27 @@ class LiveBroadCastActivity : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        Log.d("LiveBroadCastActivity", "onPause: ")
+        doUpdateCloseConnectionStatus()
+    }
+
+    private fun doUpdateCloseConnectionStatus() {
+        Log.d("LiveBroadCastActivity", "doUpdateCloseConnectionStatus: ")
+        chatViewModel.obUpdateBroadcastState(docKey!!, false)
+            .observe(this, androidx.lifecycle.Observer {
+                when (it.status) {
+                    TimePassBaseResult.Status.ERROR -> it.message?.toast(this)
+                }
+            })
+    }
+
+
+    override fun onResume() {
+        initWindow()
+        super.onResume()
+    }
 
     private fun initWindow() {
         window?.apply {
@@ -88,7 +108,7 @@ class LiveBroadCastActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        chatViewModelFactory = LiveChatViewModel.Factory(LiveChatRepository())
+        chatViewModelFactory = LiveChatViewModel.Factory(FireStoreRepository())
     }
 
     private fun obtainDocKey() {
@@ -114,8 +134,8 @@ class LiveBroadCastActivity : AppCompatActivity() {
         chatViewModel.obReactionCount(docKey!!).observe(this, Observer {
             when (it.status) {
                 TimePassBaseResult.Status.SUCCESS -> {
-                    Log.d("LiveBroadCast", "listenToIncomingMsg: ${it?.data?.Loves} ")
-                    binding.liveOptions.tpItvLove.setLabel(it?.data?.Loves)
+                    Log.d("LiveBroadCast", "listenToIncomingMsg: ${it?.data?.loves} ")
+                    binding.liveOptions.tpItvLove.setLabel(it?.data?.loves)
                 }
                 TimePassBaseResult.Status.ERROR -> Log.e(
                     "LiveBroadCast",

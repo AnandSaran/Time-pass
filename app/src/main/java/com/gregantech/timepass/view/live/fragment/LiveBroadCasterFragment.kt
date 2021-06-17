@@ -28,11 +28,14 @@ import com.google.android.material.snackbar.Snackbar
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseFragment
+import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.FragmentLiveBroadcasterBinding
 import com.gregantech.timepass.firestore.FireStoreConst
+import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.view.live.activity.LiveBroadCastActivity
 import com.gregantech.timepass.view.live.viewmodel.LiveBroadcastViewModel
+import com.gregantech.timepass.view.live.viewmodel.LiveChatViewModel
 import io.antmedia.android.broadcaster.ILiveVideoBroadcaster
 import io.antmedia.android.broadcaster.LiveVideoBroadcaster
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +54,7 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
     private val connectionLost = 2
     private val increaseTimer = 1
     private var isRecording = false
-    private var isMuted = false
+    private var isConnectionLost = false
 
     private var timer: Timer? = null
     private var timerHandler: TimerHandler? = null
@@ -59,6 +62,14 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
     private var cameraResolutionDialog: CameraResolutionFragment? = null
 
     private lateinit var viewModelFactory: LiveBroadcastViewModel.Factory
+    private lateinit var chatViewModelFactory: LiveChatViewModel.Factory
+
+    private val chatViewModel: LiveChatViewModel by lazy {
+        requireNotNull(this.activity) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, chatViewModelFactory).get(LiveChatViewModel::class.java)
+    }
 
     private val viewModel: LiveBroadcastViewModel by lazy {
         requireNotNull(this) {
@@ -136,6 +147,7 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
 
     private fun setAssets() {
         viewModelFactory = LiveBroadcastViewModel.Factory()
+        chatViewModelFactory = LiveChatViewModel.Factory(FireStoreRepository())
         timerHandler = TimerHandler()
         requireContext().startService(liveVideoBroadcasterServiceIntent)
     }
@@ -163,6 +175,15 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
         super.onPause()
         cameraResolutionDialog?.dismiss()
         liveVideoBroadCaster?.pause()
+    }
+
+    private fun doUpdateCloseConnectionStatus() {
+        chatViewModel.obUpdateBroadcastState(docKey!!, false)
+            .observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+                when (it.status) {
+                    TimePassBaseResult.Status.ERROR -> showSnackError(it.message!!)
+                }
+            })
     }
 
     override fun onStart() {
@@ -358,7 +379,9 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
                            )*/
                     }
                     connectionLost -> {
+                        isConnectionLost = true
                         showAlert()
+                        stopBroadcasting()
                     }
                 }
             }
@@ -369,7 +392,10 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
         if (isAdded)
             AlertDialog.Builder(requireContext())
                 .setMessage(R.string.broadcast_connection_lost)
-                .setPositiveButton(android.R.string.yes, null)
+                .setPositiveButton(android.R.string.ok) { dialog, which ->
+                    requireActivity().finish()
+                    dialog.dismiss()
+                }
                 .show()
     }
 
