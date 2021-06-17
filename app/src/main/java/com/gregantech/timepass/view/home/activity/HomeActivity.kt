@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -125,6 +126,9 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
     private fun initView() {
         setupBottomNavMenu()
         setSupportActionBar(binding.tbCategory.toolbar)
+        binding.bottomNavigation.menu[1].apply {
+            isCheckable = false
+        }
         binding.tbCategory.toolbar.setTitleTextAppearance(this, R.style.logo_font)
     }
 
@@ -157,7 +161,6 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
                 }
                 R.id.categoryBroadcast -> {
                     LiveBroadCastActivity.present(this)
-                    //LiveVideoBroadCastActivity.present(this)
                 }
                 R.id.categoryFragment -> {
                     navController.popBackStack(R.id.categoryFragment, true)
