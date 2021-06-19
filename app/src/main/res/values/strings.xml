@@ -76,7 +76,7 @@
     <string name="removed">Removed</string>
     <string name="loading">Loading… Please wait</string>
     <string name="connecting">Connecting… Please wait</string>
-    <string name="close_live_msg">Are you sure to Exit?</string>
+    <string name="close_live_msg">Are you sure to Close Live session?</string>
     <string name="video_stream_error">Loading…\nYour internet connection may be slow\n or Stream unavailable to play</string>
     <string name="video_ended">This video has been ended</string>
 </resources>

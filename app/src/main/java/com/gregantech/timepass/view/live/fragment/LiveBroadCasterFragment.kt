@@ -1,25 +1,20 @@
 package com.gregantech.timepass.view.live.fragment
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.res.Configuration
 import android.hardware.Camera
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Message
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -214,7 +209,7 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
                         binding.cameraPreviewSurfaceView
                     )
                     setAdaptiveStreaming(true)
-                    openCamera(Camera.CameraInfo.CAMERA_FACING_FRONT)
+                    liveVideoBroadCaster?.openCamera(Camera.CameraInfo.CAMERA_FACING_FRONT)
                     setCameraCallback(cameraCallback)
                 }
             }
@@ -235,57 +230,6 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
         startBroadcasting()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            LiveVideoBroadcaster.PERMISSIONS_REQUEST -> {
-                if (liveVideoBroadCaster?.isPermissionGranted == true) {
-                    liveVideoBroadCaster?.openCamera(Camera.CameraInfo.CAMERA_FACING_BACK)
-                } else {
-                    when {
-                        ActivityCompat.shouldShowRequestPermissionRationale(
-                            requireActivity(),
-                            Manifest.permission.CAMERA
-                        ) || ActivityCompat.shouldShowRequestPermissionRationale(
-                            requireActivity(),
-                            Manifest.permission.RECORD_AUDIO
-                        ) -> {
-                            liveVideoBroadCaster?.requestPermission()
-                        }
-                        else -> showPermissionDeniedDialog()
-                    }
-                }
-                return
-            }
-        }
-    }
-
-
-    private fun showPermissionDeniedDialog() {
-        android.app.AlertDialog.Builder(requireContext())
-            .setTitle(R.string.permission)
-            .setMessage(getString(R.string.app_doesnot_work_without_permissions))
-            .setPositiveButton(
-                android.R.string.yes
-            ) { dialog, which ->
-                try {
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                        data =
-                            Uri.parse("package:" + requireContext().applicationContext.packageName)
-                    }
-                    startActivity(intent)
-                } catch (e: ActivityNotFoundException) {
-                    val intent =
-                        Intent(Settings.ACTION_MANAGE_APPLICATIONS_SETTINGS)
-                    startActivity(intent)
-                }
-            }
-            .show()
-    }
 
 
     private fun startBroadcasting() {

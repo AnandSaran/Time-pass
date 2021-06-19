@@ -121,5 +121,4 @@ public interface ILiveVideoBroadcaster {
      */
     void stopBroadcasting();
 
-
 }

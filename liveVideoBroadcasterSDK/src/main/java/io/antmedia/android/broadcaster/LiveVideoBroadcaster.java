@@ -24,7 +24,6 @@ import android.util.Log;
 import android.view.Surface;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -625,60 +624,7 @@ public class LiveVideoBroadcaster extends Service implements ILiveVideoBroadcast
 
     public void requestPermission() {
 
-        boolean cameraPermissionGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                == PackageManager.PERMISSION_GRANTED;
 
-        boolean microPhonePermissionGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-                == PackageManager.PERMISSION_GRANTED;
-
-
-        final List<String> permissionList = new ArrayList();
-        if (!cameraPermissionGranted) {
-            permissionList.add(Manifest.permission.CAMERA);
-        }
-        if (!microPhonePermissionGranted) {
-            permissionList.add(Manifest.permission.RECORD_AUDIO);
-        }
-        if (permissionList.size() > 0 )
-        {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(context,
-                    Manifest.permission.CAMERA)) {
-                mAlertDialog = new AlertDialog.Builder(context)
-                        .setTitle(R.string.permission)
-                        .setMessage(getString(R.string.camera_permission_is_required))
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                String[] permissionArray = permissionList.toArray(new String[permissionList.size()]);
-                                ActivityCompat.requestPermissions(context,
-                                        permissionArray,
-                                        PERMISSIONS_REQUEST);
-                            }
-                        })
-                        .show();
-            }
-            else if (ActivityCompat.shouldShowRequestPermissionRationale(context,
-                    Manifest.permission.RECORD_AUDIO)) {
-                mAlertDialog = new AlertDialog.Builder(context)
-                        .setMessage(getString(R.string.microphone_permission_is_required))
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                String[] permissionArray = permissionList.toArray(new String[permissionList.size()]);
-                                ActivityCompat.requestPermissions(context,
-                                        permissionArray,
-                                        PERMISSIONS_REQUEST);
-                            }
-                        })
-                        .show();
-
-            }
-            else {
-                String[] permissionArray = permissionList.toArray(new String[permissionList.size()]);
-                ActivityCompat.requestPermissions(context,
-                        permissionArray,
-                        PERMISSIONS_REQUEST);
-            }
-
-        }
     }
 
     public int[] findBestFrameRate(List<int[]> frameRateList, int[] requestedFrameRate) {
