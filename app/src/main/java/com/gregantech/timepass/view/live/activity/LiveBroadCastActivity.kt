@@ -19,14 +19,18 @@ import androidx.lifecycle.ViewModelProvider
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityBroadcastBinding
+import com.gregantech.timepass.network.repository.BroadCastRepository
 import com.gregantech.timepass.network.repository.FireStoreRepository
+import com.gregantech.timepass.network.request.BroadCastRequest
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.keepScreenOn
 import com.gregantech.timepass.util.extension.showSystemUI
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
+import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.live.fragment.LiveBroadCasterFragment
 import com.gregantech.timepass.view.live.fragment.LiveChatFragment
+import com.gregantech.timepass.view.live.viewmodel.LiveBroadcastViewModel
 import com.gregantech.timepass.view.live.viewmodel.LiveChatViewModel
 import io.antmedia.android.broadcaster.LiveVideoBroadcaster
 
@@ -35,12 +39,23 @@ class LiveBroadCastActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBroadcastBinding
     private var docKey: String? = null
 
+    private lateinit var viewModelFactory: LiveBroadcastViewModel.Factory
     private lateinit var chatViewModelFactory: LiveChatViewModel.Factory
+
     private val chatViewModel: LiveChatViewModel by lazy {
         requireNotNull(this) {
             VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
         }
         ViewModelProvider(this, chatViewModelFactory).get(LiveChatViewModel::class.java)
+    }
+
+    private val viewModel: LiveBroadcastViewModel by lazy {
+        requireNotNull(this) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, viewModelFactory).get(
+            LiveBroadcastViewModel::class.java
+        )
     }
 
     companion object {
@@ -103,20 +118,21 @@ class LiveBroadCastActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         Log.d("LiveBroadCastActivity", "onPause: ")
-        doUpdateCloseConnectionStatus()
+        updateBCStatus()
     }
 
-    private fun doUpdateCloseConnectionStatus() {
-        Log.d("LiveBroadCastActivity", "doUpdateCloseConnectionStatus: docKey $docKey")
+    private fun updateBCStatus() {
         docKey?.let {
             chatViewModel.obUpdateBroadcastState(it, false)
-                .observe(this, androidx.lifecycle.Observer {
-                    when (it.status) {
-                        TimePassBaseResult.Status.ERROR -> it.message?.toast(this)
-                    }
-                })
+            viewModel.updateBroadCastStatus(generateBCUpdateRequest(false))
         }
     }
+
+    private fun generateBCUpdateRequest(state: Boolean) = BroadCastRequest(
+        docKey!!,
+        SharedPreferenceHelper.getUserId(),
+        state
+    )
 
     private fun showRationaleDialog(permissionList: ArrayList<String?>, permission: String) {
         android.app.AlertDialog.Builder(this)
@@ -245,6 +261,7 @@ class LiveBroadCastActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
+        viewModelFactory = LiveBroadcastViewModel.Factory(BroadCastRepository())
         chatViewModelFactory = LiveChatViewModel.Factory(FireStoreRepository())
     }
 
@@ -256,6 +273,7 @@ class LiveBroadCastActivity : AppCompatActivity() {
                 TimePassBaseResult.Status.SUCCESS -> {
                     Log.d("LiveBroadcastActivity", "obtainDocKey: DocId ${it.data.toString()}")
                     docKey = it.data.toString()
+                    viewModel.updateBroadCastStatus(generateBCUpdateRequest(true))
                     loadChatContainerFragment()
                     showBroadcastFragment()
                     subscribeToChanges()

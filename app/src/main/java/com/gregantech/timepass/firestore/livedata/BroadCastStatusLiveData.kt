@@ -1,5 +1,6 @@
 package com.gregantech.timepass.firestore.livedata
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -25,7 +26,7 @@ class BroadCastStatusLiveData(broadRef: DocumentReference, state: Boolean) :
     }
 
     override fun onFailure(exception: Exception) {
-        //Log.d("BroadCastStatusLiveData", "error: ${exception.message.toString()}")
+        Log.e("BroadCastStatusLiveData", "error: ${exception.message.toString()}")
         value = TimePassBaseResult.error(exception.message.toString())
     }
 

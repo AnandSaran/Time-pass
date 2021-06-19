@@ -23,9 +23,9 @@ import com.google.android.material.snackbar.Snackbar
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseFragment
-import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.FragmentLiveBroadcasterBinding
 import com.gregantech.timepass.firestore.FireStoreConst
+import com.gregantech.timepass.network.repository.BroadCastRepository
 import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.view.live.activity.LiveBroadCastActivity
@@ -141,7 +141,7 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
     }
 
     private fun setAssets() {
-        viewModelFactory = LiveBroadcastViewModel.Factory()
+        viewModelFactory = LiveBroadcastViewModel.Factory(BroadCastRepository())
         chatViewModelFactory = LiveChatViewModel.Factory(FireStoreRepository())
         timerHandler = TimerHandler()
         requireContext().startService(liveVideoBroadcasterServiceIntent)
@@ -170,15 +170,6 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
         super.onPause()
         cameraResolutionDialog?.dismiss()
         liveVideoBroadCaster?.pause()
-    }
-
-    private fun doUpdateCloseConnectionStatus() {
-        chatViewModel.obUpdateBroadcastState(docKey!!, false)
-            .observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-                when (it.status) {
-                    TimePassBaseResult.Status.ERROR -> showSnackError(it.message!!)
-                }
-            })
     }
 
     override fun onStart() {

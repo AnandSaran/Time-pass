@@ -7,6 +7,9 @@ import com.gregantech.timepass.model.ChatModel
 import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.util.constant.ANNOTATION_UNCHECKED_CAST
 import com.gregantech.timepass.util.constant.UNKNOWN_VIEW_MODEL_CLASS
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class LiveChatViewModel(private val fireStoreRepository: FireStoreRepository) : ViewModel() {
 
@@ -22,8 +25,12 @@ class LiveChatViewModel(private val fireStoreRepository: FireStoreRepository) : 
 
     fun obReactionCount(docKey: String) = fireStoreRepository.getReactionCount(docKey)
 
-    fun obUpdateBroadcastState(docKey: String, state: Boolean) =
-        fireStoreRepository.updateBroadcastState(docKey, state)
+    fun obUpdateBroadcastState(docKey: String, state: Boolean) {
+        CoroutineScope(Dispatchers.IO).launch {
+            fireStoreRepository.updateBroadcastState(docKey, state)
+        }
+    }
+
 
     @Suppress(ANNOTATION_UNCHECKED_CAST)
     class Factory(
