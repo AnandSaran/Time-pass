@@ -13,6 +13,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.*
@@ -27,6 +28,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.gregantech.timepass.R
+import com.gregantech.timepass.widget.AnimateCounter
 import com.klinker.android.link_builder.Link
 import com.klinker.android.link_builder.applyLinks
 import java.io.File
@@ -269,4 +271,15 @@ fun AppCompatTextView.fadeIn(title: String, context: Context?) {
         startAnimation(anim)
     }
 
+}
+
+fun AppCompatTextView.anim(title: String) {
+    val from = text.toString().toFloat()
+    val to = title.toFloat()
+    AnimateCounter.Builder(this)
+        .setCount(from, to, 0)
+        .setDuration(1000)
+        .setInterpolator(AccelerateDecelerateInterpolator())
+        .build()
+        .execute()
 }

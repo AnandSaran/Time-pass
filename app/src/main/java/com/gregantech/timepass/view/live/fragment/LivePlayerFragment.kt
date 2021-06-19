@@ -89,6 +89,7 @@ class LivePlayerFragment : TimePassBaseFragment() {
     }
 
     private fun subscribeToChanges() {
+        //checking stream state!
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
                 delay(10000)

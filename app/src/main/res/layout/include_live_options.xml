@@ -2,21 +2,18 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include layout="@layout/guideline_10dp" />
-
         <com.gregantech.timepass.widget.TimePassIconTextView
             android:id="@+id/tpItvLive"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="@dimen/dp_15"
             android:gravity="center"
-            app:layout_constraintEnd_toStartOf="@+id/tpItvUsers"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toStartOf="@+id/guideline_start"
-            app:layout_constraintTop_toTopOf="@+id/guideline_top"
+            android:layout_weight="1"
             app:showIcon="false"
             app:tpBg="@drawable/bg_red_rounded"
             app:tpLabel="@string/live"
@@ -24,25 +21,22 @@
 
         <com.gregantech.timepass.widget.TimePassIconTextView
             android:id="@+id/tpItvUsers"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
             android:gravity="center"
-            app:layout_constraintEnd_toStartOf="@+id/tpItvLove"
-            app:layout_constraintHorizontal_chainStyle="spread"
-            app:layout_constraintStart_toEndOf="@+id/tpItvLive"
-            app:layout_constraintTop_toTopOf="@+id/guideline_top"
             app:tpBg="@drawable/bg_black_rounded"
             app:tpIcon="@drawable/ic_live_user"
             app:tpLabel="0" />
 
         <com.gregantech.timepass.widget.TimePassIconTextView
             android:id="@+id/tpItvLove"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_weight="1"
             android:gravity="center"
-            app:layout_constraintEnd_toStartOf="@+id/ivClose"
-            app:layout_constraintStart_toEndOf="@+id/tpItvUsers"
-            app:layout_constraintTop_toTopOf="@+id/guideline_top"
             app:tpBg="@drawable/bg_black_rounded"
             app:tpIcon="@drawable/ic_love"
             app:tpLabel="0" />
@@ -51,14 +45,13 @@
             android:id="@+id/ivClose"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
-            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_15"
             android:gravity="center"
             android:padding="@dimen/dp_10"
-            android:src="@drawable/ic_delete"
-            app:layout_constraintEnd_toEndOf="@+id/guideline_end"
-            app:layout_constraintStart_toEndOf="@+id/tvLoves"
-            app:layout_constraintTop_toTopOf="@+id/guideline_top" />
+            android:src="@drawable/ic_delete" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </layout>
