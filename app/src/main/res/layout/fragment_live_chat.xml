@@ -22,7 +22,7 @@
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toTopOf="@+id/guideline_top" />
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/bottomLay"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -37,8 +37,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_5"
-                android:layout_weight="1"
-                android:background="@drawable/bg_black_rounded">
+                android:background="@drawable/bg_black_rounded"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ivLove"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etComment"
@@ -69,14 +72,19 @@
 
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/ivLove"
-                android:layout_width="@dimen/dp_35"
-                android:layout_height="@dimen/dp_35"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
                 android:layout_gravity="center"
-                android:src="@drawable/love_action" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/inputLay"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_fileName="favourite.json"
+                app:lottie_loop="false" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

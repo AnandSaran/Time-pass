@@ -107,6 +107,7 @@ class LiveChatFragment : TimePassBaseFragment() {
                 doSendMessage()
             }
             ivLove.setOnClickListener {
+                ivLove.playAnimation()
                 doIncreaseLoveCount()
             }
         }

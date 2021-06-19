@@ -316,4 +316,6 @@ dependencies {
 
     //RTMP client version_exoplayer
     implementation "com.google.android.exoplayer:extension-rtmp:$version_exoplayer"
+
+    implementation 'com.airbnb.android:lottie:3.0.7'
 }

@@ -9,6 +9,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.gregantech.timepass.R
+import com.gregantech.timepass.util.extension.fadeIn
 import com.gregantech.timepass.util.extension.gone
 import com.gregantech.timepass.util.extension.show
 import kotlinx.android.synthetic.main.widget_timepass_icon_textview.view.*
@@ -40,8 +41,10 @@ class TimePassIconTextView : ConstraintLayout {
     }
 
     fun setLabel(value: String?) {
-        view.tpItv_label.text = value
-        invalidate()
+        value?.let {
+            view.tpItv_label.fadeIn(it, context)
+            invalidate()
+        }
     }
 
     private fun assignProps(typedArray: TypedArray) {

@@ -97,9 +97,9 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
                 TimePassBaseResult.Status.SUCCESS -> {
                     Log.d("LiveVideoPlayer", "subscribeToChanges: ${it?.data?.loves} ")
                     if (it?.data?.broadcast_live == false) {
-                        showLiveEndedAlert()
-                    } else
-                        binding.liveOptions.tpItvLove.setLabel(it?.data?.loves)
+                        //showLiveEndedAlert()
+                    }
+                    binding.liveOptions.tpItvLove.setLabel(it?.data?.loves)
                 }
                 TimePassBaseResult.Status.ERROR -> Log.e("LiveVideoPlayer", "subscribeToChanges: ")
                 TimePassBaseResult.Status.LOADING -> {

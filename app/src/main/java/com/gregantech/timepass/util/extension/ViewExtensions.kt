@@ -13,6 +13,8 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -192,7 +194,7 @@ fun Context.shareVideoText(file: File) {
     val shareIntent = Intent()
     shareIntent.action = Intent.ACTION_SEND
     shareIntent.type = "video/*"
-    shareIntent.putExtra(Intent.EXTRA_STREAM, file.toURI());
+    shareIntent.putExtra(Intent.EXTRA_STREAM, file.toURI())
     startActivity(
         Intent.createChooser(
             shareIntent,
@@ -258,4 +260,13 @@ fun AppCompatTextView.applyTextHyperLink(
     if (listOfHyperLinks.isNotEmpty()) {
         this.applyLinks(listOfHyperLinks)
     }
+}
+
+fun AppCompatTextView.fadeIn(title: String, context: Context?) {
+    context?.let {
+        val anim: Animation = AnimationUtils.loadAnimation(it, R.anim.fade_in)
+        text = title
+        startAnimation(anim)
+    }
+
 }
