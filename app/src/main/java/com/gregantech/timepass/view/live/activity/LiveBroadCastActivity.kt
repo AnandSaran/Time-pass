@@ -128,11 +128,13 @@ class LiveBroadCastActivity : AppCompatActivity() {
         }
     }
 
-    private fun generateBCUpdateRequest(state: Boolean) = BroadCastRequest(
-        docKey!!,
-        SharedPreferenceHelper.getUserId(),
-        state
-    )
+    private fun generateBCUpdateRequest(state: Boolean): BroadCastRequest {
+        return BroadCastRequest(
+            docKey!!,
+            SharedPreferenceHelper.getUserId(),
+            state
+        )
+    }
 
     private fun showRationaleDialog(permissionList: ArrayList<String?>, permission: String) {
         android.app.AlertDialog.Builder(this)

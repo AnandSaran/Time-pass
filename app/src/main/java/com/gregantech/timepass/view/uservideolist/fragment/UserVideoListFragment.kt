@@ -10,6 +10,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.*
 import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResult
@@ -38,6 +39,7 @@ import com.gregantech.timepass.general.bundklekey.CreateVideoBundleEnum
 import com.gregantech.timepass.model.*
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.network.repository.BroadCastRepository
+import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
@@ -58,6 +60,7 @@ import com.gregantech.timepass.view.createvideo.activity.VideoUploadActivity
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
 import com.gregantech.timepass.view.live.activity.LiveVideoPlayerActivity
 import com.gregantech.timepass.view.live.viewmodel.LiveBroadcastViewModel
+import com.gregantech.timepass.view.live.viewmodel.LiveChatViewModel
 import com.gregantech.timepass.view.player.activity.ImageViewActivity
 import com.gregantech.timepass.view.player.activity.PlayerActivity
 import com.gregantech.timepass.view.profile.activity.UserProfileActivity
@@ -78,6 +81,11 @@ class UserVideoListFragment : TimePassBaseFragment() {
     private lateinit var viewModelFactory: UserVideoListViewModel.Factory
     private lateinit var bcViewModelFactory: LiveBroadcastViewModel.Factory
     private lateinit var userPostViewModelFactory: UserPostViewModel.Factory
+    private lateinit var chatViewModelFactory: LiveChatViewModel.Factory
+
+    private val liveUserAdapter by lazy {
+        LiveUserAdapter(::onLiveUserClicked)
+    }
     private lateinit var railItemClickHandler: RailItemClickHandler
     private val playerViewAdapter = NewPlayerViewAdapter()
     private var isRegistered = false
@@ -105,6 +113,13 @@ class UserVideoListFragment : TimePassBaseFragment() {
             VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
         }
         ViewModelProvider(this, bcViewModelFactory).get(LiveBroadcastViewModel::class.java)
+    }
+
+    private val chatViewModel: LiveChatViewModel by lazy {
+        requireNotNull(this) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, chatViewModelFactory).get(LiveChatViewModel::class.java)
     }
 
     private var permissionlistenerCreateVideo: PermissionListener = object : PermissionListener {
@@ -164,7 +179,6 @@ class UserVideoListFragment : TimePassBaseFragment() {
             context?.let {
                 ctxt = it
             }
-
             onClickCreateVideo()
             onClickRailListItem()
         }
@@ -174,7 +188,9 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         bcViewModelFactory = LiveBroadcastViewModel.Factory(BroadCastRepository())
+        chatViewModelFactory = LiveChatViewModel.Factory(FireStoreRepository())
         if (!::viewModelFactory.isInitialized) {
             viewModelFactory =
                 UserVideoListViewModel.Factory(
@@ -188,8 +204,17 @@ class UserVideoListFragment : TimePassBaseFragment() {
                     SharedPreferenceHelper
                 )
             setupViewModelObserver()
+            doFetchLiveUserList()
         }
+    }
 
+    private fun initView() {
+        binding.rvLiveUserList.apply {
+            setHasFixedSize(true)
+            horizontalView(requireContext())
+            adapter = liveUserAdapter
+
+        }
     }
 
     override fun onStop() {
@@ -242,22 +267,35 @@ class UserVideoListFragment : TimePassBaseFragment() {
                 }
             })
 
-        bcViewModel.getLiveUserList(LiveUserListRequest(SharedPreferenceHelper.getUserId()))
-            .observe(viewLifecycleOwner, Observer {
-                when (it.status) {
-                    TimePassBaseResult.Status.SUCCESS -> {
-                        setRecyclerLiveList(it.data)
-                    }
-                    TimePassBaseResult.Status.ERROR -> it.message?.toast(ctxt)
-                    TimePassBaseResult.Status.LOADING -> {
-                    }
+        bcViewModel.obLiveUserList.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                TimePassBaseResult.Status.SUCCESS -> {
+                    setRecyclerLiveList(it.data)
                 }
-            })
+                TimePassBaseResult.Status.ERROR -> it.message?.toast(ctxt)
+                TimePassBaseResult.Status.LOADING -> {
+                }
+            }
+        })
+
+        chatViewModel.obBroadcastCollection().observe(viewLifecycleOwner, Observer {
+            Log.d("UserVideoList", "obBroadcastCollection: ${it.status}")
+            when (it.status) {
+                TimePassBaseResult.Status.SUCCESS -> doFetchLiveUserList()
+                TimePassBaseResult.Status.ERROR -> it.message?.toast(ctxt)
+                TimePassBaseResult.Status.LOADING -> {
+                }
+            }
+        })
 
         viewModel.downloadRequest.observe(viewLifecycleOwner, Observer {
             downloadVideo(it)
         })
 
+    }
+
+    private fun doFetchLiveUserList() {
+        bcViewModel.getLiveUserList(LiveUserListRequest(SharedPreferenceHelper.getUserId()))
     }
 
     private fun setupRecyclerView(categoryVideoList: ArrayList<RailBaseItemModel>) {
@@ -280,12 +318,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
         if (data?.list?.isEmpty() == true)
             binding.rvLiveUserList.gone()
         else
-            binding.rvLiveUserList.apply {
-                setHasFixedSize(true)
-                horizontalView(requireContext())
-                adapter = LiveUserAdapter(data?.list, ::onLiveUserClicked)
-
-            }
+            liveUserAdapter.refresh(data?.list)
     }
 
     private fun onLiveUserClicked(listItem: ListItem) {

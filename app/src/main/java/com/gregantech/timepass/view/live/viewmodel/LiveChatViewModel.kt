@@ -20,6 +20,8 @@ class LiveChatViewModel(private val fireStoreRepository: FireStoreRepository) : 
 
     fun obCreateBroadcastDocument() = fireStoreRepository.createBroadcastDoc()
 
+    fun obBroadcastCollection() = fireStoreRepository.observeBroadCast()
+
     fun obUpdateReactionCount(docKey: String, reaction: REACTION) =
         fireStoreRepository.updateReactionCount(docKey, reaction)
 

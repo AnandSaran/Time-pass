@@ -1,7 +1,10 @@
 package com.gregantech.timepass.view.live.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.model.LiveUserCountResponse
 import com.gregantech.timepass.model.LiveUserListRequest
@@ -9,13 +12,9 @@ import com.gregantech.timepass.model.LiveUserListResponse
 import com.gregantech.timepass.network.repository.BroadCastRepository
 import com.gregantech.timepass.network.request.BroadCastRequest
 import com.gregantech.timepass.util.constant.ANNOTATION_UNCHECKED_CAST
-import com.gregantech.timepass.util.constant.ErrorMessage
 import com.gregantech.timepass.util.constant.UNKNOWN_VIEW_MODEL_CLASS
 import com.gregantech.timepass.util.extension.launchPeriodicAsync
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class LiveBroadcastViewModel(private val broadCastRepository: BroadCastRepository) : ViewModel() {
 
@@ -24,6 +23,7 @@ class LiveBroadcastViewModel(private val broadCastRepository: BroadCastRepositor
     val obVoiceInputState = MutableLiveData<Boolean>(true)
     val obSwitchCamState = MutableLiveData<Boolean>(true)
     val obLiveUserCount = MutableLiveData<TimePassBaseResult<LiveUserCountResponse>>()
+    val obLiveUserList = MutableLiveData<TimePassBaseResult<LiveUserListResponse>>()
     var broadcastId: String? = null
 
     fun changeVoice() {
@@ -58,18 +58,23 @@ class LiveBroadcastViewModel(private val broadCastRepository: BroadCastRepositor
             )
     }
 
-
-    fun getLiveUserList(liveUserListRequest: LiveUserListRequest) =
-        liveData<TimePassBaseResult<LiveUserListResponse>>(Dispatchers.IO) {
-            emit(TimePassBaseResult.loading(null))
-            val result = broadCastRepository.getLiveUsers(liveUserListRequest)
-            when (result.status) {
-                TimePassBaseResult.Status.SUCCESS -> {
-                    emit(result)
+    fun getLiveUserList(liveUserListRequest: LiveUserListRequest) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val result = broadCastRepository.getLiveUsers(liveUserListRequest)
+                when (result.status) {
+                    TimePassBaseResult.Status.SUCCESS -> {
+                        obLiveUserList.postValue(result)
+                    }
+                    else -> obLiveUserList.postValue(
+                        TimePassBaseResult.error(
+                            result.message ?: "Error"
+                        )
+                    )
                 }
-                else -> onLiveUserFetchFail()
             }
         }
+    }
 
     private fun fetchLiveViewers() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -82,10 +87,6 @@ class LiveBroadcastViewModel(private val broadCastRepository: BroadCastRepositor
         if (::userPlaybackSessionJob.isInitialized) {
             userPlaybackSessionJob.cancel()
         }
-    }
-
-    private suspend fun LiveDataScope<TimePassBaseResult<LiveUserListResponse>>.onLiveUserFetchFail() {
-        emit(TimePassBaseResult.error(ErrorMessage.NETWORK.value))
     }
 
 

@@ -8,8 +8,15 @@ import com.gregantech.timepass.databinding.ItemUserLiveBinding
 import com.gregantech.timepass.model.ListItem
 import com.gregantech.timepass.util.extension.loadUrlCircle
 
-class LiveUserAdapter(private val listList: List<ListItem?>?, val callback: (ListItem) -> Unit) :
+class LiveUserAdapter(val callback: (ListItem) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var userList: List<ListItem?>? = null
+
+    fun refresh(newList: List<ListItem?>?) {
+        userList = newList
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         LiveUserViewHolder(
@@ -17,10 +24,10 @@ class LiveUserAdapter(private val listList: List<ListItem?>?, val callback: (Lis
         )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as LiveUserViewHolder).bind(listList?.get(position))
+        (holder as LiveUserViewHolder).bind(userList?.get(position))
     }
 
-    override fun getItemCount() = listList?.size ?: 0
+    override fun getItemCount() = userList?.size ?: 0
 
     inner class LiveUserViewHolder(private var itemUserLiveBinding: ItemUserLiveBinding) :
         RecyclerView.ViewHolder(itemUserLiveBinding.root) {
