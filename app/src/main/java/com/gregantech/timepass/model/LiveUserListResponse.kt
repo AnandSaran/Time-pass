@@ -14,7 +14,7 @@ data class ListItem(
 	@Json(name = "startDateTime")
 	val startDateTime: String? = null,
 	@Json(name = "streamId")
-	val streamId: String? = null,
+	var streamId: String? = null,
 	@Json(name = "userBio")
 	val userBio: String? = null,
 	@Json(name = "profileImage")

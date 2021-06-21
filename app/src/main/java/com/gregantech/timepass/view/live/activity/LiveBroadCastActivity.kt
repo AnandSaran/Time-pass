@@ -274,6 +274,7 @@ class LiveBroadCastActivity : AppCompatActivity() {
                     Log.d("LiveBroadcastActivity", "obtainDocKey: DocId ${it.data.toString()}")
                     docKey = it.data.toString()
                     viewModel.updateBroadCastStatus(generateBCUpdateRequest(true))
+                    viewModel.setupFetchLiveViewersJob(docKey!!)
                     loadChatContainerFragment()
                     showBroadcastFragment()
                     subscribeToChanges()
@@ -295,6 +296,21 @@ class LiveBroadCastActivity : AppCompatActivity() {
                 TimePassBaseResult.Status.ERROR -> Log.e(
                     "LiveBroadCast",
                     "listenToIncomingMsg: ${it.message}"
+                )
+                TimePassBaseResult.Status.LOADING -> {
+                }
+            }
+        })
+        viewModel.obLiveUserCount.observe(this, Observer {
+            when (it.status) {
+                TimePassBaseResult.Status.SUCCESS -> {
+                    binding.liveOptions.tpItvUsers.setLabel(
+                        it?.data?.totalRTMPWatchersCount?.toString() ?: "0"
+                    )
+                }
+                TimePassBaseResult.Status.ERROR -> Log.e(
+                    "LiveBCActivity",
+                    "subscribeToChanges: error ${it.message}"
                 )
                 TimePassBaseResult.Status.LOADING -> {
                 }

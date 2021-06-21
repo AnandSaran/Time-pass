@@ -14,11 +14,13 @@ import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityLiveVideoPlayerBinding
 import com.gregantech.timepass.general.bundklekey.LivePlayerBundleKey
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
+import com.gregantech.timepass.network.repository.BroadCastRepository
 import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
 import com.gregantech.timepass.view.live.fragment.LiveChatFragment
 import com.gregantech.timepass.view.live.fragment.LivePlayerContentContainerFragment
+import com.gregantech.timepass.view.live.viewmodel.LiveBroadcastViewModel
 import com.gregantech.timepass.view.live.viewmodel.LiveChatViewModel
 import com.gregantech.timepass.view.live.viewmodel.LivePlayerSharedViewModel
 
@@ -26,6 +28,7 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLiveVideoPlayerBinding
     private lateinit var viewModelFactory: LivePlayerSharedViewModel.Factory
+    private lateinit var bcViewModelFactory: LiveBroadcastViewModel.Factory
     private lateinit var chatViewModelFactory: LiveChatViewModel.Factory
 
     private val viewModel: LivePlayerSharedViewModel by lazy {
@@ -42,6 +45,16 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
         }
         ViewModelProvider(this, chatViewModelFactory).get(LiveChatViewModel::class.java)
     }
+
+    private val bcViewModel: LiveBroadcastViewModel by lazy {
+        requireNotNull(this) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, bcViewModelFactory).get(
+            LiveBroadcastViewModel::class.java
+        )
+    }
+
     private val playBackInfoModel by lazy {
         if (intent.hasExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value)) {
             intent.getParcelableExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value) as PlaybackInfoModel
@@ -76,6 +89,7 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
             showLivePlayerContentContainerFragment()
             loadChatContainerFragment()
+            bcViewModel.setupFetchLiveViewersJob(playBackInfoModel.chatKey)
         }
 
     }
@@ -83,6 +97,7 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
     private fun setupViewModel() {
         viewModelFactory = LivePlayerSharedViewModel.Factory()
         chatViewModelFactory = LiveChatViewModel.Factory(FireStoreRepository())
+        bcViewModelFactory = LiveBroadcastViewModel.Factory(BroadCastRepository())
     }
 
     private fun setupOnClick() {
@@ -97,11 +112,26 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
                 TimePassBaseResult.Status.SUCCESS -> {
                     Log.d("LiveVideoPlayer", "subscribeToChanges: ${it?.data?.loves} ")
                     if (it?.data?.broadcast_live == false) {
-                        //showLiveEndedAlert()
+                        showLiveEndedAlert()
                     }
                     binding.liveOptions.tpItvLove.setLabel(it?.data?.loves)
                 }
                 TimePassBaseResult.Status.ERROR -> Log.e("LiveVideoPlayer", "subscribeToChanges: ")
+                TimePassBaseResult.Status.LOADING -> {
+                }
+            }
+        })
+        bcViewModel.obLiveUserCount.observe(this, Observer {
+            when (it.status) {
+                TimePassBaseResult.Status.SUCCESS -> {
+                    binding.liveOptions.tpItvUsers.setLabel(
+                        it?.data?.totalRTMPWatchersCount?.toString() ?: "0"
+                    )
+                }
+                TimePassBaseResult.Status.ERROR -> Log.e(
+                    "LiveVideoPlayer",
+                    "subscribeToChanges: error ${it.message}"
+                )
                 TimePassBaseResult.Status.LOADING -> {
                 }
             }

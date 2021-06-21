@@ -276,6 +276,8 @@ fun AppCompatTextView.fadeIn(title: String, context: Context?) {
 fun AppCompatTextView.anim(title: String) {
     val from = text.toString().toFloat()
     val to = title.toFloat()
+    if (from == to)
+        return
     AnimateCounter.Builder(this)
         .setCount(from, to, 0)
         .setDuration(1000)

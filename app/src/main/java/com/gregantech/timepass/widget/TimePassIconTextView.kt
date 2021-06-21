@@ -42,8 +42,10 @@ class TimePassIconTextView : ConstraintLayout {
 
     fun setLabel(value: String?) {
         value?.let {
-            view.tpItv_label.anim(it)
-            invalidate()
+            if (it.toInt() > -1) {
+                view.tpItv_label.anim(it)
+                invalidate()
+            }
         }
     }
 

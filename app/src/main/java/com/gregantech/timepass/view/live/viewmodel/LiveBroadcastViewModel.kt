@@ -74,7 +74,7 @@ class LiveBroadcastViewModel(private val broadCastRepository: BroadCastRepositor
     private fun fetchLiveViewers() {
         viewModelScope.launch(Dispatchers.IO) {
             val result = broadCastRepository.getLiveUsersCount(broadcastId!!)
-            obLiveUserCount.value = result
+            obLiveUserCount.postValue(result)
         }
     }
 
