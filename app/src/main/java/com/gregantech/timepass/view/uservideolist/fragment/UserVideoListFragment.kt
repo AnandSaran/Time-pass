@@ -35,10 +35,9 @@ import com.gregantech.timepass.general.UserListScreenTitleEnum
 import com.gregantech.timepass.general.UserListScreenTypeEnum
 import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
 import com.gregantech.timepass.general.bundklekey.CreateVideoBundleEnum
-import com.gregantech.timepass.model.RailBaseItemModel
-import com.gregantech.timepass.model.RailItemTypeTwoModel
-import com.gregantech.timepass.model.getStrippedFileName
+import com.gregantech.timepass.model.*
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
+import com.gregantech.timepass.network.repository.BroadCastRepository
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
@@ -50,10 +49,7 @@ import com.gregantech.timepass.util.URIPathHelper
 import com.gregantech.timepass.util.constant.EMPTY_LONG
 import com.gregantech.timepass.util.constant.EMPTY_STRING
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
-import com.gregantech.timepass.util.extension.horizontalView
-import com.gregantech.timepass.util.extension.shareDownloadedFile
-import com.gregantech.timepass.util.extension.smoothSnapToPosition
-import com.gregantech.timepass.util.extension.toast
+import com.gregantech.timepass.util.extension.*
 import com.gregantech.timepass.util.log.LogUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
@@ -61,6 +57,7 @@ import com.gregantech.timepass.view.createvideo.activity.VideoTrimmerActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoUploadActivity
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
 import com.gregantech.timepass.view.live.activity.LiveVideoPlayerActivity
+import com.gregantech.timepass.view.live.viewmodel.LiveBroadcastViewModel
 import com.gregantech.timepass.view.player.activity.ImageViewActivity
 import com.gregantech.timepass.view.player.activity.PlayerActivity
 import com.gregantech.timepass.view.profile.activity.UserProfileActivity
@@ -79,6 +76,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     private lateinit var binding: FragmentUserVideoListBinding
     private lateinit var ctxt: Context
     private lateinit var viewModelFactory: UserVideoListViewModel.Factory
+    private lateinit var bcViewModelFactory: LiveBroadcastViewModel.Factory
     private lateinit var userPostViewModelFactory: UserPostViewModel.Factory
     private lateinit var railItemClickHandler: RailItemClickHandler
     private val playerViewAdapter = NewPlayerViewAdapter()
@@ -94,6 +92,20 @@ class UserVideoListFragment : TimePassBaseFragment() {
     var currentIndex = -1
     var isShareClick = false
     var downloadID: Long? = null
+
+    private val viewModel: UserVideoListViewModel by lazy {
+        requireNotNull(this.activity) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, viewModelFactory).get(UserVideoListViewModel::class.java)
+    }
+
+    private val bcViewModel: LiveBroadcastViewModel by lazy {
+        requireNotNull(this.activity) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, bcViewModelFactory).get(LiveBroadcastViewModel::class.java)
+    }
 
     private var permissionlistenerCreateVideo: PermissionListener = object : PermissionListener {
         override fun onPermissionGranted() {
@@ -111,13 +123,6 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
         override fun onPermissionDenied(deniedPermissions: List<String>) {
         }
-    }
-
-    private val viewModel: UserVideoListViewModel by lazy {
-        requireNotNull(this.activity) {
-            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
-        }
-        ViewModelProvider(this, viewModelFactory).get(UserVideoListViewModel::class.java)
     }
 
     private val userPostViewModel: UserPostViewModel by lazy {
@@ -169,6 +174,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        bcViewModelFactory = LiveBroadcastViewModel.Factory(BroadCastRepository())
         if (!::viewModelFactory.isInitialized) {
             viewModelFactory =
                 UserVideoListViewModel.Factory(
@@ -228,7 +234,6 @@ class UserVideoListFragment : TimePassBaseFragment() {
                                 )
                             )
                             setupRecyclerView(railList)
-                            setRecyclerLiveList()
                         }
                     }
                     TimePassBaseResult.Status.ERROR -> {
@@ -236,6 +241,19 @@ class UserVideoListFragment : TimePassBaseFragment() {
                     }
                 }
             })
+
+        bcViewModel.getLiveUserList(LiveUserListRequest(SharedPreferenceHelper.getUserId()))
+            .observe(viewLifecycleOwner, Observer {
+                when (it.status) {
+                    TimePassBaseResult.Status.SUCCESS -> {
+                        setRecyclerLiveList(it.data)
+                    }
+                    TimePassBaseResult.Status.ERROR -> it.message?.toast(ctxt)
+                    TimePassBaseResult.Status.LOADING -> {
+                    }
+                }
+            })
+
         viewModel.downloadRequest.observe(viewLifecycleOwner, Observer {
             downloadVideo(it)
         })
@@ -258,20 +276,24 @@ class UserVideoListFragment : TimePassBaseFragment() {
         setupRecyclerViewScrollListener()
     }
 
-    private fun setRecyclerLiveList(){
-        binding.rvLiveUserList.apply {
-            setHasFixedSize(true)
-            horizontalView(requireContext())
-            adapter = LiveUserAdapter(::onLiveUserClicked)
-        }
+    private fun setRecyclerLiveList(data: LiveUserListResponse?) {
+        if (data?.list?.isEmpty() == true)
+            binding.rvLiveUserList.gone()
+        else
+            binding.rvLiveUserList.apply {
+                setHasFixedSize(true)
+                horizontalView(requireContext())
+                adapter = LiveUserAdapter(data?.list, ::onLiveUserClicked)
+
+            }
     }
 
-    private fun onLiveUserClicked(){
+    private fun onLiveUserClicked(listItem: ListItem) {
         LiveVideoPlayerActivity.present(
             requireContext(), PlaybackInfoModel(
                 "Streaming Live",
-                BuildConfig.ANT_URL + "je6tqATOGJbdbKbNmVvQ",
-                "je6tqATOGJbdbKbNmVvQ",
+                BuildConfig.ANT_URL + listItem.streamId,
+                listItem.streamId!!,
                 true
             )
         )

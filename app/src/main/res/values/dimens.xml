@@ -118,5 +118,6 @@
     <dimen name="recyler_view_player_height">400dp</dimen>
     <dimen name="recyler_view_poster_min_height">200dp</dimen>
     <dimen name="dp_38">38dp</dimen>
+    <dimen name="dp_65">65dp</dimen>
     <!--endregion-->
 </resources>

@@ -7,15 +7,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginStart="@dimen/dp_10"
         >
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivUserPic"
-            android:layout_width="@dimen/dp_85"
-            android:layout_height="@dimen/dp_85"
+            android:layout_width="@dimen/dp_65"
+            android:layout_height="@dimen/dp_65"
             android:src="@drawable/splash"
-            />
+            android:layout_gravity="center" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvUserName"

@@ -61,7 +61,7 @@ fun ImageView.loadUriCircle(uri: Uri) {
         .into(this)
 }
 
-fun ImageView.loadUrlCircle(url: String, placeHolder: Int = R.drawable.logo_app_icon) {
+fun ImageView.loadUrlCircle(url: String?, placeHolder: Int = R.drawable.logo_app_icon) {
     Glide.with(context)
         .load(url)
         .circleCrop()
