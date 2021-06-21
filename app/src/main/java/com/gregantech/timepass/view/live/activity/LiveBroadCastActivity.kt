@@ -123,7 +123,6 @@ class LiveBroadCastActivity : AppCompatActivity() {
 
     private fun updateBCStatus() {
         docKey?.let {
-            chatViewModel.obUpdateBroadcastState(it, false)
             viewModel.updateBroadCastStatus(generateBCUpdateRequest(false))
         }
     }
@@ -263,7 +262,8 @@ class LiveBroadCastActivity : AppCompatActivity() {
     }
 
     private fun setupViewModel() {
-        viewModelFactory = LiveBroadcastViewModel.Factory(BroadCastRepository())
+        viewModelFactory =
+            LiveBroadcastViewModel.Factory(BroadCastRepository(), FireStoreRepository())
         chatViewModelFactory = LiveChatViewModel.Factory(FireStoreRepository())
     }
 
@@ -275,8 +275,7 @@ class LiveBroadCastActivity : AppCompatActivity() {
                 TimePassBaseResult.Status.SUCCESS -> {
                     Log.d("LiveBroadcastActivity", "obtainDocKey: DocId ${it.data.toString()}")
                     docKey = it.data.toString()
-                    viewModel.updateBroadCastStatus(generateBCUpdateRequest(true))
-                    viewModel.setupFetchLiveViewersJob(docKey!!)
+                    updateBCStatusAndListenUsers()
                     loadChatContainerFragment()
                     showBroadcastFragment()
                     subscribeToChanges()
@@ -286,6 +285,13 @@ class LiveBroadCastActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun updateBCStatusAndListenUsers() {
+        with(viewModel) {
+            updateBroadCastStatus(generateBCUpdateRequest(true))
+            setupFetchLiveViewersJob(docKey!!)
+        }
     }
 
     private fun subscribeToChanges() {

@@ -279,9 +279,8 @@ class UserVideoListFragment : TimePassBaseFragment() {
         })
 
         chatViewModel.obBroadcastCollection().observe(viewLifecycleOwner, Observer {
-            Log.d("UserVideoList", "obBroadcastCollection: ${it.status}")
             when (it.status) {
-                TimePassBaseResult.Status.SUCCESS -> doFetchLiveUserList()
+                TimePassBaseResult.Status.SUCCESS -> if (isAdded) doFetchLiveUserList()
                 TimePassBaseResult.Status.ERROR -> it.message?.toast(ctxt)
                 TimePassBaseResult.Status.LOADING -> {
                 }
@@ -295,6 +294,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     }
 
     private fun doFetchLiveUserList() {
+        Log.d(TAG, "doFetchLiveUserList: ")
         bcViewModel.getLiveUserList(LiveUserListRequest(SharedPreferenceHelper.getUserId()))
     }
 

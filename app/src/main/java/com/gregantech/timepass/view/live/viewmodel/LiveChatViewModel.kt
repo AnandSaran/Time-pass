@@ -33,7 +33,6 @@ class LiveChatViewModel(private val fireStoreRepository: FireStoreRepository) : 
         }
     }
 
-
     @Suppress(ANNOTATION_UNCHECKED_CAST)
     class Factory(
         private val fireStoreRepository: FireStoreRepository

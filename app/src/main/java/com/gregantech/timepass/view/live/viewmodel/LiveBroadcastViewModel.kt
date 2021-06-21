@@ -10,13 +10,17 @@ import com.gregantech.timepass.model.LiveUserCountResponse
 import com.gregantech.timepass.model.LiveUserListRequest
 import com.gregantech.timepass.model.LiveUserListResponse
 import com.gregantech.timepass.network.repository.BroadCastRepository
+import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.network.request.BroadCastRequest
 import com.gregantech.timepass.util.constant.ANNOTATION_UNCHECKED_CAST
 import com.gregantech.timepass.util.constant.UNKNOWN_VIEW_MODEL_CLASS
 import com.gregantech.timepass.util.extension.launchPeriodicAsync
 import kotlinx.coroutines.*
 
-class LiveBroadcastViewModel(private val broadCastRepository: BroadCastRepository) : ViewModel() {
+class LiveBroadcastViewModel(
+    private val broadCastRepository: BroadCastRepository,
+    private val fireStoreRepository: FireStoreRepository? = null
+) : ViewModel() {
 
 
     private lateinit var userPlaybackSessionJob: Deferred<Unit>
@@ -38,6 +42,10 @@ class LiveBroadcastViewModel(private val broadCastRepository: BroadCastRepositor
         CoroutineScope(Dispatchers.IO).launch {
             val result = broadCastRepository.updateStatus(brodCastRequest)
             when (result.status) {
+                TimePassBaseResult.Status.SUCCESS -> {
+                    if (brodCastRequest.liveStatus == false)
+                        fireStoreRepository?.updateBroadcastState(brodCastRequest.streamId!!, false)
+                }
                 TimePassBaseResult.Status.ERROR -> Log.e(
                     "LiveBroadcastViewModel",
                     "updateBroadCastStatus: error ${result.message}"
@@ -92,12 +100,14 @@ class LiveBroadcastViewModel(private val broadCastRepository: BroadCastRepositor
 
     @Suppress(ANNOTATION_UNCHECKED_CAST)
     class Factory(
-        private val repository: BroadCastRepository
+        private val repository: BroadCastRepository,
+        private val fireStoreRepository: FireStoreRepository? = null
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(LiveBroadcastViewModel::class.java)) {
                 return LiveBroadcastViewModel(
-                    repository
+                    repository,
+                    fireStoreRepository
                 ) as T
             }
             throw IllegalArgumentException(UNKNOWN_VIEW_MODEL_CLASS)

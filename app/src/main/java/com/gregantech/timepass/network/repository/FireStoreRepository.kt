@@ -23,18 +23,15 @@ class FireStoreRepository {
         return OutgoingMessageLiveData(fireStore.chatCollection(broadDocKey), chatModel)
     }
 
-    fun createBroadcastDoc(): BroadCastCreateLiveData {
-        return BroadCastCreateLiveData(fireStore.broadCastCollection())
-    }
+    fun createBroadcastDoc() = BroadCastCreateLiveData(fireStore.broadCastCollection())
 
     fun observeBroadCast() = BroadCastListenerLiveData(fireStore.broadCastCollection())
 
     fun updateReactionCount(broadDocKey: String, reaction: REACTION) =
         ReactionCountLiveData(fireStore.broadCastCollection().document(broadDocKey), reaction)
 
-    fun getReactionCount(broadDocKey: String): ReactionListenerLiveData {
-        return ReactionListenerLiveData(fireStore.broadCastCollection().document(broadDocKey))
-    }
+    fun getReactionCount(broadDocKey: String) =
+        ReactionListenerLiveData(fireStore.broadCastCollection().document(broadDocKey))
 
     fun updateBroadcastState(broadDocKey: String, state: Boolean) =
         BroadCastStatusLiveData(fireStore.broadCastCollection().document(broadDocKey), state)

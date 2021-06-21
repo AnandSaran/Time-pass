@@ -2,7 +2,10 @@ package com.gregantech.timepass.firestore.livedata
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import com.google.firebase.firestore.*
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.QuerySnapshot
 import com.gregantech.timepass.base.TimePassBaseResult
 
 class BroadCastListenerLiveData(collectionReference: CollectionReference) :
@@ -18,12 +21,8 @@ class BroadCastListenerLiveData(collectionReference: CollectionReference) :
             value = TimePassBaseResult.error(it.message ?: "Error")
         }
         snapShot?.documentChanges?.forEach {
-            Log.d("BroadCastListener", "onEvent: ")
-            when (it.type) {
-                DocumentChange.Type.ADDED -> value = TimePassBaseResult.success(true)
-                else -> {
-                }
-            }
+            Log.d("BroadCastListener", "onEvent: type ${it.type}")
+            value = TimePassBaseResult.success(true)
         }
     }
 
