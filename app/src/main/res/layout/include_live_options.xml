@@ -42,6 +42,17 @@
             app:tpLabel="0" />
 
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivChat"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_40"
+            android:layout_gravity="bottom"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:gravity="center"
+            android:padding="@dimen/dp_10"
+            android:src="@drawable/ic_chat_active" />
+
+
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivClose"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"

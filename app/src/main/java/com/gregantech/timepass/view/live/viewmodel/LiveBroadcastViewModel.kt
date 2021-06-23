@@ -22,10 +22,12 @@ class LiveBroadcastViewModel(
     private val fireStoreRepository: FireStoreRepository? = null
 ) : ViewModel() {
 
-
     private lateinit var userPlaybackSessionJob: Deferred<Unit>
+
     val obVoiceInputState = MutableLiveData<Boolean>(true)
     val obSwitchCamState = MutableLiveData<Boolean>(true)
+    val obToggleCommentState = MutableLiveData<Boolean>(true)
+
     val obLiveUserCount = MutableLiveData<TimePassBaseResult<LiveUserCountResponse>>()
     val obLiveUserList = MutableLiveData<TimePassBaseResult<LiveUserListResponse>>()
     var broadcastId: String? = null
@@ -36,6 +38,10 @@ class LiveBroadcastViewModel(
 
     fun changeCam() {
         obSwitchCamState.value = !(obSwitchCamState.value as Boolean)
+    }
+
+    fun toggleCommentState() {
+        obToggleCommentState.value = !(obToggleCommentState.value as Boolean)
     }
 
     fun updateBroadCastStatus(brodCastRequest: BroadCastRequest) {
@@ -69,6 +75,7 @@ class LiveBroadcastViewModel(
     fun getLiveUserList(liveUserListRequest: LiveUserListRequest) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
+                delay(2000)
                 val result = broadCastRepository.getLiveUsers(liveUserListRequest)
                 when (result.status) {
                     TimePassBaseResult.Status.SUCCESS -> {

@@ -10,7 +10,6 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.*
 import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResult
@@ -294,7 +293,6 @@ class UserVideoListFragment : TimePassBaseFragment() {
     }
 
     private fun doFetchLiveUserList() {
-        Log.d(TAG, "doFetchLiveUserList: ")
         bcViewModel.getLiveUserList(LiveUserListRequest(SharedPreferenceHelper.getUserId()))
     }
 

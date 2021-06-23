@@ -16,11 +16,16 @@ class LivePlayerSharedViewModel : ViewModel() {
     val playBack = MutableLiveData<PlaybackInfoModel>()
     val title = MutableLiveData<String>()
     val showController = MutableLiveData<Boolean>()
+    val obToggleCommentState = MutableLiveData<Boolean>(true)
 
     fun updatePlayBack(item: PlaybackInfoModel) {
         viewModelScope.launch {
             playBack.value = item
         }
+    }
+
+    fun toggleCommentState() {
+        obToggleCommentState.value = !(obToggleCommentState.value as Boolean)
     }
 
     fun updateTitle(item: String) {

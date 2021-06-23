@@ -318,4 +318,5 @@ dependencies {
     implementation "com.google.android.exoplayer:extension-rtmp:$version_exoplayer"
 
     implementation 'com.airbnb.android:lottie:3.0.7'
+    implementation 'org.rajawali3d:rajawali:1.1.970@aar'
 }

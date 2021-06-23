@@ -55,7 +55,6 @@ import com.gun0912.tedpermission.TedPermission
 
 class SearchVideoActivity : TimePassBaseActivity() {
 
-
     var currentIndex = -1
     var downloadID: Long? = null
     var isRegistered = false

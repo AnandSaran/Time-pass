@@ -7,11 +7,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.live.LiveChatAdapter
 import com.gregantech.timepass.base.TimePassBaseFragment
@@ -22,16 +26,23 @@ import com.gregantech.timepass.firestore.REACTION
 import com.gregantech.timepass.model.ChatModel
 import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
-import com.gregantech.timepass.util.extension.gone
+import com.gregantech.timepass.util.extension.hide
 import com.gregantech.timepass.util.extension.show
+import com.gregantech.timepass.util.extension.toBitmap
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.live.viewmodel.LiveChatViewModel
+import com.gregantech.timepass.widget.heart.HeartsView
+import kotlinx.android.synthetic.main.fragment_live_chat.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LiveChatFragment : TimePassBaseFragment() {
 
     private var docKey: String? = null
     private var mode = 0
+    private var isScrolling = false
 
     private lateinit var binding: FragmentLiveChatBinding
     private lateinit var viewModelFactory: LiveChatViewModel.Factory
@@ -78,7 +89,8 @@ class LiveChatFragment : TimePassBaseFragment() {
         initVMF()
         initView()
         setupOnClick()
-        subscribeToChanges()
+        subscribeToObservers()
+        getChatList()
     }
 
     private fun initVMF() {
@@ -86,19 +98,43 @@ class LiveChatFragment : TimePassBaseFragment() {
     }
 
     private fun initView() {
-        binding.bottomLay.apply {
-            if (mode == 1) gone() else show()
+        binding.ivLove.apply {
+            if (mode == 1) hide() else show()
         }
         binding.fabSend.isEnabled = false
         binding.rvChat.apply {
             adapter = LiveChatAdapter()
             (layoutManager as LinearLayoutManager).stackFromEnd = true
+            addOnScrollListener(scrollListener)
+        }
+    }
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                isScrolling = true
+            }
+        }
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            (recyclerView.layoutManager as LinearLayoutManager?)?.run {
+                val firstVisibleProductPosition = findFirstVisibleItemPosition()
+                val visibleProductCount = childCount
+                val totalProductCount = itemCount
+                if (isScrolling && firstVisibleProductPosition + visibleProductCount == totalProductCount) {
+                    isScrolling = false
+                    getChatList()
+                }
+            }
         }
     }
 
     private fun setupOnClick() {
         with(binding) {
             etComment.setOnEditorActionListener { textView, i, keyEvent ->
+                heartsView.emitHeart(obtainHeartModel())
                 doSendMessage()
                 false
             }
@@ -113,6 +149,45 @@ class LiveChatFragment : TimePassBaseFragment() {
         }
 
     }
+
+    private fun checkHearEmit() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                kotlinx.coroutines.delay(500)
+                withContext(Dispatchers.Main) {
+                    heartsView.emitHeart(obtainHeartModel())
+                    checkHearEmit()
+                }
+            }
+        }
+    }
+
+    private fun subscribeToObservers() {
+
+        //checkHearEmit()
+
+        viewModel.obReactionCount(docKey!!).observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                TimePassBaseResult.Status.SUCCESS -> {
+                    if (it?.data?.loves?.toInt() ?: 0 > 0) {
+                        binding.heartsView.emitHeart(obtainHeartModel())
+                    }
+                }
+                TimePassBaseResult.Status.ERROR -> Log.e(
+                    "LiveBroadCast",
+                    "listenToIncomingMsg: ${it.message}"
+                )
+                TimePassBaseResult.Status.LOADING -> {
+                }
+            }
+        })
+
+    }
+
+    private fun obtainHeartModel() = HeartsView.Model(
+        (0..10000).random(),
+        ContextCompat.getDrawable(requireContext(), R.drawable.ic_heart)?.toBitmap()!!
+    )
 
     private fun doIncreaseLoveCount() {
         viewModel.obUpdateReactionCount(docKey!!, REACTION.LOVE).observe(
@@ -183,7 +258,7 @@ class LiveChatFragment : TimePassBaseFragment() {
         super.onDestroyView()
     }
 
-    private fun subscribeToChanges() {
+    private fun getChatList() {
         viewModel.obIncomingMessage(docKey!!)?.observe(viewLifecycleOwner, Observer {
             with(binding.rvChat.adapter as LiveChatAdapter) {
                 when (it.type) {

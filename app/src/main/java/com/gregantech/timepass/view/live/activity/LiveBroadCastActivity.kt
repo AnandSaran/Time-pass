@@ -23,8 +23,9 @@ import com.gregantech.timepass.network.repository.BroadCastRepository
 import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.network.request.BroadCastRequest
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+import com.gregantech.timepass.util.extension.animGone
+import com.gregantech.timepass.util.extension.animShow
 import com.gregantech.timepass.util.extension.keepScreenOn
-import com.gregantech.timepass.util.extension.showSystemUI
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
@@ -226,20 +227,16 @@ class LiveBroadCastActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-        initWindow()
+        window?.keepScreenOn()
         super.onResume()
-    }
-
-    private fun initWindow() {
-        window?.apply {
-            showSystemUI(false)
-            keepScreenOn()
-        }
     }
 
     private fun setupOnClick() {
         binding.liveOptions.ivClose.setOnClickListener {
             showExitAlert()
+        }
+        binding.liveOptions.ivChat.setOnClickListener {
+            viewModel.toggleCommentState()
         }
     }
 
@@ -295,6 +292,14 @@ class LiveBroadCastActivity : AppCompatActivity() {
     }
 
     private fun subscribeToChanges() {
+
+        viewModel.obToggleCommentState.observe(this, androidx.lifecycle.Observer {
+            binding.liveOptions.ivChat.setImageResource(if (it) R.drawable.ic_chat_active else R.drawable.ic_chat_inactive)
+            binding.broadcastChatContainer.apply {
+                if (it) animShow() else animGone()
+            }
+        })
+
         chatViewModel.obReactionCount(docKey!!).observe(this, Observer {
             when (it.status) {
                 TimePassBaseResult.Status.SUCCESS -> {

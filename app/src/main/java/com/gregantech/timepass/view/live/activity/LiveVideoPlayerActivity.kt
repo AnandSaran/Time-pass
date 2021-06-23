@@ -17,6 +17,8 @@ import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.network.repository.BroadCastRepository
 import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+import com.gregantech.timepass.util.extension.animGone
+import com.gregantech.timepass.util.extension.animShow
 import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
 import com.gregantech.timepass.view.live.fragment.LiveChatFragment
 import com.gregantech.timepass.view.live.fragment.LivePlayerContentContainerFragment
@@ -104,9 +106,20 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
         binding.liveOptions.ivClose.setOnClickListener {
             finish()
         }
+        binding.liveOptions.ivChat.setOnClickListener {
+            viewModel.toggleCommentState()
+        }
     }
 
     private fun subscribeToChanges() {
+
+        viewModel.obToggleCommentState.observe(this, androidx.lifecycle.Observer {
+            binding.liveOptions.ivChat.setImageResource(if (it) R.drawable.ic_chat_active else R.drawable.ic_chat_inactive)
+            binding.chatContainer.apply {
+                if (it) animShow() else animGone()
+            }
+        })
+
         chatViewModel.obReactionCount(playBackInfoModel.chatKey).observe(this, Observer {
             when (it.status) {
                 TimePassBaseResult.Status.SUCCESS -> {

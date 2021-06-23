@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.base.TimePassBaseResult
@@ -69,7 +70,9 @@ class SplashActivity : TimePassBaseActivity() {
                     TimePassBaseResult.Status.SUCCESS -> {
                         dismissProgressBar()
                         it.data?.user?.let { user ->
-                            SharedPreferenceHelper.setLiveEnabled(true)
+                            if (BuildConfig.FLAVOR == "dev") {
+                                SharedPreferenceHelper.setLiveEnabled(true)
+                            }
                             Handler().post { navigateNextScreen() }
                         }
                     }
