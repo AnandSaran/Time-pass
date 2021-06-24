@@ -23,10 +23,7 @@ import com.gregantech.timepass.network.repository.BroadCastRepository
 import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.network.request.BroadCastRequest
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
-import com.gregantech.timepass.util.extension.animGone
-import com.gregantech.timepass.util.extension.animShow
-import com.gregantech.timepass.util.extension.keepScreenOn
-import com.gregantech.timepass.util.extension.toast
+import com.gregantech.timepass.util.extension.*
 import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.live.fragment.LiveBroadCasterFragment
@@ -228,6 +225,7 @@ class LiveBroadCastActivity : AppCompatActivity() {
 
     override fun onResume() {
         window?.keepScreenOn()
+        window?.showSystemUI(false)
         super.onResume()
     }
 

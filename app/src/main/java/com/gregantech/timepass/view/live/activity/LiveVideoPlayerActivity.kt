@@ -19,6 +19,7 @@ import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.animGone
 import com.gregantech.timepass.util.extension.animShow
+import com.gregantech.timepass.util.extension.showSystemUI
 import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
 import com.gregantech.timepass.view.live.fragment.LiveChatFragment
 import com.gregantech.timepass.view.live.fragment.LivePlayerContentContainerFragment
@@ -82,6 +83,7 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window?.showSystemUI(false)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_live_video_player)
         setupOnClick()
         setupViewModel()
@@ -157,9 +159,6 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
             .setCancelable(false)
             .setPositiveButton(android.R.string.yes) { dialogInterface, i ->
                 finish()
-                dialogInterface.dismiss()
-            }
-            .setNegativeButton(android.R.string.no) { dialogInterface, i ->
                 dialogInterface.dismiss()
             }
             .show()
