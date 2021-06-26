@@ -75,7 +75,7 @@ class LiveBroadcastViewModel(
     fun getLiveUserList(liveUserListRequest: LiveUserListRequest) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                delay(2000)
+                delay(10000)
                 val result = broadCastRepository.getLiveUsers(liveUserListRequest)
                 when (result.status) {
                     TimePassBaseResult.Status.SUCCESS -> {
