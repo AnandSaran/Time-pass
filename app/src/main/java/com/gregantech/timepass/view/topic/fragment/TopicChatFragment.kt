@@ -3,7 +3,6 @@ package com.gregantech.timepass.view.topic.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,10 +30,10 @@ class TopicChatFragment : TimePassBaseFragment() {
 
     private lateinit var binding: FragmentTopicChatBinding
     private lateinit var viewModelFactory: LiveChatViewModel.Factory
-    private var isLoading = false
     private var topicChatAdapter: TopicChatAdapter? = null
     private var docKey: String? = null
-    private var totalChatCount: Long = 0
+    private var isLastPage: Boolean = false
+    private var isLoading = false
 
     private val viewModel: LiveChatViewModel by lazy {
         requireNotNull(this.activity) {
@@ -42,7 +41,6 @@ class TopicChatFragment : TimePassBaseFragment() {
         }
         ViewModelProvider(this, viewModelFactory).get(LiveChatViewModel::class.java)
     }
-
 
     companion object {
         @JvmStatic
@@ -96,8 +94,7 @@ class TopicChatFragment : TimePassBaseFragment() {
             binding.rvTopicChat.addOnScrollListener(object :
                 PaginationScrollListener(binding.rvTopicChat.layoutManager as LinearLayoutManager) {
                 override fun isLastPage(): Boolean {
-                    val loadedCount = topicChatAdapter?.itemCount
-                    return loadedCount == totalChatCount.toInt()
+                    return isLastPage
                 }
 
                 override fun isLoading(): Boolean {
@@ -157,15 +154,12 @@ class TopicChatFragment : TimePassBaseFragment() {
         if (binding.edtComments.text.toString().isEmpty())
             return
 
-        val chatModel = obtainChatModel()
-        viewModel.obOutgoingTopicMessage(chatModel, docKey!!)
+        viewModel.obOutgoingTopicMessage(obtainChatModel(), docKey!!)
             .observe(viewLifecycleOwner, Observer {
                 when (it.status) {
                     TimePassBaseResult.Status.LOADING -> {
                     }
                     TimePassBaseResult.Status.SUCCESS -> {
-                        Log.d("TopicChat", "doSendMessage: ")
-                        totalChatCount += 1
                     }
                     TimePassBaseResult.Status.ERROR -> {
                         it.message?.toast(requireContext())
@@ -196,9 +190,9 @@ class TopicChatFragment : TimePassBaseFragment() {
                 with(binding.rvTopicChat.adapter as TopicChatAdapter) {
                     isLoading = false
                     when (it.type) {
-                        R.string.added -> addProduct(it.chatModel)
-                        R.string.modified -> modifyProduct(it.chatModel)
-                        R.string.removed -> removeProduct(it.chatModel)
+                        R.string.added -> addChat(it.chatModel)
+                        R.string.modified -> modifyChat(it.chatModel)
+                        R.string.removed -> removeChat(it.chatModel)
                     }
                     binding.rvTopicChat.smoothScrollToPosition(if (itemCount > 0) itemCount - 1 else 0)
                 }

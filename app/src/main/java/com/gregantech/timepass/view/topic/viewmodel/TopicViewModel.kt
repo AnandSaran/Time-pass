@@ -15,7 +15,7 @@ import kotlinx.coroutines.Dispatchers
 class TopicViewModel(private val topicRepository: TopicRepository) : ViewModel() {
 
 
-    fun getAppConfig() = liveData<TimePassBaseResult<TopicResponse?>>(Dispatchers.IO) {
+    fun getTopics() = liveData<TimePassBaseResult<TopicResponse?>>(Dispatchers.IO) {
         emit(TimePassBaseResult.loading(null))
         val result = topicRepository.getTopics()
         when (result.status) {

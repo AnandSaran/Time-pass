@@ -38,24 +38,24 @@ class LiveChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         }
     }
 
-    fun addProduct(addedProduct: ChatModel) {
-        chatList.add(addedProduct)
+    fun addChat(addedChat: ChatModel) {
+        chatList.add(addedChat)
         notifyItemInserted(chatList.size - 1)
     }
 
-    fun modifyProduct(modifiedProduct: ChatModel) {
+    fun modifyChat(modifiedChat: ChatModel) {
         for (index in 0 until chatList.size) {
-            if (chatList[index].id == modifiedProduct.id) {
-                chatList[index] = modifiedProduct
+            if (chatList[index].id == modifiedChat.id) {
+                chatList[index] = modifiedChat
                 notifyItemChanged(index)
                 break
             }
         }
     }
 
-    fun removeProduct(removedProduct: ChatModel) {
+    fun removeChat(removedChat: ChatModel) {
         for (index in 0 until chatList.size) {
-            if (chatList[index].id == removedProduct.id) {
+            if (chatList[index].id == removedChat.id) {
                 chatList.removeAt(index)
                 notifyItemRemoved(index)
                 break

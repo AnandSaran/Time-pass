@@ -1,7 +1,6 @@
 package com.gregantech.timepass.view.topic.fragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,7 +48,7 @@ class TopicFragment : TimePassBaseFragment() {
     }
 
     private fun subscribeToChanges() {
-        topicViewModel.getAppConfig().observe(viewLifecycleOwner, Observer {
+        topicViewModel.getTopics().observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 TimePassBaseResult.Status.SUCCESS -> {
 
@@ -97,9 +96,6 @@ class TopicFragment : TimePassBaseFragment() {
 
 
     private fun loadChatContainerFragment() {
-
-        Log.d(TAG, "loadChatContainerFragment: " + topicItem?.Id)
-
         if (topicItem?.Id.isNullOrEmpty())
             return
         val chatFragment = TopicChatFragment.newInstance(docKey = topicItem?.Id)
