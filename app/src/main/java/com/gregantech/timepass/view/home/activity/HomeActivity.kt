@@ -162,6 +162,10 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
                 R.id.categoryBroadcast -> {
                     LiveBroadCastActivity.present(this)
                 }
+                R.id.categoryTopic -> {
+                    navController.popBackStack(R.id.topicFragment, true)
+                    onSelectTab(R.id.topicFragment)
+                }
                 R.id.categoryFragment -> {
                     navController.popBackStack(R.id.categoryFragment, true)
                     onSelectTab(R.id.categoryFragment)

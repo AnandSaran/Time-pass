@@ -11,6 +11,11 @@
         android:icon="@drawable/ic_live"
         tools:ignore="MenuTitle" />
     <item
+        android:id="@+id/categoryTopic"
+        android:enabled="true"
+        android:icon="@drawable/ic_topic"
+        tools:ignore="MenuTitle" />
+    <item
         android:id="@+id/categoryFragment"
         android:enabled="true"
         android:icon="@drawable/ic_category"

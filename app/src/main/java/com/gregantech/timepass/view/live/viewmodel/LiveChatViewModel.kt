@@ -13,19 +13,26 @@ import kotlinx.coroutines.launch
 
 class LiveChatViewModel(private val fireStoreRepository: FireStoreRepository) : ViewModel() {
 
+    fun obCreateBroadcastDocument() = fireStoreRepository.createBroadcastDoc()
+
+    fun obBroadcastCollection() = fireStoreRepository.observeBroadCast()
+
     fun obIncomingMessage(docKey: String) = fireStoreRepository.geChatHistory(docKey)
+
+    fun obTopicIncomingMessage(docKey: String) = fireStoreRepository.getTopicChatHistory(docKey)
 
     fun obOutgoingMessage(chatModel: ChatModel, docKey: String) =
         fireStoreRepository.sendMessage(chatModel, docKey)
 
-    fun obCreateBroadcastDocument() = fireStoreRepository.createBroadcastDoc()
-
-    fun obBroadcastCollection() = fireStoreRepository.observeBroadCast()
+    fun obOutgoingTopicMessage(chatModel: ChatModel, docKey: String) =
+        fireStoreRepository.sendTopicMessage(chatModel, docKey)
 
     fun obUpdateReactionCount(docKey: String, reaction: REACTION) =
         fireStoreRepository.updateReactionCount(docKey, reaction)
 
     fun obReactionCount(docKey: String) = fireStoreRepository.getReactionCount(docKey)
+
+    fun obDocumentCount(docId: String) = fireStoreRepository.getDocumentCount(docId)
 
     fun obUpdateBroadcastState(docKey: String, state: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
