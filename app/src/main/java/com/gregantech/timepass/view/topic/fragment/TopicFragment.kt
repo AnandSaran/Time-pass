@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -51,13 +52,31 @@ class TopicFragment : TimePassBaseFragment() {
         topicViewModel.getAppConfig().observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 TimePassBaseResult.Status.SUCCESS -> {
-                    topicItem = it.data?.topic?.get(0)
-                    bindTopicToView()
-                    Run.after(500) {
-                        binding.vsTopic.setChildVisible()
+
+                    if (it.data?.topic?.isNullOrEmpty() == true) {
+                        with(binding) {
+                            vsTopic.setChildVisible()
+                            tvMessage.text = getString(R.string.no_topis_available)
+                            vsTopicContent.setChildVisible()
+                        }
+                    } else {
+                        topicItem = it.data?.topic?.get(0)
+                        bindTopicToView()
+                        Run.after(500) {
+                            with(binding) {
+                                vsTopic.setChildVisible()
+                                vsTopicContent.setParentVisible()
+                            }
+                        }
                     }
                 }
-                TimePassBaseResult.Status.ERROR -> {
+                TimePassBaseResult.Status.ERROR -> with(binding) {
+                    vsTopic.setChildVisible()
+                    tvMessage.apply {
+                        text = it.message
+                        setTextColor(ContextCompat.getColor(requireContext(), R.color.heartRed))
+                    }
+                    vsTopicContent.setChildVisible()
                 }
                 TimePassBaseResult.Status.LOADING -> {
                 }
