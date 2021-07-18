@@ -21,6 +21,7 @@ import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.animGone
 import com.gregantech.timepass.util.extension.animShow
 import com.gregantech.timepass.util.extension.showSystemUI
+import com.gregantech.timepass.util.extension.toString
 import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
 import com.gregantech.timepass.view.live.fragment.LiveChatFragment
 import com.gregantech.timepass.view.live.fragment.LivePlayerContentContainerFragment
@@ -59,13 +60,7 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
         )
     }
 
-    private val playBackInfoModel by lazy {
-        if (intent.hasExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value)) {
-            intent.getParcelableExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value) as PlaybackInfoModel
-        } else {
-            PlaybackInfoModel()
-        }
-    }
+    private var playBackInfoModel = PlaybackInfoModel()
 
     companion object {
         fun present(
@@ -82,10 +77,18 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            getInputs(it)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window?.showSystemUI(false)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_live_video_player)
+        getInputs(intent)
         setupOnClick()
         setupViewModel()
         updatePlayBackInfo()
@@ -97,6 +100,14 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
             bcViewModel.setupFetchLiveViewersJob(playBackInfoModel.chatKey)
         }
 
+    }
+
+    private fun getInputs(intent: Intent) {
+        intent.toString("getInputs")
+        if (intent.hasExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value)) {
+            playBackInfoModel =
+                intent.getParcelableExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value) as PlaybackInfoModel
+        }
     }
 
     private fun setupViewModel() {
