@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.gson.Gson
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityLiveVideoPlayerBinding
@@ -21,7 +20,6 @@ import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.animGone
 import com.gregantech.timepass.util.extension.animShow
 import com.gregantech.timepass.util.extension.showSystemUI
-import com.gregantech.timepass.util.extension.toString
 import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
 import com.gregantech.timepass.view.live.fragment.LiveChatFragment
 import com.gregantech.timepass.view.live.fragment.LivePlayerContentContainerFragment
@@ -79,8 +77,11 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
+        Log.d("LiveVideoPlayer", "onNewIntent: ")
         intent?.let {
             getInputs(it)
+            updatePlayBackInfo()
+            loadChatContainerFragment()
         }
     }
 
@@ -103,7 +104,6 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
     }
 
     private fun getInputs(intent: Intent) {
-        intent.toString("getInputs")
         if (intent.hasExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value)) {
             playBackInfoModel =
                 intent.getParcelableExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value) as PlaybackInfoModel
@@ -133,8 +133,6 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
                 if (it) animShow() else animGone()
             }
         })
-
-        Log.d("LiveVideoPlayer", "subscribeToChanges: ${Gson().toJson(playBackInfoModel)}")
 
         chatViewModel.obReactionCount(playBackInfoModel.chatKey).observe(this, Observer {
             when (it.status) {
