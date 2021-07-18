@@ -4,18 +4,24 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.installations.FirebaseInstallations
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.base.TimePassBaseResult
+import com.gregantech.timepass.fcm.FCMBundleKey
+import com.gregantech.timepass.fcm.FCMBundleValue
+import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.network.repository.AdvertisementRepository
 import com.gregantech.timepass.network.repository.LoginRepository
 import com.gregantech.timepass.util.AdvertisementHandler
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.home.activity.HomeActivity
+import com.gregantech.timepass.view.live.activity.LiveVideoPlayerActivity
 import com.gregantech.timepass.view.login.activity.LoginActivity
 import com.gregantech.timepass.view.login.viewmodel.LoginViewModel
 import com.gregantech.timepass.view.splash.viewmodel.AdvertisementViewModel
@@ -47,6 +53,16 @@ class SplashActivity : TimePassBaseActivity() {
     }
 
     private fun subscribeToObservers() {
+
+        FirebaseInstallations.getInstance().getToken(false).addOnCompleteListener {
+            if (it.isComplete) {
+                Log.d(TAG, "subscribeToObservers: token ${it.result.token}")
+                SharedPreferenceHelper.setFCMToken(it.result.token)
+            } else
+                Log.e(TAG, "subscribeToObservers: error fetching FCM token")
+        }
+
+
         viewModel.getAdStatus().observe(this, Observer { result ->
             when (result.status) {
                 TimePassBaseResult.Status.SUCCESS -> {
@@ -90,9 +106,28 @@ class SplashActivity : TimePassBaseActivity() {
         loginViewModelFactory = LoginViewModel.Factory(LoginRepository())
     }
 
+    private fun isFromFCM(): Boolean {
+        intent?.extras?.run {
+            get(FCMBundleKey.TYPE.value)?.let {
+                if (it.toString() == FCMBundleValue.LIVE.value) {
+                    val playbackInfoModel = PlaybackInfoModel(
+                        getString(FCMBundleKey.TITLE.value)!!,
+                        getString(FCMBundleKey.STREAM_URL.value)!!,
+                        getString(FCMBundleKey.STREAM_ID.value)!!,
+                        true
+                    )
+                    LiveVideoPlayerActivity.present(this@SplashActivity, playbackInfoModel)
+                }
+                return true
+            }
+        }
+        return false
+    }
+
     private fun navigateNextScreen() {
         if (SharedPreferenceHelper.isUserLoggedIn()) {
-            HomeActivity.present(this)
+            if (!isFromFCM())
+                HomeActivity.present(this)
         } else {
             LoginActivity.present(this)
         }

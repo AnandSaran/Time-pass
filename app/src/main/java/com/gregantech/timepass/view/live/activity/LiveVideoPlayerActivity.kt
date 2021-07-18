@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.Gson
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityLiveVideoPlayerBinding
@@ -121,6 +122,8 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
                 if (it) animShow() else animGone()
             }
         })
+
+        Log.d("LiveVideoPlayer", "subscribeToChanges: ${Gson().toJson(playBackInfoModel)}")
 
         chatViewModel.obReactionCount(playBackInfoModel.chatKey).observe(this, Observer {
             when (it.status) {
