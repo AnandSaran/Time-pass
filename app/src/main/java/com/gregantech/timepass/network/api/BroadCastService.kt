@@ -19,7 +19,7 @@ interface BroadCastService {
     @POST("userLiveList.php")
     suspend fun getLiveUsers(@Body liveUserListRequest: LiveUserListRequest): Response<LiveUserListResponse>
 
-    @GET("http://148.66.129.86:5080/LiveApp/rest/v2/broadcasts/{id}/broadcast-statistics")
+    @GET("http://3.109.184.71:5080/LiveApp/rest/v2/broadcasts/{id}/broadcast-statistics")
     suspend fun getLiveUsersCount(@Path("id") id: String): Response<LiveUserCountResponse>
 
 }
