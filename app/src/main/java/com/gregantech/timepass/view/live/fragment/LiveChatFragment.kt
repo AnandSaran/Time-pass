@@ -262,9 +262,9 @@ class LiveChatFragment : TimePassBaseFragment() {
         viewModel.obIncomingMessage(docKey!!)?.observe(viewLifecycleOwner, Observer {
             with(binding.rvChat.adapter as LiveChatAdapter) {
                 when (it.type) {
-                    R.string.added -> addProduct(it.chatModel)
-                    R.string.modified -> modifyProduct(it.chatModel)
-                    R.string.removed -> removeProduct(it.chatModel)
+                    R.string.added -> addChat(it.chatModel)
+                    R.string.modified -> modifyChat(it.chatModel)
+                    R.string.removed -> removeChat(it.chatModel)
                 }
                 binding.rvChat.smoothScrollToPosition(if (itemCount > 0) itemCount - 1 else 0)
             }

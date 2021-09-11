@@ -100,6 +100,7 @@
         <activity
             android:name=".view.home.activity.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.categoryvideosearch.activity.SearchVideoActivity"

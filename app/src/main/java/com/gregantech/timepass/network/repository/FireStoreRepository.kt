@@ -8,6 +8,7 @@ import com.gregantech.timepass.firestore.REACTION
 import com.gregantech.timepass.firestore.broadCastCollection
 import com.gregantech.timepass.firestore.chatCollection
 import com.gregantech.timepass.firestore.livedata.*
+import com.gregantech.timepass.firestore.topicChatCollection
 import com.gregantech.timepass.model.ChatModel
 import com.gregantech.timepass.util.constant.CHAT_LIMIT
 
@@ -23,9 +24,17 @@ class FireStoreRepository {
         return OutgoingMessageLiveData(fireStore.chatCollection(broadDocKey), chatModel)
     }
 
+    fun sendTopicMessage(chatModel: ChatModel, broadDocKey: String): OutgoingMessageLiveData {
+        return OutgoingMessageLiveData(fireStore.topicChatCollection(broadDocKey), chatModel)
+    }
+
     fun createBroadcastDoc() = BroadCastCreateLiveData(fireStore.broadCastCollection())
 
     fun observeBroadCast() = BroadCastListenerLiveData(fireStore.broadCastCollection())
+
+    fun createTopicDoc() = BroadCastCreateLiveData(fireStore.broadCastCollection())
+
+    fun observeTopic() = BroadCastListenerLiveData(fireStore.broadCastCollection())
 
     fun updateReactionCount(broadDocKey: String, reaction: REACTION) =
         ReactionCountLiveData(fireStore.broadCastCollection().document(broadDocKey), reaction)
@@ -36,11 +45,31 @@ class FireStoreRepository {
     fun updateBroadcastState(broadDocKey: String, state: Boolean) =
         BroadCastStatusLiveData(fireStore.broadCastCollection().document(broadDocKey), state)
 
+    fun getDocumentCount(docKey: String) =
+        DocumentCountLiveData(fireStore.topicChatCollection(docKey))
+
     fun geChatHistory(broadDocKey: String): IncomingMessageLiveData? {
         if (isLastProductReached)
             return null
 
         query = fireStore.chatCollection(broadDocKey).orderBy(DATE_FIELD, Query.Direction.ASCENDING)
+            .limit(CHAT_LIMIT)
+
+        lastVisibleProduct?.let {
+            query = query.startAfter(it)
+        }
+
+        return IncomingMessageLiveData(query, ::setLastVisibleProduct, ::setLastProductReached)
+    }
+
+
+    fun getTopicChatHistory(broadDocKey: String): IncomingMessageLiveData? {
+
+        if (isLastProductReached)
+            return null
+
+        query = fireStore.topicChatCollection(broadDocKey)
+            .orderBy(DATE_FIELD, Query.Direction.ASCENDING)
             .limit(CHAT_LIMIT)
 
         lastVisibleProduct?.let {

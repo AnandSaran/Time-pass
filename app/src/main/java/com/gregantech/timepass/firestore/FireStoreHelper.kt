@@ -3,15 +3,22 @@ package com.gregantech.timepass.firestore
 import com.google.firebase.firestore.FirebaseFirestore
 import com.gregantech.timepass.firestore.FireStoreConst.Keys.BROADCAST_COLLECTION_KEY
 import com.gregantech.timepass.firestore.FireStoreConst.Keys.CHAT_COLLECTION_KEY
+import com.gregantech.timepass.firestore.FireStoreConst.Keys.TOPIC_COLLECTION_KEY
 
 fun FirebaseFirestore.broadCastCollection() = collection(BROADCAST_COLLECTION_KEY) //broadcast
+
+fun FirebaseFirestore.topicCastCollection() = collection(TOPIC_COLLECTION_KEY) //topic
 
 fun FirebaseFirestore.chatCollection(documentKey: String) =
     broadCastCollection().document(documentKey).collection(CHAT_COLLECTION_KEY)
 
+fun FirebaseFirestore.topicChatCollection(documentKey: String) =
+    topicCastCollection().document(documentKey).collection(CHAT_COLLECTION_KEY)
+
 object FireStoreConst {
     object Keys {
         const val BROADCAST_COLLECTION_KEY = "Broadcast"
+        const val TOPIC_COLLECTION_KEY = "Topic"
         const val CHAT_COLLECTION_KEY = "Chat"
         const val DATE_FIELD = "commentedDate"
         const val DOC_KEY = "docKey"

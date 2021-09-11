@@ -1,39 +1,41 @@
-package com.gregantech.timepass.adapter.live
+package com.gregantech.timepass.view.topic.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.gregantech.timepass.R
-import com.gregantech.timepass.databinding.ItemLiveChatBinding
+import com.gregantech.timepass.databinding.ItemCommentTypeOneBinding
 import com.gregantech.timepass.model.ChatModel
+import com.gregantech.timepass.util.extension.gone
 import com.gregantech.timepass.util.extension.loadUrlCircle
 
-class LiveChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TopicChatAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val chatList = ArrayList<ChatModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        LiveChatViewHolder(
-            ItemLiveChatBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        LiveTopicChatAdapter(
+            ItemCommentTypeOneBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as LiveChatViewHolder).bind(chatList[position])
+        (holder as LiveTopicChatAdapter).bind(chatList[position])
     }
 
     override fun getItemCount() = chatList.size
 
-    inner class LiveChatViewHolder(private var itemLiveChatBinding: ItemLiveChatBinding) :
-        RecyclerView.ViewHolder(itemLiveChatBinding.root) {
+    inner class LiveTopicChatAdapter(private var itemCommentTypeOneBinding: ItemCommentTypeOneBinding) :
+        RecyclerView.ViewHolder(itemCommentTypeOneBinding.root) {
 
         fun bind(chatModel: ChatModel) {
-            with(itemLiveChatBinding) {
-                ivUserPic.loadUrlCircle(
+            with(itemCommentTypeOneBinding) {
+                ivUserProfile.loadUrlCircle(
                     chatModel.commentedUserProfileUrl ?: "",
                     R.drawable.place_holder_profile
                 )
                 tvUserName.text = chatModel.commentedUserName
-                tvComment.text = chatModel.comments
+                tvComments.text = chatModel.comments
+                tvCommentTime.gone()
             }
         }
     }

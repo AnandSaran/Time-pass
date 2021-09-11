@@ -79,4 +79,6 @@
     <string name="close_live_msg">Are you sure to Close Live session?</string>
     <string name="video_stream_error">Unable to play</string>
     <string name="video_ended">This video has been ended</string>
+    <string name="write_something">Write something...</string>
+    <string name="no_topis_available">No topics available</string>
 </resources>
