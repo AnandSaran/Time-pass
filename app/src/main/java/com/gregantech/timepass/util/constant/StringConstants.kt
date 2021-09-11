@@ -29,3 +29,6 @@ const val BODY =
     "This file is download from Timepass App \nhttps://play.google.com/store/apps/details?id=com.adroit.timepass"
 
 
+const val TYPE = "Type"
+const val DATA = "Data"
+

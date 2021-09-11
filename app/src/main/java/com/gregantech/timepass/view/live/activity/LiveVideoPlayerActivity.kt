@@ -58,13 +58,7 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
         )
     }
 
-    private val playBackInfoModel by lazy {
-        if (intent.hasExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value)) {
-            intent.getParcelableExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value) as PlaybackInfoModel
-        } else {
-            PlaybackInfoModel()
-        }
-    }
+    private var playBackInfoModel = PlaybackInfoModel()
 
     companion object {
         fun present(
@@ -81,10 +75,21 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Log.d("LiveVideoPlayer", "onNewIntent: ")
+        intent?.let {
+            getInputs(it)
+            updatePlayBackInfo()
+            loadChatContainerFragment()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window?.showSystemUI(false)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_live_video_player)
+        getInputs(intent)
         setupOnClick()
         setupViewModel()
         updatePlayBackInfo()
@@ -96,6 +101,13 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
             bcViewModel.setupFetchLiveViewersJob(playBackInfoModel.chatKey)
         }
 
+    }
+
+    private fun getInputs(intent: Intent) {
+        if (intent.hasExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value)) {
+            playBackInfoModel =
+                intent.getParcelableExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value) as PlaybackInfoModel
+        }
     }
 
     private fun setupViewModel() {

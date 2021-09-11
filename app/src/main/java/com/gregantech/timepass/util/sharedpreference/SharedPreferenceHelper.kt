@@ -171,6 +171,13 @@ object SharedPreferenceHelper {
         )
     }
 
+    fun setFCMToken(token: String) {
+        SharedPreferenceUtil.putStringValue(
+            key = SharedPreferenceKeyEnum.FCM_TOKEN.value,
+            value = token
+        )
+    }
+
     fun setLiveEnabled(value: Boolean) {
         SharedPreferenceUtil.putBooleanValue(
             key = SharedPreferenceKeyEnum.IS_LIVE_ENABLED.value,
