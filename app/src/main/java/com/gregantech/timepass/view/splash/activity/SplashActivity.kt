@@ -12,6 +12,7 @@ import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.base.TimePassBaseResult
+import com.gregantech.timepass.fcm.CloudMessageTopicHelper
 import com.gregantech.timepass.fcm.FCMBundleKey
 import com.gregantech.timepass.fcm.FCMBundleValue
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
@@ -48,8 +49,13 @@ class SplashActivity : TimePassBaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+        subscribeToTopic()
         setupViewModelFactory()
         subscribeToObservers()
+    }
+
+    private fun subscribeToTopic() {
+        CloudMessageTopicHelper().subscribeDefaultTopics()
     }
 
     private fun subscribeToObservers() {
