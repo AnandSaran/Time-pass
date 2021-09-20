@@ -5,7 +5,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 
 class CloudMessageTopicHelper {
     fun subscribeDefaultTopics(isSubscribe: Boolean = true) {
-        subscribeTopic("topic_name", isSubscribe)
+        subscribeTopic("Live", isSubscribe)
     }
 
     private fun subscribeTopic(topicName: String, isSubscribe: Boolean = true) {
