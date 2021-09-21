@@ -4,6 +4,8 @@ import android.content.Intent
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.google.gson.Gson
+import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.general.bundklekey.LivePlayerBundleKey
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
@@ -27,44 +29,51 @@ class FirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        Log.d(TAG, "onMessageReceived: ")
-
         remoteMessage.notification?.run {
 
             var navigationIntent: Intent
 
+            //{"message":"User in Live Streaming","user":{"streamID":"PtZgi5orKybxi0aOn4Ad","userID":"28"},"liveStatus":true,"status":"success"}
             with(remoteMessage) {
-                if (data["type"] == FCMBundleValue.LIVE.value) {
-                    val playbackInfoModel = PlaybackInfoModel(
-                        data[FCMBundleKey.TITLE.value] ?: "Streaming Live",
-                        data[FCMBundleKey.STREAM_URL.value]!!,
-                        data[FCMBundleKey.STREAM_ID.value]!!,
-                        true
+
+                val arr = data.values.toTypedArray()
+                val fcmData = Gson().fromJson(arr[0], FCMDataModel::class.java)
+                Log.d(TAG, "onMessageReceived: ${Gson().toJson(fcmData)}")
+                if (SharedPreferenceHelper.getUserId() != fcmData.user?.userID) {
+                    if (fcmData?.liveStatus == true) {
+                        val playbackInfoModel = PlaybackInfoModel(
+                            fcmData.message ?: "Streaming Live",
+                            BuildConfig.ANT_URL + fcmData.user?.streamID,
+                            fcmData.user?.streamID!!,
+                            true
+                        )
+                        navigationIntent =
+                            Intent(applicationContext, LiveVideoPlayerActivity::class.java).apply {
+                                putExtra(FCMBundleKey.TYPE.value, FCMBundleValue.LIVE.value)
+                                putExtra(
+                                    LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value,
+                                    playbackInfoModel
+                                )
+                            }
+                    } else
+                        navigationIntent =
+                            Intent(applicationContext, SplashActivity::class.java).apply {
+                                putExtra("fromFCM", true)
+                            }
+
+                    val title = fcmData?.message ?: "User is Live"
+                    val message = ""
+
+                    notificationUtil.showNotificationMessage(
+                        title,
+                        message,
+                        System.currentTimeMillis(),
+                        navigationIntent
                     )
-                    navigationIntent =
-                        Intent(applicationContext, LiveVideoPlayerActivity::class.java).apply {
-                            putExtra(FCMBundleKey.TYPE.value, FCMBundleValue.LIVE.value)
-                            putExtra(
-                                LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value,
-                                playbackInfoModel
-                            )
-                        }
-                } else
-                    navigationIntent =
-                        Intent(applicationContext, SplashActivity::class.java).apply {
-                            putExtra("fromFCM", true)
-                        }
+                }
             }
 
-            val title = title ?: "Message received"
-            val message = body ?: "Tap for more details"
-
-            notificationUtil.showNotificationMessage(
-                title,
-                message,
-                System.currentTimeMillis(),
-                navigationIntent
-            )
+            Log.d(TAG, "onMessageReceived: title $title body $body")
         }
 
     }
