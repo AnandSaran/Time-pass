@@ -31,7 +31,7 @@ class FirebaseMessagingService : FirebaseMessagingService() {
 
         remoteMessage.notification?.run {
 
-            var navigationIntent: Intent
+            var navigationIntent: Intent? = null
 
             //{"message":"User in Live Streaming","user":{"streamID":"PtZgi5orKybxi0aOn4Ad","userID":"28"},"liveStatus":true,"status":"success"}
             with(remoteMessage) {
@@ -61,19 +61,20 @@ class FirebaseMessagingService : FirebaseMessagingService() {
                                 putExtra("fromFCM", true)
                             }
 
-                    val title = fcmData?.message ?: "User is Live"
-                    val message = ""
 
-                    notificationUtil.showNotificationMessage(
-                        title,
-                        message,
-                        System.currentTimeMillis(),
-                        navigationIntent
-                    )
                 }
             }
 
-            Log.d(TAG, "onMessageReceived: title $title body $body")
+            val title = title ?: "Message received"
+            //val message = body ?: "Tap for more details"
+            val message = body ?: ""
+
+            notificationUtil.showNotificationMessage(
+                title,
+                message,
+                System.currentTimeMillis(),
+                navigationIntent!!
+            )
         }
 
     }

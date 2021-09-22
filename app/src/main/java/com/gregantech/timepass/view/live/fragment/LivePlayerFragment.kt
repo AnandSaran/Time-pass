@@ -92,7 +92,7 @@ class LivePlayerFragment : TimePassBaseFragment() {
         //checking stream state!
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                delay(10000)
+                delay(15000)
                 withContext(Dispatchers.Main) {
                     handleErrorView()
                 }
