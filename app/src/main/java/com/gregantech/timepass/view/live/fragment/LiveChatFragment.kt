@@ -134,7 +134,6 @@ class LiveChatFragment : TimePassBaseFragment() {
     private fun setupOnClick() {
         with(binding) {
             etComment.setOnEditorActionListener { textView, i, keyEvent ->
-                heartsView.emitHeart(obtainHeartModel())
                 doSendMessage()
                 false
             }
