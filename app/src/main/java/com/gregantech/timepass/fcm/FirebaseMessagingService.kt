@@ -55,28 +55,28 @@ class FirebaseMessagingService : FirebaseMessagingService() {
                                     playbackInfoModel
                                 )
                             }
-                    } else
+                        showNotification(title ?: "User is Live", body ?: "", navigationIntent!!)
+                    } else {
                         navigationIntent =
                             Intent(applicationContext, SplashActivity::class.java).apply {
                                 putExtra("fromFCM", true)
                             }
-
+                        showNotification(title ?: "User is Live", body ?: "", navigationIntent!!)
+                    }
 
                 }
             }
-
-            val title = title ?: "Message received"
-            //val message = body ?: "Tap for more details"
-            val message = body ?: ""
-
-            notificationUtil.showNotificationMessage(
-                title,
-                message,
-                System.currentTimeMillis(),
-                navigationIntent!!
-            )
         }
 
+    }
+
+    private fun showNotification(title: String, body: String, intent: Intent) {
+        notificationUtil.showNotificationMessage(
+            title,
+            body,
+            System.currentTimeMillis(),
+            intent
+        )
     }
 
 }
