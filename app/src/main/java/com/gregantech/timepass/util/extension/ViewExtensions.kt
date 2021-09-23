@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.gregantech.timepass.R
+import com.gregantech.timepass.util.constant.BODY
 import com.gregantech.timepass.widget.AnimateCounter
 import com.klinker.android.link_builder.Link
 import com.klinker.android.link_builder.applyLinks
@@ -197,6 +198,7 @@ fun Context.shareVideoText(file: File) {
     shareIntent.action = Intent.ACTION_SEND
     shareIntent.type = "video/*"
     shareIntent.putExtra(Intent.EXTRA_STREAM, file.toURI())
+    shareIntent.putExtra(Intent.EXTRA_TITLE, BODY)
     startActivity(
         Intent.createChooser(
             shareIntent,
