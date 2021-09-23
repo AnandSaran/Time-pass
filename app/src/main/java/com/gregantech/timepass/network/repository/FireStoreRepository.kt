@@ -3,12 +3,9 @@ package com.gregantech.timepass.network.repository
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.gregantech.timepass.firestore.*
 import com.gregantech.timepass.firestore.FireStoreConst.Keys.DATE_FIELD
-import com.gregantech.timepass.firestore.REACTION
-import com.gregantech.timepass.firestore.broadCastCollection
-import com.gregantech.timepass.firestore.chatCollection
 import com.gregantech.timepass.firestore.livedata.*
-import com.gregantech.timepass.firestore.topicChatCollection
 import com.gregantech.timepass.model.ChatModel
 import com.gregantech.timepass.util.constant.CHAT_LIMIT
 
@@ -30,7 +27,11 @@ class FireStoreRepository {
 
     fun createBroadcastDoc() = BroadCastCreateLiveData(fireStore.broadCastCollection())
 
+    fun createActiveLiveCountDoc() = ActiveLiveCountLiveData(fireStore.activeLiveCountCollection())
+
     fun observeBroadCast() = BroadCastListenerLiveData(fireStore.broadCastCollection())
+
+    fun observeActiveLiveCountChange() = ActiveLiveCountListenerLiveData(fireStore.activeLiveCountCollection())
 
     fun createTopicDoc() = BroadCastCreateLiveData(fireStore.broadCastCollection())
 
@@ -44,6 +45,9 @@ class FireStoreRepository {
 
     fun updateBroadcastState(broadDocKey: String, state: Boolean) =
         BroadCastStatusLiveData(fireStore.broadCastCollection().document(broadDocKey), state)
+
+    fun updateActiveLiveCountState(activeLiveCountDocKey: String, increment: Boolean) =
+        ActiveLiveCountStatusLiveData(fireStore.activeLiveCountCollection().document(activeLiveCountDocKey), increment)
 
     fun getDocumentCount(docKey: String) =
         DocumentCountLiveData(fireStore.topicChatCollection(docKey))

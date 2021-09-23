@@ -12,6 +12,10 @@ data class BroadcastModel(
     var broadcast_live: Boolean = true
 )
 
+data class ActiveLiveCountModel(
+    var count: Int = 0
+)
+
 data class ChatModelWrapper(
     var chatModel: ChatModel,
     var type: Int = -1
