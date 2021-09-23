@@ -198,7 +198,6 @@ fun Context.shareVideoText(file: File) {
     shareIntent.action = Intent.ACTION_SEND
     shareIntent.type = "video/*"
     shareIntent.putExtra(Intent.EXTRA_STREAM, file.toURI())
-    shareIntent.putExtra(Intent.EXTRA_TITLE, BODY)
     startActivity(
         Intent.createChooser(
             shareIntent,
