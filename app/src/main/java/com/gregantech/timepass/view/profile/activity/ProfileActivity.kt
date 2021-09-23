@@ -164,12 +164,13 @@ class ProfileActivity : TimePassBaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        return if (isUpdateProfile()) {
+        return super.onCreateOptionsMenu(menu)
+        /*return if (isUpdateProfile()) {
             super.onCreateOptionsMenu(menu)
         } else {
             menuInflater.inflate(R.menu.menu_profile, menu)
             true
-        }
+        }*/
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
