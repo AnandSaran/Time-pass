@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gregantech.timepass.R
 import com.gregantech.timepass.databinding.ItemUserLiveBinding
 import com.gregantech.timepass.model.ListItem
+import com.gregantech.timepass.util.extension.loadDrawable
 import com.gregantech.timepass.util.extension.loadUrlCircle
 
 class LiveUserAdapter(val callback: (ListItem) -> Unit) :
@@ -35,6 +36,7 @@ class LiveUserAdapter(val callback: (ListItem) -> Unit) :
         fun bind(item: ListItem?) {
             with(itemUserLiveBinding) {
                 tvUserName.text = item?.userName
+                ivUserPicBackground.loadDrawable(R.drawable.bg_live_user)
                 ivUserPic.loadUrlCircle(item?.profileImage, R.drawable.place_holder_profile)
                 rootLayout.setOnClickListener {
                     callback.invoke(item!!)
