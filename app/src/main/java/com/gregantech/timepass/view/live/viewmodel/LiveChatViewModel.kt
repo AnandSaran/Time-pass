@@ -15,7 +15,11 @@ class LiveChatViewModel(private val fireStoreRepository: FireStoreRepository) : 
 
     fun obCreateBroadcastDocument() = fireStoreRepository.createBroadcastDoc()
 
+    //fun obActiveLiveCountDocument() = fireStoreRepository.createActiveLiveCountDoc()
+
     fun obBroadcastCollection() = fireStoreRepository.observeBroadCast()
+
+    fun obActiveLiveCountCollection() = fireStoreRepository.observeActiveLiveCountChange()
 
     fun obIncomingMessage(docKey: String) = fireStoreRepository.geChatHistory(docKey)
 

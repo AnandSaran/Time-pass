@@ -22,7 +22,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.model.DownloadResult
+import com.gregantech.timepass.util.constant.BODY
 import com.gregantech.timepass.util.constant.RAW_DOWNLOAD_PATH
+import com.gregantech.timepass.util.constant.SUBJECT
 import com.yalantis.ucrop.util.FileUtils.getPath
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -85,8 +87,8 @@ fun Context.shareFile(filePath: String?, mimeType: String? = null) {
             action = Intent.ACTION_SEND
             type = mimeType ?: uri.getMimeTypeForIntent()
             putExtra(Intent.EXTRA_STREAM, uri)
-            //putExtra(Intent.EXTRA_SUBJECT, SUBJECT)
-           // putExtra(Intent.EXTRA_TEXT, BODY)
+            putExtra(Intent.EXTRA_SUBJECT, SUBJECT)
+            putExtra(Intent.EXTRA_TEXT, BODY)
         }
         startActivity(Intent.createChooser(shareIntent, "Share using"))
     }

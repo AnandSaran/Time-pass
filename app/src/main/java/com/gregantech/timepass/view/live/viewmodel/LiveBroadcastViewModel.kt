@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.gregantech.timepass.base.TimePassBaseResult
+import com.gregantech.timepass.firestore.FireStoreConst
 import com.gregantech.timepass.model.LiveUserCountResponse
 import com.gregantech.timepass.model.LiveUserListRequest
 import com.gregantech.timepass.model.LiveUserListResponse
@@ -49,8 +50,12 @@ class LiveBroadcastViewModel(
             val result = broadCastRepository.updateStatus(brodCastRequest)
             when (result.status) {
                 TimePassBaseResult.Status.SUCCESS -> {
-                    if (brodCastRequest.liveStatus == false)
+                    if (brodCastRequest.liveStatus == false) {
                         fireStoreRepository?.updateBroadcastState(brodCastRequest.streamId!!, false)
+                        increaseLiveCount(brodCastRequest.liveStatus)
+                    } else if (brodCastRequest.liveStatus == true) {
+                        increaseLiveCount(brodCastRequest.liveStatus)
+                    }
                 }
                 TimePassBaseResult.Status.ERROR -> Log.e(
                     "LiveBroadcastViewModel",
@@ -75,7 +80,7 @@ class LiveBroadcastViewModel(
     fun getLiveUserList(liveUserListRequest: LiveUserListRequest) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                delay(10000)
+                // delay(10000)
                 val result = broadCastRepository.getLiveUsers(liveUserListRequest)
                 when (result.status) {
                     TimePassBaseResult.Status.SUCCESS -> {
@@ -102,6 +107,13 @@ class LiveBroadcastViewModel(
         if (::userPlaybackSessionJob.isInitialized) {
             userPlaybackSessionJob.cancel()
         }
+    }
+
+    fun increaseLiveCount(increment: Boolean = true) {
+        fireStoreRepository?.updateActiveLiveCountState(
+            FireStoreConst.Keys.LIVE_COUNT_DOCUMENT_KEY,
+            increment
+        )
     }
 
 

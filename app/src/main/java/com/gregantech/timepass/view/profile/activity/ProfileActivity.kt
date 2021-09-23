@@ -128,6 +128,10 @@ class ProfileActivity : TimePassBaseActivity() {
 
     private fun isValidForm(): Boolean {
         var count = 0
+        if (binding.edtName.text.toString().isBlank()) {
+            binding.tilName.error = getString(R.string.enter_name)
+            count++
+        }
         if (!binding.edtEmail.text.toString().isValidEmail()) {
             binding.tilEmail.error = getString(R.string.invalid_email)
             count++

@@ -203,7 +203,6 @@ class UserVideoListFragment : TimePassBaseFragment() {
                     SharedPreferenceHelper
                 )
             setupViewModelObserver()
-            doFetchLiveUserList()
         }
     }
 
@@ -277,7 +276,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
             }
         })
 
-        chatViewModel.obBroadcastCollection().observe(viewLifecycleOwner, Observer {
+        chatViewModel.obActiveLiveCountCollection().observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 TimePassBaseResult.Status.SUCCESS -> if (isAdded) doFetchLiveUserList()
                 TimePassBaseResult.Status.ERROR -> it.message?.toast(ctxt)
