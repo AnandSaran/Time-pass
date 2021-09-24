@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data />
@@ -30,11 +29,11 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:singleLine="true"
-            tools:text="John Doe"
             android:textColor="@android:color/black"
             android:textSize="12sp"
             app:layout_constraintLeft_toRightOf="@+id/ivUserProfile"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="John Doe" />
 
         <TextView
             android:id="@+id/tvComments"
@@ -42,9 +41,12 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="4dp"
-            android:background="@drawable/rounded_rectangle_orange"
-            android:maxWidth="220dp"
-            android:padding="8dp"
+            android:background="@drawable/rounded_rectangle_blue"
+            android:maxWidth="250dp"
+            android:paddingLeft="12dp"
+            android:paddingTop="8dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="8dp"
             android:textColor="#ffffff"
             app:layout_constraintLeft_toRightOf="@+id/ivUserProfile"
             app:layout_constraintTop_toBottomOf="@+id/tvUserName"
@@ -55,12 +57,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="4dp"
-            app:layout_constraintStart_toEndOf="@id/tvComments"
             android:text="11:40"
-            app:layout_constraintEnd_toEndOf="parent"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="@+id/tvComments"
-            app:layout_constraintLeft_toRightOf="@+id/tvComments" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/tvComments"
+            app:layout_constraintStart_toEndOf="@id/tvComments" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
