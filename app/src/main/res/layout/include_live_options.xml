@@ -93,7 +93,8 @@
                 android:layout_gravity="bottom"
                 android:gravity="center"
                 android:padding="@dimen/dp_5"
-                android:src="@drawable/ic_delete" />
+                android:tint="@color/white"
+                android:src="@drawable/ic_close" />
         </RelativeLayout>
 
     </LinearLayout>
