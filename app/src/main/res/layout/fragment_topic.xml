@@ -32,6 +32,7 @@
                     android:background="@color/colorPrimary"
                     android:gravity="center"
                     android:padding="@dimen/dp_10"
+                    android:textAppearance="@style/AppTheme.TextAppearance.RobotoMedium.DoubleExtraLarge"
                     android:textColor="@color/black"
                     app:fontFamily="@font/roboto_medium"
                     app:layout_constraintEnd_toEndOf="parent"
