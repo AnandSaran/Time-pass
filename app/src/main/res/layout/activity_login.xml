@@ -68,6 +68,7 @@
                     android:layout_height="wrap_content"
                     android:digits="+0123456789"
                     android:hint="@string/label_mobile_number"
+                    android:imeOptions="actionDone"
                     android:inputType="number"
                     android:maxLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -143,6 +144,7 @@
                     android:layout_height="wrap_content"
                     android:digits="0123456789"
                     android:hint="@string/label_otp"
+                    android:imeOptions="actionDone"
                     android:inputType="number"
                     android:maxLength="6"
                     android:maxLines="1" />
