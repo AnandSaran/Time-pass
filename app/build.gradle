@@ -18,8 +18,8 @@ android {
         applicationId "com.adroit.timepass"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 18
-        versionName "1.0"
+        versionCode 20
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
