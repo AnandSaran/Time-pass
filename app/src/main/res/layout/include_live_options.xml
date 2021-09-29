@@ -20,12 +20,12 @@
                 android:id="@+id/tpItvLive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="invisible"
                 app:showIcon="false"
                 app:tpBg="@drawable/bg_red_rounded"
                 app:tpLabel="@string/live"
                 app:tpLabelCapsAll="true" />
         </RelativeLayout>
-
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -39,11 +39,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
+                android:visibility="invisible"
                 app:tpBg="@drawable/bg_black_rounded"
                 app:tpIcon="@drawable/ic_live_user"
                 app:tpLabel="0" />
         </RelativeLayout>
-
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -57,11 +57,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
+                android:visibility="invisible"
                 app:tpBg="@drawable/bg_black_rounded"
                 app:tpIcon="@drawable/ic_love"
                 app:tpLabel="0" />
         </RelativeLayout>
-
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -76,9 +76,9 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:padding="@dimen/dp_5"
-                android:src="@drawable/ic_chat_active" />
+                android:src="@drawable/ic_chat_active"
+                android:visibility="invisible" />
         </RelativeLayout>
-
 
         <RelativeLayout
             android:layout_width="0dp"

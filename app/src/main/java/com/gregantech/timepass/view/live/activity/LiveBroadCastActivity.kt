@@ -28,6 +28,7 @@ import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.live.fragment.LiveBroadCasterFragment
 import com.gregantech.timepass.view.live.fragment.LiveChatFragment
+import com.gregantech.timepass.view.live.viewmodel.LiveBroadCastSharedViewModel
 import com.gregantech.timepass.view.live.viewmodel.LiveBroadcastViewModel
 import com.gregantech.timepass.view.live.viewmodel.LiveChatViewModel
 import io.antmedia.android.broadcaster.LiveVideoBroadcaster
@@ -39,6 +40,7 @@ class LiveBroadCastActivity : AppCompatActivity() {
 
     private lateinit var viewModelFactory: LiveBroadcastViewModel.Factory
     private lateinit var chatViewModelFactory: LiveChatViewModel.Factory
+    private lateinit var liveBroadCastSharedViewModelFactory: LiveBroadCastSharedViewModel.Factory
 
     private val chatViewModel: LiveChatViewModel by lazy {
         requireNotNull(this) {
@@ -56,6 +58,15 @@ class LiveBroadCastActivity : AppCompatActivity() {
         )
     }
 
+    private val liveBroadCastSharedViewModel: LiveBroadCastSharedViewModel by lazy {
+        requireNotNull(this) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, liveBroadCastSharedViewModelFactory).get(
+            LiveBroadCastSharedViewModel::class.java
+        )
+    }
+
     companion object {
         fun present(
             context: Context
@@ -70,6 +81,7 @@ class LiveBroadCastActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_broadcast)
         setupOnClick()
         setupViewModel()
+        setupVideModelObserver()
         if (savedInstanceState == null) {
             checkAndObtainKey()
         }
@@ -109,7 +121,7 @@ class LiveBroadCastActivity : AppCompatActivity() {
                 )
             }
         } else
-            obtainDocKey()
+            showGoLiveView()
 
     }
 
@@ -164,7 +176,7 @@ class LiveBroadCastActivity : AppCompatActivity() {
         when (requestCode) {
             LiveVideoBroadcaster.PERMISSIONS_REQUEST -> {
                 if (isPermissionGranted()) {
-                    obtainDocKey()
+                    showGoLiveView()
                 } else {
                     val cam = ActivityCompat.shouldShowRequestPermissionRationale(
                         this,
@@ -236,6 +248,23 @@ class LiveBroadCastActivity : AppCompatActivity() {
         binding.liveOptions.ivChat.setOnClickListener {
             viewModel.toggleCommentState()
         }
+
+        binding.goLiveOptions.rkItvLive.setOnClickListener {
+            it?.visible(false)
+            binding.liveOptions.tpItvLive.visible(true)
+            binding.liveOptions.tpItvUsers.visible(true)
+            binding.liveOptions.tpItvLove.visible(true)
+            binding.liveOptions.ivChat.visible(true)
+            obtainDocKey()
+        }
+    }
+
+    private fun setupVideModelObserver() {
+        liveBroadCastSharedViewModel.docKey.observe(this, Observer {
+            updateBCStatusAndListenUsers()
+            loadChatContainerFragment()
+            subscribeToChanges()
+        })
     }
 
     private fun showExitAlert() {
@@ -260,6 +289,12 @@ class LiveBroadCastActivity : AppCompatActivity() {
         viewModelFactory =
             LiveBroadcastViewModel.Factory(BroadCastRepository(), FireStoreRepository())
         chatViewModelFactory = LiveChatViewModel.Factory(FireStoreRepository())
+        liveBroadCastSharedViewModelFactory = LiveBroadCastSharedViewModel.Factory()
+    }
+
+    private fun showGoLiveView() {
+        showGoLiveButton()
+        showBroadcastFragment()
     }
 
     private fun obtainDocKey() {
@@ -270,16 +305,17 @@ class LiveBroadCastActivity : AppCompatActivity() {
                 TimePassBaseResult.Status.SUCCESS -> {
                     Log.d("LiveBroadcastActivity", "obtainDocKey: DocId ${it.data.toString()}")
                     docKey = it.data.toString()
-                    updateBCStatusAndListenUsers()
-                    loadChatContainerFragment()
-                    showBroadcastFragment()
-                    subscribeToChanges()
+                    liveBroadCastSharedViewModel.updateLiveBroadCastDocumentKey(docKey)
                 }
                 TimePassBaseResult.Status.ERROR -> {
                     it.message?.toast(this)
                 }
             }
         })
+    }
+
+    private fun showGoLiveButton() {
+        binding.goLiveOptions.root.visible(true)
     }
 
     private fun updateBCStatusAndListenUsers() {
@@ -330,8 +366,8 @@ class LiveBroadCastActivity : AppCompatActivity() {
     }
 
     private fun showBroadcastFragment() {
-        if (docKey.isNullOrEmpty())
-            return
+        /*  if (docKey.isNullOrEmpty())
+              return*/
         val broadcasterFragment = LiveBroadCasterFragment.newInstance(docKey = docKey)
         FragmentNavigationUtil.commitFragment(
             broadcasterFragment,

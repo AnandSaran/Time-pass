@@ -24,11 +24,11 @@ import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseFragment
 import com.gregantech.timepass.databinding.FragmentLiveBroadcasterBinding
-import com.gregantech.timepass.firestore.FireStoreConst
 import com.gregantech.timepass.network.repository.BroadCastRepository
 import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.view.live.activity.LiveBroadCastActivity
+import com.gregantech.timepass.view.live.viewmodel.LiveBroadCastSharedViewModel
 import com.gregantech.timepass.view.live.viewmodel.LiveBroadcastViewModel
 import com.gregantech.timepass.view.live.viewmodel.LiveChatViewModel
 import io.antmedia.android.broadcaster.ILiveVideoBroadcaster
@@ -44,7 +44,6 @@ import java.util.*
 class LiveBroadCasterFragment : TimePassBaseFragment() {
 
     private lateinit var binding: FragmentLiveBroadcasterBinding
-    private var docKey: String? = null
     private var elapsedTime = 0L
     private val connectionLost = 2
     private val increaseTimer = 1
@@ -58,6 +57,7 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
 
     private lateinit var viewModelFactory: LiveBroadcastViewModel.Factory
     private lateinit var chatViewModelFactory: LiveChatViewModel.Factory
+    private lateinit var liveBroadCastSharedViewModelFactory: LiveBroadCastSharedViewModel.Factory
 
     private val chatViewModel: LiveChatViewModel by lazy {
         requireNotNull(this.activity) {
@@ -75,6 +75,15 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
         )
     }
 
+    private val liveBroadCastSharedViewModel: LiveBroadCastSharedViewModel by lazy {
+        requireNotNull(this.activity) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this.requireActivity(), liveBroadCastSharedViewModelFactory).get(
+            LiveBroadCastSharedViewModel::class.java
+        )
+    }
+
     private val liveVideoBroadcasterServiceIntent by lazy {
         Intent(requireContext(), LiveVideoBroadcaster::class.java)
     }
@@ -82,15 +91,14 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
     companion object {
         fun newInstance(docKey: String? = null) =
             LiveBroadCasterFragment().apply {
-                arguments = Bundle().apply {
-                    putString(FireStoreConst.Keys.DOC_KEY, docKey)
-                }
+                /*  arguments = Bundle().apply {
+                      putString(FireStoreConst.Keys.DOC_KEY, docKey)
+                  }*/
             }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        docKey = arguments?.getString(FireStoreConst.Keys.DOC_KEY)
     }
 
     override fun onCreateView(
@@ -134,6 +142,13 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
                 setImageResource(if (it == true) R.drawable.ic_mic_on else R.drawable.ic_mic_off)
             }
         })
+        liveBroadCastSharedViewModel.docKey.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { docKey ->
+                docKey?.let {
+                    startBroadcasting(docKey)
+                }
+            })
     }
 
     private fun initWindow() {
@@ -143,6 +158,7 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
     private fun setAssets() {
         viewModelFactory = LiveBroadcastViewModel.Factory(BroadCastRepository())
         chatViewModelFactory = LiveChatViewModel.Factory(FireStoreRepository())
+        liveBroadCastSharedViewModelFactory = LiveBroadCastSharedViewModel.Factory()
         timerHandler = TimerHandler()
         requireContext().startService(liveVideoBroadcasterServiceIntent)
     }
@@ -218,12 +234,11 @@ class LiveBroadCasterFragment : TimePassBaseFragment() {
 
     private val cameraCallback = LiveVideoBroadcaster.CameraCallback {
         binding.tpvS.setChildVisible()
-        startBroadcasting()
+        //startBroadcasting()
     }
 
 
-
-    private fun startBroadcasting() {
+    private fun startBroadcasting(docKey: String) {
         if (liveVideoBroadCaster != null && liveVideoBroadCaster?.isConnected == false) {
             val url = BuildConfig.ANT_URL + docKey
             Log.d(TAG, "toggleBroadcasting: url $url")
