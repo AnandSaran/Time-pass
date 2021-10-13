@@ -589,7 +589,8 @@ public class LiveVideoBroadcaster extends Service implements ILiveVideoBroadcast
 
         if (resolutionIndex >=0) {
             Resolution size = choosenPreviewsSizeList.get(resolutionIndex);
-            parameters.setPreviewSize(size.width, size.height);
+            parameters.setPreviewSize(1280, 720);
+           /* parameters.setPreviewSize(1280, 960);*/
             parameters.setRecordingHint(true);
         }
         if (parameters.getSupportedFocusModes().contains(
