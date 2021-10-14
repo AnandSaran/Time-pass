@@ -7,10 +7,13 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.general.bundklekey.LivePlayerBundleKey
+import com.gregantech.timepass.general.bundklekey.UserProfileActivityBundleKeyEnum
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.live.activity.LiveVideoPlayerActivity
+import com.gregantech.timepass.view.profile.activity.UserProfileActivity
 import com.gregantech.timepass.view.splash.activity.SplashActivity
+import org.json.JSONObject
 
 class FirebaseMessagingService : FirebaseMessagingService() {
 
@@ -31,43 +34,77 @@ class FirebaseMessagingService : FirebaseMessagingService() {
 
         remoteMessage.notification?.run {
 
-            var navigationIntent: Intent? = null
-
-            //{"message":"User in Live Streaming","user":{"streamID":"PtZgi5orKybxi0aOn4Ad","userID":"28"},"liveStatus":true,"status":"success"}
             with(remoteMessage) {
 
                 val arr = data.values.toTypedArray()
-                val fcmData = Gson().fromJson(arr[0], FCMDataModel::class.java)
-                Log.d(TAG, "onMessageReceived: ${Gson().toJson(fcmData)}")
-                if (SharedPreferenceHelper.getUserId() != fcmData.user?.userID) {
-                    if (fcmData?.liveStatus == true) {
-                        val playbackInfoModel = PlaybackInfoModel(
-                            fcmData.message ?: "Streaming Live",
-                            BuildConfig.ANT_URL + fcmData.user?.streamID,
-                            fcmData.user?.streamID!!,
-                            true
-                        )
-                        navigationIntent =
-                            Intent(applicationContext, LiveVideoPlayerActivity::class.java).apply {
-                                putExtra(FCMBundleKey.TYPE.value, FCMBundleValue.LIVE.value)
-                                putExtra(
-                                    LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value,
-                                    playbackInfoModel
-                                )
-                            }
-                        showNotification(title ?: "User is Live", body ?: "", navigationIntent!!)
-                    } else {
-                        navigationIntent =
-                            Intent(applicationContext, SplashActivity::class.java).apply {
-                                putExtra("fromFCM", true)
-                            }
-                        showNotification(title ?: "User is Live", body ?: "", navigationIntent!!)
+                val firstIndexValue = arr[0]
+                val jsObj = JSONObject(firstIndexValue)
+
+                if (jsObj.opt("video") != null) {
+                    // post notification
+                    val videoJsonArr = jsObj.getJSONArray("video")
+                    val videoObj = videoJsonArr[0]
+                    if (videoObj.toString().isEmpty()) {
+                        return
+                    }
+                    val videoData =
+                        Gson().fromJson(videoObj.toString(), FCMPostResponse::class.java)
+                    Log.d(TAG, "id ${videoData.Id} followerId ${videoData.followerId}")
+
+                    videoData.followerId?.let {
+                        if (!isCurrentUser(it)) { // not current user
+                            val intent = Intent(applicationContext, UserProfileActivity::class.java)
+                            intent.putExtra(UserProfileActivityBundleKeyEnum.FOLLOWER_ID.value, it)
+                            showNotification(title ?: "", body ?: "", intent)
+                        }
                     }
 
+                } else {
+                    val fcmData = Gson().fromJson(firstIndexValue, FCMDataModel::class.java)
+                    fcmData.user?.userID?.let {
+                        if (!isCurrentUser(it)) { // not current user
+                            if (fcmData?.liveStatus == true) {
+                                //live notification
+                                val playbackInfoModel = PlaybackInfoModel(
+                                    fcmData.message ?: "Streaming Live",
+                                    BuildConfig.ANT_URL + fcmData.user.streamID,
+                                    fcmData.user.streamID!!,
+                                    true
+                                )
+                                val navigationIntent =
+                                    Intent(
+                                        applicationContext,
+                                        LiveVideoPlayerActivity::class.java
+                                    ).apply {
+                                        putExtra(FCMBundleKey.TYPE.value, FCMBundleValue.LIVE.value)
+                                        putExtra(
+                                            LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value,
+                                            playbackInfoModel
+                                        )
+                                    }
+                                showNotification(
+                                    title ?: "User is Live", body ?: "",
+                                    navigationIntent
+                                )
+                            } else triggerSplashNotification(title, body)
+                        }
+                    } ?: triggerSplashNotification(title, body)
                 }
             }
         }
 
+    }
+
+    private fun triggerSplashNotification(title: String?, body: String?) {
+        val navigationIntent =
+            Intent(applicationContext, SplashActivity::class.java).apply {
+                putExtra("fromFCM", true)
+            }
+        showNotification(title ?: "User is Live", body ?: "", navigationIntent)
+    }
+
+    private fun isCurrentUser(id: String): Boolean {
+        return SharedPreferenceHelper.getUserId() == id
     }
 
     private fun showNotification(title: String, body: String, intent: Intent) {

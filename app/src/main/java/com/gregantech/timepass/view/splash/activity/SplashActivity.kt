@@ -13,20 +13,20 @@ import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.base.TimePassBaseResult
-import com.gregantech.timepass.fcm.CloudMessageTopicHelper
-import com.gregantech.timepass.fcm.FCMDataModel
+import com.gregantech.timepass.fcm.*
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.network.repository.AdvertisementRepository
 import com.gregantech.timepass.network.repository.LoginRepository
 import com.gregantech.timepass.util.AdvertisementHandler
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
-import com.gregantech.timepass.util.extension.toString
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.home.activity.HomeActivity
 import com.gregantech.timepass.view.live.activity.LiveVideoPlayerActivity
 import com.gregantech.timepass.view.login.activity.LoginActivity
 import com.gregantech.timepass.view.login.viewmodel.LoginViewModel
+import com.gregantech.timepass.view.profile.activity.UserProfileActivity
 import com.gregantech.timepass.view.splash.viewmodel.AdvertisementViewModel
+import org.json.JSONObject
 
 class SplashActivity : TimePassBaseActivity() {
 
@@ -115,22 +115,52 @@ class SplashActivity : TimePassBaseActivity() {
 
     private fun isFromFCM(): Boolean {
         intent?.extras?.run {
-            toString("SplashScreen")
-            get("content")?.let {
-                val fcmData = Gson().fromJson(it.toString(), FCMDataModel::class.java)
-                if (fcmData != null) {
-                    if (SharedPreferenceHelper.getUserId() != fcmData.user?.userID) {
-                        if (fcmData.liveStatus == true) {
-                            val playbackInfoModel = PlaybackInfoModel(
-                                fcmData.message ?: "Streaming Live",
-                                BuildConfig.ANT_URL + fcmData.user?.streamID,
-                                fcmData.user?.streamID!!,
-                                true
-                            )
-                            LiveVideoPlayerActivity.present(this@SplashActivity, playbackInfoModel)
+            //toString("SplashScreen")
+            getString("from")?.let {
+                when (it) {
+                    "/topics/Live" -> {
+                        get("content")?.let { content ->
+                            val fcmData =
+                                Gson().fromJson(content.toString(), FCMDataModel::class.java)
+                            if (fcmData != null) {
+                                if (SharedPreferenceHelper.getUserId() != fcmData.user?.userID) {
+                                    if (fcmData.liveStatus == true) {
+                                        val playbackInfoModel = PlaybackInfoModel(
+                                            fcmData.message ?: "Streaming Live",
+                                            BuildConfig.ANT_URL + fcmData.user?.streamID,
+                                            fcmData.user?.streamID!!,
+                                            true
+                                        )
+                                        LiveVideoPlayerActivity.present(
+                                            this@SplashActivity,
+                                            playbackInfoModel
+                                        )
+                                    }
+                                }
+                                return true
+                            }
                         }
                     }
-                    return true
+                    "/topics/Post" -> {
+                        get("content")?.let { content ->
+                            val jsonObj = JSONObject(content.toString())
+                            val videoJsonArr = jsonObj.getJSONArray("video")
+                            val videoObj = videoJsonArr[0]
+                            if (videoObj.toString().isNotEmpty()) {
+                                val videoData = Gson().fromJson(
+                                    videoObj.toString(),
+                                    FCMPostResponse::class.java
+                                )
+                                videoData?.followerId?.let { id ->
+                                    if (SharedPreferenceHelper.getUserId() != id) {
+                                        UserProfileActivity.present(this@SplashActivity, id)
+                                        return true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else -> Log.e("Splash", "from key required is missing")
                 }
             }
         }
