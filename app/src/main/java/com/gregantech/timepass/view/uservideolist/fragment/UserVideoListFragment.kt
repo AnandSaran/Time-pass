@@ -253,6 +253,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
                             railList.addAll(
                                 it.video.toRailItemTypeTwoModelList(
                                     isShowProfile = true,
+                                    isShowFollow = false,
                                     advertisementName = CARD_HOME_VIDEO_LIST
                                 )
                             )
@@ -501,6 +502,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
                             addMoreVideoList(
                                 it.video.toRailItemTypeTwoModelList(
                                     isShowProfile = true,
+                                    isShowFollow = false,
                                     advertisementName = CARD_HOME_VIDEO_LIST
                                 )
                             )
