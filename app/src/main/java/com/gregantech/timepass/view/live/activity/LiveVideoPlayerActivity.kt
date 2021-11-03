@@ -20,6 +20,7 @@ import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.animGone
 import com.gregantech.timepass.util.extension.animShow
 import com.gregantech.timepass.util.extension.showSystemUI
+import com.gregantech.timepass.util.extension.visible
 import com.gregantech.timepass.util.navigation.FragmentNavigationUtil
 import com.gregantech.timepass.view.live.fragment.LiveChatFragment
 import com.gregantech.timepass.view.live.fragment.LivePlayerContentContainerFragment
@@ -95,12 +96,20 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
         updatePlayBackInfo()
         updateTitle()
         subscribeToChanges()
+        showView()
         if (savedInstanceState == null) {
             showLivePlayerContentContainerFragment()
             loadChatContainerFragment()
             bcViewModel.setupFetchLiveViewersJob(playBackInfoModel.chatKey)
         }
 
+    }
+
+    private fun showView() {
+        binding.liveOptions.tpItvLive.visible(true)
+        binding.liveOptions.tpItvUsers.visible(true)
+        binding.liveOptions.tpItvLove.visible(true)
+        binding.liveOptions.ivChat.visible(true)
     }
 
     private fun getInputs(intent: Intent) {
