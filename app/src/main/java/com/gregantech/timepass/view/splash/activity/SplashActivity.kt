@@ -93,9 +93,7 @@ class SplashActivity : TimePassBaseActivity() {
                     TimePassBaseResult.Status.SUCCESS -> {
                         dismissProgressBar()
                         it.data?.user?.let { user ->
-                            if (BuildConfig.FLAVOR == "dev") {
-                                SharedPreferenceHelper.setLiveEnabled(true)
-                            }
+                            SharedPreferenceHelper.setUserData(user)
                             Handler().post { navigateNextScreen() }
                         }
                     }
