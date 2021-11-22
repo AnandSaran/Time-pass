@@ -59,10 +59,10 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
         setupDestinationChangedListener()
         initViewModelFactory()
         onClickBottomNavigation()
-        doFetchAppConfig()
     }
 
     override fun onResume() {
+        doFetchAppConfig()
         super.onResume()
     }
 
