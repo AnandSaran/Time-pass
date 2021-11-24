@@ -61,7 +61,7 @@ import com.gregantech.timepass.view.live.activity.LiveVideoPlayerActivity
 import com.gregantech.timepass.view.live.viewmodel.LiveBroadcastViewModel
 import com.gregantech.timepass.view.live.viewmodel.LiveChatViewModel
 import com.gregantech.timepass.view.player.activity.ImageViewActivity
-import com.gregantech.timepass.view.player.activity.PlayerActivity
+import com.gregantech.timepass.view.player.fullScreen.FullScreenVideoPlayerActivity
 import com.gregantech.timepass.view.profile.activity.UserProfileActivity
 import com.gregantech.timepass.view.userlist.activity.UserListActivity
 import com.gregantech.timepass.view.uservideolist.viewmodel.UserPostViewModel
@@ -474,13 +474,17 @@ class UserVideoListFragment : TimePassBaseFragment() {
     }
 
     private fun displayPlayerPage(videoUrl: String) {
-        startForResult.launch(
-            PlayerActivity.generateIntent(
-                ctxt,
-                videoUrl,
-                playerViewAdapter.getCurrentPlayerPosition()
-            )
-        )
+        //videoUrl.toast(requireContext())
+
+        FullScreenVideoPlayerActivity.present(ctxt)
+
+        /* startForResult.launch(
+             FullScreenVideoPlayerActivity.generateIntent(
+                 ctxt,
+                 videoUrl,
+                 playerViewAdapter.getCurrentPlayerPosition()
+             )
+         )*/
     }
 
     private fun displayImagePage(imageUrl: String) {

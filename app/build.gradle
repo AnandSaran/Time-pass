@@ -322,4 +322,7 @@ dependencies {
 
     //firebase messaging
     implementation 'com.google.firebase:firebase-messaging'
+
+    implementation 'com.github.codevoler.RecyclerViewPager:lib:v1.0.3'
+    //implementation 'com.github.lsjwzh:recyclerviewpager:v1.1.2'
 }
