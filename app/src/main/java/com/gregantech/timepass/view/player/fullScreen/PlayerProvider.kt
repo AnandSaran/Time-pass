@@ -48,6 +48,11 @@ object PlayerProvider {
         else null
     }
 
+    fun getAbsolutePosition(position: Int): Int {
+        return if (playerPool.size > 0)
+            position % playerPool.size
+        else 0
+    }
 
     fun getPlayer(position: Int): ExoPlayer? {
         return if (playerPool.size > 0)
@@ -95,6 +100,7 @@ object PlayerProvider {
     }
 
     fun releasePlayer() {
+        progressBarPool.clear()
         playerPool.forEach { it.release() }
         playerPool.clear()
     }

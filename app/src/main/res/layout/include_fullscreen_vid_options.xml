@@ -1,39 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:background="@color/black"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="@dimen/tt_icon_width"
-        android:layout_height="@dimen/tt_icon_height"
+        style="@style/SelectableItemBackground"
         android:src="@drawable/place_holder_profile" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/lLayLike"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_10"
         android:orientation="vertical">
 
-        <com.gregantech.timepass.widget.TimePassViewSwitcher
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="@dimen/tt_icon_width"
-                android:layout_height="@dimen/tt_icon_height"
-                android:src="@drawable/favourite" />
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/ivLove"
-                android:layout_width="@dimen/tt_icon_width"
-                android:layout_height="@dimen/tt_icon_height"
-                android:layout_gravity="center"
-                app:lottie_fileName="favourite.json"
-                app:lottie_loop="false" />
-
-        </com.gregantech.timepass.widget.TimePassViewSwitcher>
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivLikeVid"
+            style="@style/SelectableItemBackground"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_un_like" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
@@ -45,37 +33,17 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/lLayComment"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_15"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivComment"
-            android:layout_width="@dimen/tt_icon_width"
-            android:layout_height="@dimen/tt_icon_height"
-            android:src="@drawable/ic_tt_chat" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/SelectableItemBackground"
             android:layout_gravity="center"
-            android:text="1.3M"
-            android:textColor="@color/tiktokColor" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_15"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivShare"
-            android:layout_width="@dimen/tt_icon_width"
-            android:layout_height="@dimen/tt_icon_height"
-            android:src="@drawable/sharp_share_24" />
+            android:src="@drawable/ic_comment_white" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
@@ -86,11 +54,21 @@
 
     </LinearLayout>
 
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivShare"
+        style="@style/SelectableItemBackground"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_10"
+        android:src="@drawable/ic_share_white" />
+
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivDownload"
-        android:layout_width="@dimen/tt_icon_width"
-        android:layout_height="@dimen/tt_icon_height"
-        android:layout_marginTop="@dimen/dp_15"
-        android:src="@drawable/tt_download_20" />
+        style="@style/SelectableItemBackground"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:src="@drawable/ic_download" />
 
 </LinearLayout>

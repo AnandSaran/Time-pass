@@ -21,7 +21,7 @@
         <item name="android:windowBackground">@drawable/splash</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="android:background">@android:color/transparent</item>
-
+        <item name="android:selectableItemBackground">@drawable/bg_ripple_circle</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>

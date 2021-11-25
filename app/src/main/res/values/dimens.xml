@@ -120,7 +120,7 @@
     <dimen name="recyler_view_poster_min_height">200dp</dimen>
     <dimen name="dp_38">38dp</dimen>
     <dimen name="dp_65">65dp</dimen>
-    <dimen name="tt_icon_width">40dp</dimen>
-    <dimen name="tt_icon_height">40dp</dimen>
+    <dimen name="tt_icon_width">35dp</dimen>
+    <dimen name="tt_icon_height">35dp</dimen>
     <!--endregion-->
 </resources>

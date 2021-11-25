@@ -1,5 +1,6 @@
 package com.gregantech.timepass.view.player.fullScreen
 
+import android.util.Log
 import android.view.View
 import androidx.core.view.children
 import androidx.recyclerview.widget.RecyclerView
@@ -51,7 +52,11 @@ abstract class PagerScrollHandler(
             }
             .forEach {
                 if (it.adapterPosition == position) {
-                    it.progressView.addView(PlayerProvider.getProgress(it.adapterPosition))
+                    kotlin.runCatching {
+                        it.progressView.addView(PlayerProvider.getProgress(it.adapterPosition))
+                    }.onFailure {
+                        Log.e("PageScroller", "Error ${it.message}")
+                    }
                     it.playerView.player = PlayerProvider.getPlayer(it.adapterPosition)?.apply {
                         muted = false
                         playWhenReady = true
@@ -62,11 +67,11 @@ abstract class PagerScrollHandler(
                                 playbackState: Int
                             ) {
                                 if (playbackState == Player.STATE_BUFFERING) {
-                                    it.progressView?.show()
+                                    it.progressView.show()
                                 }
 
                                 if (playbackState == Player.STATE_READY && playWhenReady) {
-                                    it.progressView?.gone()
+                                    it.progressView.gone()
                                 }
 
                             }
