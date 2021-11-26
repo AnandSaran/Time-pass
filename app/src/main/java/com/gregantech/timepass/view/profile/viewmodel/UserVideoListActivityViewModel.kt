@@ -3,7 +3,6 @@ package com.gregantech.timepass.view.profile.viewmodel
 import android.app.DownloadManager
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
 import android.webkit.MimeTypeMap
 import android.webkit.URLUtil
 import androidx.lifecycle.*
@@ -36,6 +35,29 @@ class UserVideoListActivityViewModel(
             emit(TimePassBaseResult.loading(null))
             val result =
                 videoListRepository.fetchUserVideoList(generateVideoListRequest(userId, pageNo))
+            when (result.status) {
+                TimePassBaseResult.Status.SUCCESS -> {
+                    emit(result)
+                }
+                TimePassBaseResult.Status.ERROR -> {
+                    onFetchCategoryVideoListFail()
+                }
+                else -> {
+                    onFetchCategoryVideoListFail()
+                }
+            }
+        }
+
+    fun getFullScreenVideos(userId: String, pageNo: Int) =
+        liveData<TimePassBaseResult<VideoListResponse>>(Dispatchers.IO) {
+            emit(TimePassBaseResult.loading(null))
+            val result =
+                videoListRepository.fetchFullScreenVideoList(
+                    generateVideoListRequest(
+                        userId,
+                        pageNo
+                    )
+                )
             when (result.status) {
                 TimePassBaseResult.Status.SUCCESS -> {
                     emit(result)

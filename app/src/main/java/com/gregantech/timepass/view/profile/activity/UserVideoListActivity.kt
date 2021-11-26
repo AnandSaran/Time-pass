@@ -44,7 +44,6 @@ import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.player.activity.ImageViewActivity
-import com.gregantech.timepass.view.player.fullScreen.FullScreenVideoPlayerActivity
 import com.gregantech.timepass.view.profile.viewmodel.UserVideoListActivityViewModel
 import com.gregantech.timepass.view.uservideolist.viewmodel.UserPostViewModel
 import com.gregantech.timepass.widget.PaginationScrollListener
@@ -371,13 +370,13 @@ class UserVideoListActivity : TimePassBaseActivity() {
 
 
     private fun displayPlayerPage(videoUrl: String) {
-        startForResult.launch(
+       /* startForResult.launch(
             FullScreenVideoPlayerActivity.generateIntent(
                 this,
                 videoUrl,
                 playerViewAdapter.getCurrentPlayerPosition()
             )
-        )
+        )*/
     }
 
     private fun displayImagePage(imageUrl: String) {

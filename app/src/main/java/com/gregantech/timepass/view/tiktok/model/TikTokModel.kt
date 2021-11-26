@@ -1,4 +1,4 @@
-package com.gregantech.timepass.view.player.fullScreen
+package com.gregantech.timepass.view.tiktok.model
 
 data class TikTokModel(
     val title: String? = null,

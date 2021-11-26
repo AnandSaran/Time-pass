@@ -27,7 +27,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".view.player.fullScreen.FullScreenVideoPlayerActivity"
+            android:name=".view.tiktok.activity.TikTokActivity"
             android:exported="false"
             android:theme="@style/FullScreenVideoTheme" />
         <activity

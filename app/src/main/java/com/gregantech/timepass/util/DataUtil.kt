@@ -2,7 +2,7 @@ package com.gregantech.timepass.util
 
 import android.content.Context
 import com.gregantech.timepass.R
-import com.gregantech.timepass.view.player.fullScreen.TikTokModel
+import com.gregantech.timepass.view.tiktok.model.TikTokModel
 
 object DataUtil {
 

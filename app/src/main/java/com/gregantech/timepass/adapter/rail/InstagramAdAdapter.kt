@@ -76,6 +76,7 @@ class InstagramAdAdapter(
     inner class VideoPlayerViewHolder(private val binding: ItemInstagramBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(model: RailItemTypeTwoModel) {
+            model.position = adapterPosition
             binding.apply {
                 dataModel = model
                 setupOnClick(model)
