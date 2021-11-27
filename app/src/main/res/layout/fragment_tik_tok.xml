@@ -6,6 +6,7 @@
     tools:context=".view.tiktok.fragment.TikTokFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tiktokRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -21,6 +22,15 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:use_controller="false" />
+
+        <com.gregantech.timepass.widget.PlayPauseView
+            android:id="@+id/ivPausePlay"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_80"
+            app:layout_constraintBottom_toBottomOf="@+id/fullScreenPlayer"
+            app:layout_constraintEnd_toEndOf="@+id/fullScreenPlayer"
+            app:layout_constraintStart_toStartOf="@+id/fullScreenPlayer"
+            app:layout_constraintTop_toTopOf="@+id/fullScreenPlayer" />
 
 
         <include
@@ -44,6 +54,7 @@
             android:fontFamily="@font/roboto_medium"
             android:scrollHorizontally="true"
             android:singleLine="true"
+            android:textSize="@dimen/sp_16"
             android:textColor="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/tvDesc"
             app:layout_constraintEnd_toStartOf="@+id/includedMoreOption"
@@ -56,6 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_5"
             android:ellipsize="end"
+            android:textSize="@dimen/sp_14"
             android:fontFamily="@font/roboto_medium"
             android:maxLines="3"
             android:textColor="@color/white"

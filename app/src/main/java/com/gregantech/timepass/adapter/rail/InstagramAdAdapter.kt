@@ -1,5 +1,6 @@
 package com.gregantech.timepass.adapter.rail
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -261,6 +262,15 @@ class InstagramAdAdapter(
             R.drawable.ic_like
         } else {
             R.drawable.ic_un_like_black
+        }
+
+    }
+
+    fun changeAtPos(videoItem: RailItemTypeTwoModel?, currentIndex: Int) {
+        Log.d("InstaAdapter", "currentIndex $currentIndex")
+        videoItem?.let {
+            modelList[currentIndex] = it
+            notifyItemChanged(currentIndex)
         }
 
     }

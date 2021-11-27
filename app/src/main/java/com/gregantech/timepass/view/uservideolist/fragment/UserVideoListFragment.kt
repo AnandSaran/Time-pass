@@ -35,6 +35,7 @@ import com.gregantech.timepass.general.UserListScreenTitleEnum
 import com.gregantech.timepass.general.UserListScreenTypeEnum
 import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
 import com.gregantech.timepass.general.bundklekey.CreateVideoBundleEnum
+import com.gregantech.timepass.general.bundklekey.TikTokBundleKeyEnum
 import com.gregantech.timepass.model.*
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.network.repository.BroadCastRepository
@@ -102,6 +103,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     var currentIndex = -1
     var isShareClick = false
     var downloadID: Long? = null
+    var currentPos = 0
 
     private val viewModel: UserVideoListViewModel by lazy {
         requireNotNull(this.activity) {
@@ -379,7 +381,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
             if (isImage != null && isImage) {
                 displayImagePage(railModel.image)
             } else {
-                displayPlayerPage(videoList?.get(railModel.position)!!)
+                displayPlayerPage(videoList?.get(railModel.position)!!, railModel.position)
             }
         }
         railItemClickHandler.clickFollow = { railModel ->
@@ -477,18 +479,16 @@ class UserVideoListFragment : TimePassBaseFragment() {
                 })
     }
 
-    private fun displayPlayerPage(video: Video?) {
-        //videoUrl.toast(requireContext())
+    private fun displayPlayerPage(video: Video?, position: Int) {
+        currentPos = position
         playerViewAdapter.pauseCurrentPlayingVideo()
-        TikTokActivity.present(ctxt, video!!)
-
-        /* startForResult.launch(
-             FullScreenVideoPlayerActivity.generateIntent(
-                 ctxt,
-                 videoUrl,
-                 playerViewAdapter.getCurrentPlayerPosition()
-             )
-         )*/
+        startForResult.launch(
+            TikTokActivity.generateIntent(
+                ctxt,
+                video!!,
+                playerViewAdapter.getCurrentPlayerPosition()
+            )
+        )
     }
 
     private fun displayImagePage(imageUrl: String) {
@@ -586,12 +586,18 @@ class UserVideoListFragment : TimePassBaseFragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.let {
-
                     val playerCurrentPosition = it.getLongExtra(
                         CategoryDetailBundleKeyEnum.VIDEO_POSITION.value,
                         EMPTY_LONG
                     )
-                    changePlayerCurrentPosition(playerCurrentPosition)
+                    it.getParcelableExtra<RailItemTypeTwoModel?>(TikTokBundleKeyEnum.VIDEO_DATA.value)
+                        ?.let { vid ->
+                            /*(binding.rvUserVideoList.adapter as InstagramAdAdapter).changeAtPos(
+                                vid,
+                                currentIndex
+                            )*/
+                            changePlayerCurrentPosition(playerCurrentPosition)
+                        }
                 }
             }
         }
@@ -641,6 +647,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
             (getString(R.string.file_format) + " ," + fileExt).toast(ctxt)
         }
     }
+
 
     private val startCreateVideoForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->

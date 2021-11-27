@@ -7,7 +7,9 @@
     android:orientation="vertical">
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivProfilePicture"
         style="@style/SelectableItemBackground"
+        android:padding="@dimen/dp_1"
         android:src="@drawable/place_holder_profile" />
 
     <LinearLayout
@@ -20,14 +22,16 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivLikeVid"
             style="@style/SelectableItemBackground"
+            android:padding="@dimen/dp_5"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_un_like" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvLikeCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="1.3M"
+            tools:text="1.3M"
             android:textColor="@color/white" />
 
     </LinearLayout>
@@ -43,13 +47,15 @@
             android:id="@+id/ivComment"
             style="@style/SelectableItemBackground"
             android:layout_gravity="center"
+            android:padding="@dimen/dp_5"
             android:src="@drawable/ic_comment_white" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvCommentCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="1.3M"
+            tools:text="1.3M"
             android:textColor="@color/white" />
 
     </LinearLayout>
@@ -60,12 +66,14 @@
         style="@style/SelectableItemBackground"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_10"
+        android:padding="@dimen/dp_5"
         android:src="@drawable/ic_share_white" />
 
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivDownload"
         style="@style/SelectableItemBackground"
+        android:padding="@dimen/dp_5"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginBottom="@dimen/dp_5"

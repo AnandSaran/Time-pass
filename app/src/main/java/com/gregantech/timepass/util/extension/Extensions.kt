@@ -19,8 +19,11 @@ import android.webkit.URLUtil
 import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.gms.ads.AdRequest
 import com.gregantech.timepass.BuildConfig
+import com.gregantech.timepass.R
 import com.gregantech.timepass.model.DownloadResult
 import com.gregantech.timepass.util.constant.BODY
 import com.gregantech.timepass.util.constant.RAW_DOWNLOAD_PATH
@@ -31,9 +34,11 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.util.cio.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.io.copyAndClose
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext
 import java.io.File
@@ -226,6 +231,8 @@ fun View.hide() {
     visibility = View.INVISIBLE
 }
 
+fun View.isVisible() = visibility == View.VISIBLE
+
 fun View.gone() {
     visibility = View.GONE
 }
@@ -261,4 +268,42 @@ fun Drawable.toBitmap(): Bitmap {
 
     return bitmap
 }
+
+suspend fun Context.clearCache() = withContext(Dispatchers.IO) {
+    val state = deleteDir(File("${cacheDir.absolutePath}/${getString(R.string.app_name)}"))
+    Log.d("FileExt", "clearCache: is Cleared $state")
+}
+
+fun deleteDir(dir: File?): Boolean {
+    runCatching {
+        //Log.d("FileExt", "deleteDir: dir $dir")
+        return if (dir != null && dir.isDirectory) {
+            val children = dir.list()
+            if (children.isNullOrEmpty())
+                return false
+            for (i in children.indices) {
+                val success: Boolean = deleteDir(File(dir, children[i]))
+                if (!success) {
+                    return false
+                }
+            }
+            dir.delete()
+        } else if (dir != null && dir.isFile) {
+            dir.delete()
+        } else {
+            false
+        }
+    }.onFailure {
+        return false
+    }
+    return false
+}
+
+var Player.muted: Boolean
+    get() {
+        return (this as SimpleExoPlayer).volume == 0.0f
+    }
+    set(value) {
+        (this as SimpleExoPlayer).volume = if (value) 0.0f else 1.0f
+    }
 

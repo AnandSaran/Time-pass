@@ -88,6 +88,20 @@ abstract class TimePassBaseFragment : Fragment() {
         }
     }
 
+    protected fun loadTikTokInterstitial(
+        adName: String,
+        interstitialCallback: InterstitialAdLoadCallback
+    ) {
+        if (AdvertisementHandler.isAdEnabled(adName)) {
+            InterstitialAd.load(
+                requireContext(),
+                AdvertisementHandler.getAdUnitByType(adName),
+                AdRequest.Builder().build(),
+                interstitialCallback
+            )
+        } else
+            Log.e(TAG, "loadInterstitial: Full screen ad is not enabled")
+    }
 
     protected fun loadInterstitial(adName: String) {
         if (AdvertisementHandler.isAdEnabled(adName)) {
@@ -110,7 +124,6 @@ abstract class TimePassBaseFragment : Fragment() {
                 show(requireActivity())
             }
         }
-
         override fun onAdFailedToLoad(loadError: LoadAdError) {
             super.onAdFailedToLoad(loadError)
             Log.e(TAG, "onAdFailedToLoad: loadError ${loadError.message}")

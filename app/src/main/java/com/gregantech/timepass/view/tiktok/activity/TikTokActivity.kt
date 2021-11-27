@@ -1,39 +1,43 @@
 package com.gregantech.timepass.view.tiktok.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.gregantech.timepass.BuildConfig.FULL_SCREEN_ADMIN_VIDEO_LIST
 import com.gregantech.timepass.R
+import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityTiktokBinding
+import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
 import com.gregantech.timepass.general.bundklekey.TikTokBundleKeyEnum
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.response.Video
+import com.gregantech.timepass.util.AdvertisementHandler
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.profile.viewmodel.UserVideoListActivityViewModel
 import com.gregantech.timepass.view.tiktok.adapter.TikTokPagerAdapter
 import com.gregantech.timepass.view.tiktok.work.PreCachingService
-import java.util.*
 
-class TikTokActivity : FragmentActivity() {
-
+class TikTokActivity : TimePassBaseActivity() {
 
     private lateinit var activityViewModelFactory: UserVideoListActivityViewModel.Factory
     private lateinit var binding: ActivityTiktokBinding
+
     private val videoObj by lazy { intent?.extras?.getParcelable<Video>(TikTokBundleKeyEnum.VIDEO_DATA.value) }
+    private val playingPosition by lazy { intent?.extras?.getLong(TikTokBundleKeyEnum.SEEK_POSITION.value) }
+
     private val tiktokPagerAdapter by lazy { TikTokPagerAdapter(this) }
 
-    private var playingPosition = -1
     private var totalPages = 0
     private var currentPage = 1
     private var isLoading = false
@@ -49,10 +53,20 @@ class TikTokActivity : FragmentActivity() {
     }
 
     companion object {
-        fun present(context: Context, video: Video) {
+        fun present(context: Context, video: Video, seekPosition: Long = -1) {
             val intent = Intent(context, TikTokActivity::class.java)
             intent.putExtra(TikTokBundleKeyEnum.VIDEO_DATA.value, video)
+            intent.putExtra(TikTokBundleKeyEnum.SEEK_POSITION.value, seekPosition)
             context.startActivity(intent)
+        }
+
+        fun generateIntent(
+            context: Context, video: Video, seekPosition: Long = -1
+        ): Intent {
+            val intent = Intent(context, TikTokActivity::class.java)
+            intent.putExtra(TikTokBundleKeyEnum.VIDEO_DATA.value, video)
+            intent.putExtra(TikTokBundleKeyEnum.SEEK_POSITION.value, seekPosition)
+            return intent
         }
     }
 
@@ -116,15 +130,16 @@ class TikTokActivity : FragmentActivity() {
     }
 
     private fun doFetchVideoList() {
-
         if (!fetchCheckOk())
             return
-
-        Log.d("doFetchVideoList", "currentPage $currentPage isLoading $isLoading")
+        Log.d(
+            "doFetchVideoList",
+            "currentPage $currentPage isLoading $isLoading userId ${videoObj?.followerId}"
+        )
 
         isLoading = true
         "Loading More..Page $currentPage".toast(this)
-        viewModel.getFullScreenVideos("27", currentPage)
+        viewModel.getFullScreenVideos(videoObj?.followerId!!, currentPage)
             .observe(this, androidx.lifecycle.Observer { videoModel ->
                 when (videoModel.status) {
                     TimePassBaseResult.Status.LOADING -> {
@@ -150,7 +165,18 @@ class TikTokActivity : FragmentActivity() {
 
     private fun doBindVideoList(vidList: ArrayList<Video>) {
         startPreCaching(vidList)
-        tiktokPagerAdapter.refresh(vidList)
+        tiktokPagerAdapter.playPosition = playingPosition ?: 0L
+        tiktokPagerAdapter.refresh(withAds(vidList))
+    }
+
+    private fun withAds(vidList: ArrayList<Video>): ArrayList<Video> {
+        if (AdvertisementHandler.isAdEnabled(FULL_SCREEN_ADMIN_VIDEO_LIST)) {
+            for (i in 1..vidList.size) {
+                if (i % 4 == 0) // add after 3rd item
+                    vidList.add(i - 1, Video(viewType = 1))
+            }
+        }
+        return vidList
     }
 
     private fun startPreCaching(vidList: ArrayList<Video>) {
@@ -166,9 +192,31 @@ class TikTokActivity : FragmentActivity() {
             .enqueue(preCachingWork)
     }
 
+    override fun onBackPressed() {
+        val data = Intent().apply {
+            putExtra(
+                CategoryDetailBundleKeyEnum.VIDEO_POSITION.value,
+                tiktokPagerAdapter.tikTokFragment.playingPosition
+            )
+            putExtra(
+                TikTokBundleKeyEnum.VIDEO_DATA.value,
+                tiktokPagerAdapter.tikTokFragment.currentItem
+            )
+        }
+        setResult(Activity.RESULT_OK, data)
+        super.onBackPressed()
+    }
+
+
     override fun onDestroy() {
         super.onDestroy()
         binding.vpTikTok.unregisterOnPageChangeCallback(pageChangeCallBack)
+    }
+
+    fun moveToNextPage() {
+        binding.vpTikTok.apply {
+            currentItem += 1
+        }
     }
 
 }

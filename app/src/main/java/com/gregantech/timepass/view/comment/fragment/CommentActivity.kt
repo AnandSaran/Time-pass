@@ -1,5 +1,6 @@
 package com.gregantech.timepass.view.comment.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -13,6 +14,7 @@ import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.base.TimePassBaseResult
 import com.gregantech.timepass.databinding.ActivityCommentBinding
 import com.gregantech.timepass.general.bundklekey.CommentBundleKeyEnum
+import com.gregantech.timepass.general.bundklekey.TikTokBundleKeyEnum
 import com.gregantech.timepass.model.CommentBaseItemModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.CommentListRepository
@@ -54,11 +56,22 @@ class CommentActivity : TimePassBaseActivity() {
             isAdminPost: Boolean = false,
             isUserPost: Boolean = false
         ) {
-            val intent = Intent(context, CommentActivity::class.java)
-            intent.putExtra(CommentBundleKeyEnum.POST_ID.value, postId)
-            intent.putExtra(CommentBundleKeyEnum.IS_ADMIN_POST.value, isAdminPost)
-            intent.putExtra(CommentBundleKeyEnum.IS_USER_POST.value, isUserPost)
-            context.startActivity(intent)
+            context.startActivity(Intent(context, CommentActivity::class.java).apply {
+                putExtra(CommentBundleKeyEnum.POST_ID.value, postId)
+                putExtra(CommentBundleKeyEnum.IS_ADMIN_POST.value, isAdminPost)
+                putExtra(CommentBundleKeyEnum.IS_USER_POST.value, isUserPost)
+            })
+        }
+
+        fun generateIntent(
+            context: Context,
+            postId: String,
+            isAdminPost: Boolean = false,
+            isUserPost: Boolean = false
+        ) = Intent(context, CommentActivity::class.java).apply {
+            putExtra(CommentBundleKeyEnum.POST_ID.value, postId)
+            putExtra(CommentBundleKeyEnum.IS_ADMIN_POST.value, isAdminPost)
+            putExtra(CommentBundleKeyEnum.IS_USER_POST.value, isUserPost)
         }
     }
 
@@ -210,6 +223,16 @@ class CommentActivity : TimePassBaseActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_OK, Intent().apply {
+            putExtra(
+                TikTokBundleKeyEnum.COMMENT_COUNT.value,
+                binding.rvCommentList.adapter?.itemCount ?: -1
+            )
+        })
+        super.onBackPressed()
     }
 
     private fun scrollEnd() {

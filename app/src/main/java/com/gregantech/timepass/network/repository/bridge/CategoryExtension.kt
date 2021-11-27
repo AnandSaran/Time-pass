@@ -19,6 +19,7 @@ fun List<Category>.toRailItemTypeOneModelList(): ArrayList<RailBaseItemModel> {
     })
 }
 
+
 fun List<Video>.toRailItemTypeTwoModelList(
     isShowFollow: Boolean = true,
     isShowProfile: Boolean = false,
