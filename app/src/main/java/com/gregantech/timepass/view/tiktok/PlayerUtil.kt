@@ -2,7 +2,6 @@ package com.gregantech.timepass.view.tiktok
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.google.android.exoplayer2.database.ExoDatabaseProvider
 import com.google.android.exoplayer2.offline.StreamKey
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -24,7 +23,7 @@ object PlayerUtil {
     private fun upStream(context: Context) =
         DefaultDataSourceFactory(context, context.getString(R.string.app_name))
 
-    private fun cache(context: Context): Cache {
+    fun cache(context: Context): Cache {
         return cacheInstance ?: run {
             val exoCacheDir =
                 File("${context.cacheDir.absolutePath}/${context.getString(R.string.app_name)}")
@@ -53,14 +52,14 @@ object PlayerUtil {
             CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR,
             object : CacheDataSource.EventListener {
                 override fun onCachedBytesRead(cacheSizeBytes: Long, cachedBytesRead: Long) {
-                    Log.d(
-                        "TikTokFragmentX",
-                        "onCachedBytesRead. cacheSizeBytes:$cacheSizeBytes, cachedBytesRead: $cachedBytesRead"
-                    )
+                    /* Log.d(
+                         "TikTokFragmentX",
+                         "onCachedBytesRead. cacheSizeBytes:$cacheSizeBytes, cachedBytesRead: $cachedBytesRead"
+                     )*/
                 }
 
                 override fun onCacheIgnored(reason: Int) {
-                    Log.d("TikTokFragmentX", "onCacheIgnored. reason:$reason")
+                    //Log.d("TikTokFragmentX", "onCacheIgnored. reason:$reason")
                 }
             }
         )

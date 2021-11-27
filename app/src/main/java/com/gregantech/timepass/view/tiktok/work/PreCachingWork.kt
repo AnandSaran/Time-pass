@@ -12,8 +12,8 @@ import com.google.android.exoplayer2.upstream.cache.Cache
 import com.google.android.exoplayer2.upstream.cache.CacheUtil
 import com.google.android.exoplayer2.util.Util
 import com.gregantech.timepass.R
-import com.gregantech.timepass.base.TimePassApplication
 import com.gregantech.timepass.general.bundklekey.TikTokBundleKeyEnum
+import com.gregantech.timepass.view.tiktok.PlayerUtil.cache
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
@@ -22,8 +22,6 @@ private const val TAG = "PreCachingService"
 
 class PreCachingService(appContext: Context, params: WorkerParameters) :
     CoroutineWorker(appContext, params) {
-
-    private val simpleCache = TimePassApplication.simpleCache
 
     override suspend fun doWork(): Result = coroutineScope {
 
@@ -44,12 +42,12 @@ class PreCachingService(appContext: Context, params: WorkerParameters) :
                     ).createDataSource()
 
                 preloadVideo(dataSpec,
-                    simpleCache,
+                    cache(applicationContext),
                     dataSource,
                     CacheUtil.ProgressListener { requestLength: Long, bytesCached: Long, newBytesCached: Long ->
                         val downloadPercentage = (bytesCached * 100.0
                                 / requestLength)
-                        Log.d(TAG, "downloadPercentage: $downloadPercentage")
+                        //Log.d(TAG, "downloadPercentage: $downloadPercentage")
                     }
                 )
             }

@@ -3,9 +3,11 @@ package com.gregantech.timepass.view.tiktok.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -73,7 +75,7 @@ class TikTokActivity : FragmentActivity() {
     private fun initPlayer() {
         val vidList = arrayListOf(videoObj!!)
         doBindVideoList(vidList)
-        //doFetchVideoList()
+        doFetchVideoList()
     }
 
     private fun subscribeToObservers() {
@@ -82,22 +84,59 @@ class TikTokActivity : FragmentActivity() {
 
 
     private fun setAssets() {
-        binding.vpTikTok.adapter = tiktokPagerAdapter
+        binding.vpTikTok.apply {
+            adapter = tiktokPagerAdapter
+            registerOnPageChangeCallback(pageChangeCallBack)
+        }
+    }
+
+    private val pageChangeCallBack = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            super.onPageSelected(position)
+            binding.vpTikTok.adapter?.let {
+                val totalCount = it.itemCount
+                Log.d("TikTok", "totalCount $totalCount position $position")
+                if (position != 0 && position == totalCount - 1) { //last item
+                    currentPage++
+                    doFetchVideoList()
+                }
+            }
+        }
+    }
+
+    private fun fetchCheckOk(): Boolean {
+        return when {
+            isLoading -> false
+            ((currentPage != 1) && (currentPage >= totalPages)) -> {
+                getString(R.string.no_more_videos).toast(this)
+                false
+            }
+            else -> true
+        }
     }
 
     private fun doFetchVideoList() {
 
+        if (!fetchCheckOk())
+            return
+
+        Log.d("doFetchVideoList", "currentPage $currentPage isLoading $isLoading")
+
         isLoading = true
-        "Loading More..".toast(this)
-        viewModel.getFullScreenVideos("27", ++currentPage)
+        "Loading More..Page $currentPage".toast(this)
+        viewModel.getFullScreenVideos("27", currentPage)
             .observe(this, androidx.lifecycle.Observer { videoModel ->
                 when (videoModel.status) {
                     TimePassBaseResult.Status.LOADING -> {
                     }
                     TimePassBaseResult.Status.SUCCESS -> {
                         videoModel.data?.let {
-                            totalPages = it.total_pages!!
-                            doBindVideoList(it.video as ArrayList<Video>)
+                            if (it.video.isNotEmpty()) {
+                                totalPages = it.total_pages!!
+                                doBindVideoList(it.video as ArrayList<Video>)
+                            } else {
+                                totalPages = currentPage
+                            }
                         }
                         isLoading = false
                     }
@@ -125,6 +164,11 @@ class TikTokActivity : FragmentActivity() {
             .build()
         WorkManager.getInstance(this)
             .enqueue(preCachingWork)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding.vpTikTok.unregisterOnPageChangeCallback(pageChangeCallBack)
     }
 
 }
