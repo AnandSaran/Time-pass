@@ -32,13 +32,13 @@ import com.gregantech.timepass.model.getStrippedFileName
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModel
 import com.gregantech.timepass.network.response.Video
+import com.gregantech.timepass.util.PlayerUtil.buildMediaSources
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.*
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.profile.activity.UserProfileActivity
 import com.gregantech.timepass.view.profile.viewmodel.UserVideoListActivityViewModel
-import com.gregantech.timepass.view.tiktok.PlayerUtil.buildMediaSources
 import com.gregantech.timepass.widget.PlayPauseView
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission

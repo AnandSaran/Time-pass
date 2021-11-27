@@ -1,4 +1,4 @@
-package com.gregantech.timepass.view.tiktok
+package com.gregantech.timepass.util
 
 import android.content.Context
 import android.net.Uri

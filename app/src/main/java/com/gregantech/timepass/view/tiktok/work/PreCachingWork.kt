@@ -13,7 +13,7 @@ import com.google.android.exoplayer2.upstream.cache.CacheUtil
 import com.google.android.exoplayer2.util.Util
 import com.gregantech.timepass.R
 import com.gregantech.timepass.general.bundklekey.TikTokBundleKeyEnum
-import com.gregantech.timepass.view.tiktok.PlayerUtil.cache
+import com.gregantech.timepass.util.PlayerUtil.cache
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
