@@ -376,7 +376,10 @@ class TikTokFragment : TimePassBaseFragment() {
 
     override fun onResume() {
         restartVideo()
-        binding.ivPausePlay.show()
+        binding.ivPausePlay.apply {
+            fadeOut()
+            show()
+        }
         super.onResume()
     }
 
