@@ -45,6 +45,7 @@ import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.player.activity.ImageViewActivity
 import com.gregantech.timepass.view.profile.viewmodel.UserVideoListActivityViewModel
+import com.gregantech.timepass.view.tiktok.activity.TikTokActivity
 import com.gregantech.timepass.view.uservideolist.viewmodel.UserPostViewModel
 import com.gregantech.timepass.widget.PaginationScrollListener
 import com.gregantech.timepass.widget.dialog.BottomSheetDialogPostMoreOption
@@ -60,6 +61,7 @@ class UserVideoListActivity : TimePassBaseActivity() {
     var downloadID: Long? = null
     var isRegistered = false
     private var smoothScroller: RecyclerView.SmoothScroller? = null
+    private var videoList = ArrayList<Video>()
 
     private lateinit var userPostViewModelFactory: UserPostViewModel.Factory
 
@@ -212,10 +214,16 @@ class UserVideoListActivity : TimePassBaseActivity() {
         userName =
             intent.getStringExtra(UserVideoListActivityBundleKeyEnum.USER_NAME.value)
                 ?: EMPTY_STRING
-        railList =
-            (intent.getParcelableArrayListExtra<Video>(UserVideoListActivityBundleKeyEnum.VIDEO_LIST.value)
-                ?: arrayListOf())
-                .toRailItemTypeTwoModelList(false, advertisementName = CARD_OTHER_USER_VIDEO_LIST)
+
+        videoList =
+            intent.getParcelableArrayListExtra(UserVideoListActivityBundleKeyEnum.VIDEO_LIST.value)
+                ?: arrayListOf()
+
+        railList = videoList.toRailItemTypeTwoModelList(
+            false,
+            advertisementName = CARD_OTHER_USER_VIDEO_LIST
+        )
+
         isLastData = intent.getBooleanExtra(
             UserVideoListActivityBundleKeyEnum.IS_LAST_DATA.value, EMPTY_BOOLEAN
         )
@@ -258,12 +266,12 @@ class UserVideoListActivity : TimePassBaseActivity() {
     private fun onClickRailListItem() {
         railItemClickHandler = RailItemClickHandler()
         railItemClickHandler.clickPoster = { railModel ->
-            val railModel = railModel as RailItemTypeTwoModel
-            val isImage = railModel.isImage
+            val model = railModel as RailItemTypeTwoModel
+            val isImage = model.isImage
             if (isImage != null && isImage) {
-                displayImagePage(railModel.image)
+                displayImagePage(model.image)
             } else {
-                displayPlayerPage(railModel.video)
+                displayPlayerPage(videoList[railModel.position])
             }
         }
         railItemClickHandler.clickLike = { railModel ->
@@ -342,8 +350,8 @@ class UserVideoListActivity : TimePassBaseActivity() {
                     }
                     TimePassBaseResult.Status.SUCCESS -> {
                         isLoading = false
-
                         categoryListResponse.data?.let {
+                            videoList.addAll(it.video)
                             isLastData = it.is_last
                             addMoreVideoList(
                                 it.video.toRailItemTypeTwoModelList(
@@ -369,21 +377,22 @@ class UserVideoListActivity : TimePassBaseActivity() {
     }
 
 
-    private fun displayPlayerPage(videoUrl: String) {
-       /* startForResult.launch(
-            FullScreenVideoPlayerActivity.generateIntent(
+    private fun displayPlayerPage(video: Video?) {
+        startForResult.launch(
+            TikTokActivity.generateIntent(
                 this,
-                videoUrl,
-                playerViewAdapter.getCurrentPlayerPosition()
+                video!!,
+                playerViewAdapter.getCurrentPlayerPosition(),
+                video.Id
             )
-        )*/
+        )
     }
 
     private fun displayImagePage(imageUrl: String) {
         ImageViewActivity.present(this, imageUrl)
     }
 
-    val startForResult =
+    private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.let {

@@ -3,6 +3,7 @@ package com.gregantech.timepass.view.profile.viewmodel
 import android.app.DownloadManager
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import android.webkit.MimeTypeMap
 import android.webkit.URLUtil
 import androidx.lifecycle.*
@@ -26,8 +27,12 @@ class UserVideoListActivityViewModel(
 ) : ViewModel() {
     val downloadRequest = MutableLiveData<DownloadManager.Request>()
 
-    private fun generateVideoListRequest(userId: String, pageNo: Int): UserVideoListRequest {
-        return UserVideoListRequest(userId, pageNo)
+    private fun generateVideoListRequest(
+        userId: String,
+        pageNo: Int,
+        videoId: String? = null
+    ): UserVideoListRequest {
+        return UserVideoListRequest(userId, pageNo, videoId)
     }
 
     fun getMoreCategoryVideoList(userId: String, pageNo: Int) =
@@ -48,16 +53,22 @@ class UserVideoListActivityViewModel(
             }
         }
 
-    fun getFullScreenVideos(userId: String, pageNo: Int) =
+    fun getFullScreenVideos(userId: String, pageNo: Int, videoId: String?) =
         liveData<TimePassBaseResult<VideoListResponse>>(Dispatchers.IO) {
             emit(TimePassBaseResult.loading(null))
-            val result =
-                videoListRepository.fetchFullScreenVideoList(
-                    generateVideoListRequest(
-                        userId,
-                        pageNo
-                    )
-                )
+
+            val request = generateVideoListRequest(userId, pageNo, videoId)
+
+            Log.d(
+                "UserVideoListX",
+                "videoId $videoId is null ${videoId == null}. Using ${if (videoId == null) "fetchVideo" else "fetchUserVideo"} "
+            )
+
+            val result = if (videoId == null)
+                videoListRepository.fetchFullScreenUserVideoList(request)
+            else
+                videoListRepository.fetchFullScreenVideoList(request)
+
             when (result.status) {
                 TimePassBaseResult.Status.SUCCESS -> {
                     emit(result)

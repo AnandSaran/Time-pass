@@ -203,7 +203,7 @@ class TikTokFragment : TimePassBaseFragment() {
 
     private fun handleLikeState(isLiked: Boolean, videoLikes: Int) {
         Log.d(TAG, "handleLikeState: isLiked $isLiked")
-        val resId = if (isLiked) R.drawable.ic_like_green else R.drawable.ic_un_like
+        val resId = if (isLiked) R.drawable.ic_like else R.drawable.ic_un_like
         binding.includedMoreOption.ivLikeVid.setImageResource(resId)
         binding.includedMoreOption.tvLikeCount.text = videoLikes.toString()
     }

@@ -20,6 +20,9 @@ interface VideoService {
     @POST("videoList_api.php")
     suspend fun getFullScreenVideos(@Body videoListRequest: UserVideoListRequest): Response<VideoListResponse>
 
+    @POST("uservideoList_api.php")
+    suspend fun getFullScreenUserVideos(@Body videoListRequest: UserVideoListRequest): Response<VideoListResponse>
+
     @POST("homePageList_api.php")
     suspend fun getAllUserVideo(@Body videoListRequest: UserVideoListRequest): Response<VideoListResponse>
 

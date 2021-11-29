@@ -8,5 +8,6 @@ import kotlinx.android.parcel.Parcelize
 @JsonClass(generateAdapter = true)
 data class UserVideoListRequest(
     val userID: String,
-    val pageNo: Int=1
+    val pageNo: Int = 1,
+    val videoId: String? = null
 ) : Parcelable

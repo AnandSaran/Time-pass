@@ -35,6 +35,7 @@ class TikTokActivity : TimePassBaseActivity() {
 
     private val videoObj by lazy { intent?.extras?.getParcelable<Video>(TikTokBundleKeyEnum.VIDEO_DATA.value) }
     private val playingPosition by lazy { intent?.extras?.getLong(TikTokBundleKeyEnum.SEEK_POSITION.value) }
+    private val videoId by lazy { intent?.extras?.getString(TikTokBundleKeyEnum.VIDEO_ID.value) }
 
     private val tiktokPagerAdapter by lazy { TikTokPagerAdapter(this) }
 
@@ -53,20 +54,27 @@ class TikTokActivity : TimePassBaseActivity() {
     }
 
     companion object {
-        fun present(context: Context, video: Video, seekPosition: Long = -1) {
-            val intent = Intent(context, TikTokActivity::class.java)
-            intent.putExtra(TikTokBundleKeyEnum.VIDEO_DATA.value, video)
-            intent.putExtra(TikTokBundleKeyEnum.SEEK_POSITION.value, seekPosition)
-            context.startActivity(intent)
+        fun present(
+            context: Context,
+            video: Video,
+            seekPosition: Long = -1,
+            vidId: String? = null
+        ) {
+            context.startActivity(Intent(context, TikTokActivity::class.java).apply {
+                putExtra(TikTokBundleKeyEnum.VIDEO_DATA.value, video)
+                putExtra(TikTokBundleKeyEnum.SEEK_POSITION.value, seekPosition)
+                putExtra(TikTokBundleKeyEnum.VIDEO_ID.value, vidId)
+            })
         }
 
         fun generateIntent(
-            context: Context, video: Video, seekPosition: Long = -1
+            context: Context, video: Video, seekPosition: Long = -1, vidId: String? = null
         ): Intent {
-            val intent = Intent(context, TikTokActivity::class.java)
-            intent.putExtra(TikTokBundleKeyEnum.VIDEO_DATA.value, video)
-            intent.putExtra(TikTokBundleKeyEnum.SEEK_POSITION.value, seekPosition)
-            return intent
+            return Intent(context, TikTokActivity::class.java).apply {
+                putExtra(TikTokBundleKeyEnum.VIDEO_DATA.value, video)
+                putExtra(TikTokBundleKeyEnum.SEEK_POSITION.value, seekPosition)
+                putExtra(TikTokBundleKeyEnum.VIDEO_ID.value, vidId)
+            }
         }
     }
 
@@ -132,14 +140,9 @@ class TikTokActivity : TimePassBaseActivity() {
     private fun doFetchVideoList() {
         if (!fetchCheckOk())
             return
-        Log.d(
-            "doFetchVideoList",
-            "currentPage $currentPage isLoading $isLoading userId ${videoObj?.followerId}"
-        )
 
         isLoading = true
-        "Loading More..Page $currentPage".toast(this)
-        viewModel.getFullScreenVideos(videoObj?.followerId!!, currentPage)
+        viewModel.getFullScreenVideos(videoObj?.followerId!!, currentPage, videoId)
             .observe(this, androidx.lifecycle.Observer { videoModel ->
                 when (videoModel.status) {
                     TimePassBaseResult.Status.LOADING -> {
