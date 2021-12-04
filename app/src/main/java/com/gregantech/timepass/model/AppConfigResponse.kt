@@ -7,6 +7,7 @@ data class AppConfigResponse(
 	data class AppItem(
 		val appVersion: String? = null,
 		val title: String? = null,
-		val message: String? = null
+		val message: String? = null,
+		val VideoAdMobCount: Int = 4
 	)
 }

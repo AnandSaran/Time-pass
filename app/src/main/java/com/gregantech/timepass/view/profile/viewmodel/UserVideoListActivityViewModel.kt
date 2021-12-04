@@ -65,9 +65,9 @@ class UserVideoListActivityViewModel(
             )
 
             val result = if (videoId == null)
-                videoListRepository.fetchFullScreenUserVideoList(request)
-            else
                 videoListRepository.fetchFullScreenVideoList(request)
+            else
+                videoListRepository.fetchFullScreenUserVideoList(request)
 
             when (result.status) {
                 TimePassBaseResult.Status.SUCCESS -> {

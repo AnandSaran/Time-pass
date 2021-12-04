@@ -81,6 +81,7 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
                 }
                 TimePassBaseResult.Status.SUCCESS -> {
                     resultOf.data?.App?.get(0)?.run {
+                        SharedPreferenceHelper.setVideoAdCount(VideoAdMobCount)
                         val newVersion = appVersion?.toInt() ?: 0
                         if (newVersion > BuildConfig.VERSION_CODE)
                             showUpdateDialog(this)

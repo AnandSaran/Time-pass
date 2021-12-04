@@ -175,7 +175,9 @@ class TikTokActivity : TimePassBaseActivity() {
     private fun withAds(vidList: ArrayList<Video>): ArrayList<Video> {
         if (AdvertisementHandler.isAdEnabled(FULL_SCREEN_ADMIN_VIDEO_LIST)) {
             for (i in 1..vidList.size) {
-                if (i % 4 == 0) // add after 3rd item
+                val adLimit = SharedPreferenceHelper.getVideoAdCount()
+                Log.d(TAG, "withAds: adLimit $adLimit")
+                if (i % adLimit == 0) // add after nth item
                     vidList.add(i - 1, Video(viewType = 1))
             }
         }

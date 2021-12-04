@@ -13,5 +13,6 @@ enum class SharedPreferenceKeyEnum(val value: String) {
     USER_BIO("bio"),
     YOUTUBE_PROFILE_URL("youtube_profile_url"),
     IS_LIVE_ENABLED("is_live_enabled"),
-    FCM_TOKEN("fcm_token")
+    FCM_TOKEN("fcm_token"),
+    VIDEO_AD_COUNT("video_ad_count")
 }
