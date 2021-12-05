@@ -131,7 +131,7 @@ class TikTokActivity : TimePassBaseActivity() {
 
         isLoading = true
         viewModel.getFullScreenVideos(
-            SharedPreferenceHelper.getUserId(),
+            videoObj?.followerId!!,
             currentPage,
             videoObj?.Id!!,
             from!!
