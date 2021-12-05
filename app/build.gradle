@@ -96,73 +96,73 @@ android {
 
 static def getDevBaseUrl() {
     Properties props = new Properties()
-    props.load(new FileInputStream(new File('secret.properties')))
+    props.load(new FileInputStream(new File('/Users/anandsaravanan/Project/own/Time-pass/secret.properties')))
     return props['DEV_BASE_URL']
 }
 
 static def getDevBannerOtherUserProfileId() {
     Properties props = new Properties()
-    props.load(new FileInputStream(new File('secret.properties')))
+    props.load(new FileInputStream(new File('/Users/anandsaravanan/Project/own/Time-pass/secret.properties')))
     return props['DEV_BANNER_OTHER_USER_PROFILE']
 }
 
 static def getDevBannerUserProfileId() {
     Properties props = new Properties()
-    props.load(new FileInputStream(new File('secret.properties')))
+    props.load(new FileInputStream(new File('/Users/anandsaravanan/Project/own/Time-pass/secret.properties')))
     return props['DEV_BANNER_USER_PROFILE']
 }
 
 static def getDevBannerAdminVideoCategoryId() {
     Properties props = new Properties()
-    props.load(new FileInputStream(new File('secret.properties')))
+    props.load(new FileInputStream(new File('/Users/anandsaravanan/Project/own/Time-pass/secret.properties')))
     return props['DEV_BANNER_ADMIN_VIDEO_CATEGORY']
 }
 
 static def getDevFullScreenId() {
     Properties props = new Properties()
-    props.load(new FileInputStream(new File('secret.properties')))
+    props.load(new FileInputStream(new File('/Users/anandsaravanan/Project/own/Time-pass/secret.properties')))
     return props['DEV_FULL_SCREEN_ADMIN_VIDEO_LIST']
 }
 
 static def getDevNativeAdId() {
     Properties props = new Properties()
-    props.load(new FileInputStream(new File('secret.properties')))
+    props.load(new FileInputStream(new File('/Users/anandsaravanan/Project/own/Time-pass/secret.properties')))
     return props['DEV_NATIVE_AD']
 }
 
 static def getProdBaseUrl() {
     Properties props = new Properties()
-    props.load(new FileInputStream(new File('secret.properties')))
+    props.load(new FileInputStream(new File('/Users/anandsaravanan/Project/own/Time-pass/secret.properties')))
     return props['PRODUCTION_BASE_URL']
 }
 
 static def getProdBannerOtherUserProfileId() {
     Properties props = new Properties()
-    props.load(new FileInputStream(new File('secret.properties')))
+    props.load(new FileInputStream(new File('/Users/anandsaravanan/Project/own/Time-pass/secret.properties')))
     return props['PRODUCTION_BANNER_OTHER_USER_PROFILE']
 }
 
 static def getProdBannerUserProfileId() {
     Properties props = new Properties()
-    props.load(new FileInputStream(new File('secret.properties')))
+    props.load(new FileInputStream(new File('/Users/anandsaravanan/Project/own/Time-pass/secret.properties')))
     return props['PRODUCTION_BANNER_USER_PROFILE']
 }
 
 static def getProdBannerAdminVideoCategoryId() {
     Properties props = new Properties()
-    props.load(new FileInputStream(new File('secret.properties')))
+    props.load(new FileInputStream(new File('/Users/anandsaravanan/Project/own/Time-pass/secret.properties')))
     return props['PRODUCTION_BANNER_ADMIN_VIDEO_CATEGORY']
 }
 
 static def getProdFullScreenId() {
     Properties props = new Properties()
-    props.load(new FileInputStream(new File('secret.properties')))
+    props.load(new FileInputStream(new File('/Users/anandsaravanan/Project/own/Time-pass/secret.properties')))
     return props['PRODUCTION_FULL_SCREEN_ADMIN_VIDEO_LIST']
 }
 
 static def getProdNativeAdId() {
     Properties props = new Properties()
-    props.load(new FileInputStream(new File('secret.properties')))
+    props.load(new FileInputStream(new File('/Users/anandsaravanan/Project/own/Time-pass/secret.properties')))
     return props['PRODUCTION_NATIVE_AD']
 }
 
