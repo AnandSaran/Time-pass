@@ -5,5 +5,5 @@ enum class TikTokBundleKeyEnum(val value: String) {
     VIDEO_DATA("video_data"),
     VIDEO_URLS("video_urls"),
     COMMENT_COUNT("comment_count"),
-    VIDEO_ID("VIDEO_ID")
+    FROM("FROM")
 }

@@ -383,7 +383,7 @@ class UserVideoListActivity : TimePassBaseActivity() {
                 this,
                 video!!,
                 playerViewAdapter.getCurrentPlayerPosition(),
-                video.Id
+                "UserVideoListActivity"
             )
         )
     }

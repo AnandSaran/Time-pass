@@ -486,7 +486,8 @@ class UserVideoListFragment : TimePassBaseFragment() {
             TikTokActivity.generateIntent(
                 ctxt,
                 video!!,
-                playerViewAdapter.getCurrentPlayerPosition()
+                playerViewAdapter.getCurrentPlayerPosition(),
+                "UserVideoListFragment"
             )
         )
     }

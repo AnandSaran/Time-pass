@@ -35,7 +35,7 @@ class TikTokActivity : TimePassBaseActivity() {
 
     private val videoObj by lazy { intent?.extras?.getParcelable<Video>(TikTokBundleKeyEnum.VIDEO_DATA.value) }
     private val playingPosition by lazy { intent?.extras?.getLong(TikTokBundleKeyEnum.SEEK_POSITION.value) }
-    private val videoId by lazy { intent?.extras?.getString(TikTokBundleKeyEnum.VIDEO_ID.value) }
+    private val from by lazy { intent?.extras?.getString(TikTokBundleKeyEnum.FROM.value) }
 
     private val tiktokPagerAdapter by lazy { TikTokPagerAdapter(this) }
 
@@ -54,26 +54,14 @@ class TikTokActivity : TimePassBaseActivity() {
     }
 
     companion object {
-        fun present(
-            context: Context,
-            video: Video,
-            seekPosition: Long = -1,
-            vidId: String? = null
-        ) {
-            context.startActivity(Intent(context, TikTokActivity::class.java).apply {
-                putExtra(TikTokBundleKeyEnum.VIDEO_DATA.value, video)
-                putExtra(TikTokBundleKeyEnum.SEEK_POSITION.value, seekPosition)
-                putExtra(TikTokBundleKeyEnum.VIDEO_ID.value, vidId)
-            })
-        }
 
         fun generateIntent(
-            context: Context, video: Video, seekPosition: Long = -1, vidId: String? = null
+            context: Context, video: Video, seekPosition: Long = -1, from: String? = null
         ): Intent {
             return Intent(context, TikTokActivity::class.java).apply {
                 putExtra(TikTokBundleKeyEnum.VIDEO_DATA.value, video)
                 putExtra(TikTokBundleKeyEnum.SEEK_POSITION.value, seekPosition)
-                putExtra(TikTokBundleKeyEnum.VIDEO_ID.value, vidId)
+                putExtra(TikTokBundleKeyEnum.FROM.value, from)
             }
         }
     }
@@ -142,7 +130,12 @@ class TikTokActivity : TimePassBaseActivity() {
             return
 
         isLoading = true
-        viewModel.getFullScreenVideos(videoObj?.followerId!!, currentPage, videoId)
+        viewModel.getFullScreenVideos(
+            SharedPreferenceHelper.getUserId(),
+            currentPage,
+            videoObj?.Id!!,
+            from!!
+        )
             .observe(this, androidx.lifecycle.Observer { videoModel ->
                 when (videoModel.status) {
                     TimePassBaseResult.Status.LOADING -> {
