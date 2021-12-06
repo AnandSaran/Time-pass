@@ -11,7 +11,6 @@ import androidx.viewpager2.widget.ViewPager2
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.gregantech.timepass.BuildConfig.FULL_SCREEN_ADMIN_VIDEO_LIST
 import com.gregantech.timepass.R
 import com.gregantech.timepass.base.TimePassBaseActivity
 import com.gregantech.timepass.base.TimePassBaseResult
@@ -21,6 +20,7 @@ import com.gregantech.timepass.general.bundklekey.TikTokBundleKeyEnum
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.response.Video
 import com.gregantech.timepass.util.AdvertisementHandler
+import com.gregantech.timepass.util.FULL_SCREEN_ADMIN_VIDEO_LIST
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper

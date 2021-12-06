@@ -23,7 +23,7 @@ class TikTokPagerAdapter(fragment: FragmentActivity) : FragmentStateAdapter(frag
     override fun getItemCount() = dataList.size
 
     override fun createFragment(position: Int): Fragment {
-        if (position != 0 && position % 5 == 0) {
+        if (position != 0 && dataList[position].viewType == 1) {
             return TikTokAdFragment()
         }
         tikTokFragment = TikTokFragment.newInstance(dataList[position], playPosition)
