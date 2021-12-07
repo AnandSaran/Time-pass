@@ -22,7 +22,7 @@ class ImageViewActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityImageViewBinding
     private val imageUrl: String by lazy {
-        intent.getStringExtra(ImageViewBundleKey.IMAGE_URL.value)
+        intent.getStringExtra(ImageViewBundleKey.IMAGE_URL.value)!!
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
