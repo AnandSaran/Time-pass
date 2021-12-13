@@ -4,7 +4,6 @@ import android.net.Uri
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.DefaultLoadControl
-import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -13,7 +12,7 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.google.android.exoplayer2.video.VideoListener
 
 
-class NewPlayerViewAdapter() {
+class NewPlayerViewAdapter {
 
     // for hold all players generated
     private var playersMap: MutableMap<Int, SimpleExoPlayer> = mutableMapOf()
@@ -120,11 +119,6 @@ class NewPlayerViewAdapter() {
             playersMap[item_index] = player
 
         playerView.player!!.addListener(object : Player.EventListener {
-
-            override fun onPlayerError(error: ExoPlaybackException) {
-                super.onPlayerError(error)
-                //   this@loadVideo.context.toast("Oops! Error occurred while playing media.")
-            }
 
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 super.onPlayerStateChanged(playWhenReady, playbackState)

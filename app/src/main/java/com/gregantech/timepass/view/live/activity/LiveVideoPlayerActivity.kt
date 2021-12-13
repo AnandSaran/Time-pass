@@ -115,7 +115,7 @@ class LiveVideoPlayerActivity : AppCompatActivity() {
     private fun getInputs(intent: Intent) {
         if (intent.hasExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value)) {
             playBackInfoModel =
-                intent.getParcelableExtra(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value) as PlaybackInfoModel
+                intent.getParcelableExtra<PlaybackInfoModel>(LivePlayerBundleKey.PLAYBACK_INFO_MODEL.value) as PlaybackInfoModel
         }
     }
 

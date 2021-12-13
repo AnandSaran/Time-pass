@@ -3,7 +3,6 @@ package com.gregantech.timepass.view.profile.viewmodel
 import android.app.DownloadManager
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
 import android.webkit.MimeTypeMap
 import android.webkit.URLUtil
 import androidx.lifecycle.*
@@ -27,8 +26,19 @@ class UserVideoListActivityViewModel(
 ) : ViewModel() {
     val downloadRequest = MutableLiveData<DownloadManager.Request>()
 
-    private fun generateVideoListRequest(userId: String, pageNo: Int): UserVideoListRequest {
+    private fun generateVideoListRequest(
+        userId: String,
+        pageNo: Int
+    ): UserVideoListRequest {
         return UserVideoListRequest(userId, pageNo)
+    }
+
+    private fun generateVideoListRequest2(
+        userId: String,
+        pageNo: Int,
+        videoId: String
+    ): UserVideoListRequest {
+        return UserVideoListRequest(userId, pageNo, videoId)
     }
 
     fun getMoreCategoryVideoList(userId: String, pageNo: Int) =
@@ -36,6 +46,30 @@ class UserVideoListActivityViewModel(
             emit(TimePassBaseResult.loading(null))
             val result =
                 videoListRepository.fetchUserVideoList(generateVideoListRequest(userId, pageNo))
+            when (result.status) {
+                TimePassBaseResult.Status.SUCCESS -> {
+                    emit(result)
+                }
+                TimePassBaseResult.Status.ERROR -> {
+                    onFetchCategoryVideoListFail()
+                }
+                else -> {
+                    onFetchCategoryVideoListFail()
+                }
+            }
+        }
+
+    fun getFullScreenVideos(userId: String, pageNo: Int, videoId: String, from: String) =
+        liveData<TimePassBaseResult<VideoListResponse>>(Dispatchers.IO) {
+            emit(TimePassBaseResult.loading(null))
+
+            val request = generateVideoListRequest2(userId, pageNo, videoId)
+
+            val result = if (from == "UserVideoListFragment")
+                videoListRepository.fetchFullScreenVideoList(request)
+            else
+                videoListRepository.fetchFullScreenUserVideoList(request)
+
             when (result.status) {
                 TimePassBaseResult.Status.SUCCESS -> {
                     emit(result)

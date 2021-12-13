@@ -19,6 +19,14 @@ class VideoListRepository : TimePassBaseRepository() {
         videoService.getUserVideo(videoListRequest)
     }
 
+    suspend fun fetchFullScreenVideoList(videoListRequest: UserVideoListRequest) = getResult {
+        videoService.getFullScreenVideos(videoListRequest)
+    }
+
+    suspend fun fetchFullScreenUserVideoList(videoListRequest: UserVideoListRequest) = getResult {
+        videoService.getFullScreenUserVideos(videoListRequest)
+    }
+
     suspend fun deleteUserPost(userPostDeleteRequest: UserPostDeleteRequest) = getResult {
         videoService.deleteUserPost(userPostDeleteRequest)
     }

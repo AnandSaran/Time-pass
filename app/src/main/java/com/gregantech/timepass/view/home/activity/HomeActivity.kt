@@ -8,6 +8,7 @@ import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -22,6 +23,7 @@ import com.gregantech.timepass.model.AppConfigResponse
 import com.gregantech.timepass.network.repository.AppConfigRepository
 import com.gregantech.timepass.util.constant.APP_PLAYSTORE_LINK
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+import com.gregantech.timepass.util.extension.clearCache
 import com.gregantech.timepass.util.extension.openWebLink
 import com.gregantech.timepass.util.extension.toast
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
@@ -29,6 +31,7 @@ import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
 import com.gregantech.timepass.view.home.viewmodel.AppConfigViewModel
 import com.gregantech.timepass.view.live.activity.LiveBroadCastActivity
 import com.gregantech.timepass.view.uservideolist.fragment.UserVideoListFragment
+import kotlinx.coroutines.launch
 
 
 class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemClickListener {
@@ -59,10 +62,10 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
         setupDestinationChangedListener()
         initViewModelFactory()
         onClickBottomNavigation()
-        doFetchAppConfig()
     }
 
     override fun onResume() {
+        doFetchAppConfig()
         super.onResume()
     }
 
@@ -78,6 +81,7 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
                 }
                 TimePassBaseResult.Status.SUCCESS -> {
                     resultOf.data?.App?.get(0)?.run {
+                        SharedPreferenceHelper.setVideoAdCount(VideoAdMobCount)
                         val newVersion = appVersion?.toInt() ?: 0
                         if (newVersion > BuildConfig.VERSION_CODE)
                             showUpdateDialog(this)
@@ -202,5 +206,10 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
         if (fragment is UserVideoListFragment) {
             fragment.onFilePickItemClick(item)
         }
+    }
+
+    override fun onDestroy() {
+        lifecycleScope.launch { clearCache() }
+        super.onDestroy()
     }
 }

@@ -61,7 +61,7 @@ class UserProfileActivity : TimePassBaseActivity() {
     }
 
     private val userId: String by lazy {
-        intent.getStringExtra(UserProfileActivityBundleKeyEnum.FOLLOWER_ID.value)
+        intent.getStringExtra(UserProfileActivityBundleKeyEnum.FOLLOWER_ID.value)!!
     }
 
     private lateinit var railItemClickHandler: RailItemClickHandler

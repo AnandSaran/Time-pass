@@ -188,4 +188,14 @@ object SharedPreferenceHelper {
     fun isPostUserAreSameUser(followerId: String): Boolean {
         return getUserId() == followerId
     }
+
+    fun getVideoAdCount() = SharedPreferenceUtil.getSharedPreference()
+        .getInt(SharedPreferenceKeyEnum.VIDEO_AD_COUNT.value, 4)
+
+    fun setVideoAdCount(videoAdMobCount: Int) {
+        SharedPreferenceUtil.putIntValue(
+            key = SharedPreferenceKeyEnum.VIDEO_AD_COUNT.value,
+            value = videoAdMobCount
+        )
+    }
 }

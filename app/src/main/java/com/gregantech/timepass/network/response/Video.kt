@@ -21,10 +21,10 @@ data class Video(
     val image: String = EMPTY_STRING,
     @NullToEmptyString
     val followerId: String = EMPTY_STRING,
-    val videoLikes: Int = 0,
+    var videoLikes: Int = 0,
     val videoComments: Int = 0,
     val isFollowed: Boolean = false,
-    val isLiked: Boolean = false,
+    var isLiked: Boolean = false,
     val isImage: Boolean? = false,
     var viewType: Int = 0,
     @NullToEmptyString

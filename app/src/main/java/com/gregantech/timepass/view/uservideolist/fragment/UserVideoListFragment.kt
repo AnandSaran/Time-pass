@@ -35,6 +35,7 @@ import com.gregantech.timepass.general.UserListScreenTitleEnum
 import com.gregantech.timepass.general.UserListScreenTypeEnum
 import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
 import com.gregantech.timepass.general.bundklekey.CreateVideoBundleEnum
+import com.gregantech.timepass.general.bundklekey.TikTokBundleKeyEnum
 import com.gregantech.timepass.model.*
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.network.repository.BroadCastRepository
@@ -61,8 +62,8 @@ import com.gregantech.timepass.view.live.activity.LiveVideoPlayerActivity
 import com.gregantech.timepass.view.live.viewmodel.LiveBroadcastViewModel
 import com.gregantech.timepass.view.live.viewmodel.LiveChatViewModel
 import com.gregantech.timepass.view.player.activity.ImageViewActivity
-import com.gregantech.timepass.view.player.activity.PlayerActivity
 import com.gregantech.timepass.view.profile.activity.UserProfileActivity
+import com.gregantech.timepass.view.tiktok.activity.TikTokActivity
 import com.gregantech.timepass.view.userlist.activity.UserListActivity
 import com.gregantech.timepass.view.uservideolist.viewmodel.UserPostViewModel
 import com.gregantech.timepass.view.uservideolist.viewmodel.UserVideoListViewModel
@@ -74,6 +75,7 @@ import com.yalantis.ucrop.UCrop
 import java.io.File
 
 class UserVideoListFragment : TimePassBaseFragment() {
+
 
     private lateinit var binding: FragmentUserVideoListBinding
     private lateinit var ctxt: Context
@@ -90,6 +92,8 @@ class UserVideoListFragment : TimePassBaseFragment() {
     private var isRegistered = false
     private var railList: ArrayList<RailBaseItemModel> = arrayListOf()
 
+    private var videoList: List<Video>? = null
+
     private var isLastData: Boolean = false
     private var pageNo: Int = 1
 
@@ -99,6 +103,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     var currentIndex = -1
     var isShareClick = false
     var downloadID: Long? = null
+    var currentPos = 0
 
     private val viewModel: UserVideoListViewModel by lazy {
         requireNotNull(this.activity) {
@@ -249,6 +254,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
                     }
                     TimePassBaseResult.Status.SUCCESS -> {
                         categoryListResponse.data?.let {
+                            videoList = it.video
                             isLastData = it.is_last
                             railList.addAll(
                                 it.video.toRailItemTypeTwoModelList(
@@ -375,7 +381,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
             if (isImage != null && isImage) {
                 displayImagePage(railModel.image)
             } else {
-                displayPlayerPage(railModel.video)
+                displayPlayerPage(videoList?.get(railModel.position)!!, railModel.position)
             }
         }
         railItemClickHandler.clickFollow = { railModel ->
@@ -473,12 +479,15 @@ class UserVideoListFragment : TimePassBaseFragment() {
                 })
     }
 
-    private fun displayPlayerPage(videoUrl: String) {
+    private fun displayPlayerPage(video: Video?, position: Int) {
+        currentPos = position
+        playerViewAdapter.pauseCurrentPlayingVideo()
         startForResult.launch(
-            PlayerActivity.generateIntent(
+            TikTokActivity.generateIntent(
                 ctxt,
-                videoUrl,
-                playerViewAdapter.getCurrentPlayerPosition()
+                video!!,
+                playerViewAdapter.getCurrentPlayerPosition(),
+                "UserVideoListFragment"
             )
         )
     }
@@ -578,12 +587,18 @@ class UserVideoListFragment : TimePassBaseFragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.let {
-
                     val playerCurrentPosition = it.getLongExtra(
                         CategoryDetailBundleKeyEnum.VIDEO_POSITION.value,
                         EMPTY_LONG
                     )
-                    changePlayerCurrentPosition(playerCurrentPosition)
+                    it.getParcelableExtra<RailItemTypeTwoModel?>(TikTokBundleKeyEnum.VIDEO_DATA.value)
+                        ?.let { vid ->
+                            /*(binding.rvUserVideoList.adapter as InstagramAdAdapter).changeAtPos(
+                                vid,
+                                currentIndex
+                            )*/
+                            changePlayerCurrentPosition(playerCurrentPosition)
+                        }
                 }
             }
         }
@@ -633,6 +648,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
             (getString(R.string.file_format) + " ," + fileExt).toast(ctxt)
         }
     }
+
 
     private val startCreateVideoForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->

@@ -23,7 +23,6 @@
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash</item>
         <item name="android:background">@android:color/transparent</item>
-
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     </style>
@@ -231,6 +230,22 @@
 
     <style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">#FFA500</item>
+    </style>
+
+    <style name="FullScreenVideoTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:statusBarColor">@color/black</item>
+        <item name="android:selectableItemBackground">@drawable/bg_ripple_circle</item>
+    </style>
+
+    <style name="SelectableItemBackground">
+        <item name="android:layout_width">@dimen/tt_icon_width</item>
+        <item name="android:layout_height">@dimen/tt_icon_height</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
     </style>
 
 </resources>
