@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".view.live.fragment.LiveChatFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <include layout="@layout/guideline_10dp" />
+
+        <com.gregantech.timepass.widget.FadingEdgeLayout
+            android:id="@+id/feLay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/dp_10"
+            app:fel_edge="top"
+            app:fel_size_top="@dimen/dp_30"
+            app:layout_constraintBottom_toTopOf="@+id/bottomLay"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintTop_toTopOf="@+id/guideline_top">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvChat"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.7"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                <com.gregantech.timepass.widget.heart.HeartsView
+                    android:id="@+id/heartsView"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:background="@android:color/transparent"
+                    app:floating_time_coeff="1"
+                    app:size_coeff="1"
+                    app:x_max="3" />
+
+            </LinearLayout>
+
+        </com.gregantech.timepass.widget.FadingEdgeLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottomLay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@+id/guideline_bottom"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@+id/feLay">
+
+            <LinearLayout
+                android:id="@+id/inputLay"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_5"
+                android:background="@drawable/bg_black_rounded"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/ivLove"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/etComment"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="@dimen/dp_5"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:fontFamily="@font/roboto"
+                    android:hint="@string/write_a_comment"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:padding="@dimen/dp_10"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/hintColor"
+                    android:textSize="@dimen/sp_16" />
+
+                <ImageButton
+                    android:id="@+id/fabSend"
+                    android:layout_width="@dimen/dp_35"
+                    android:layout_height="@dimen/dp_35"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/dp_5"
+                    android:background="@drawable/selector_fab_bg"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/selector_fab_src" />
+
+            </LinearLayout>
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/ivLove"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
+                android:layout_gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/inputLay"
+                app:layout_constraintTop_toTopOf="parent"
+                app:lottie_fileName="favourite.json"
+                app:lottie_loop="false" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

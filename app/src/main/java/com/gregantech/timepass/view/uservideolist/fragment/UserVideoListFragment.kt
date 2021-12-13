@@ -21,8 +21,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SnapHelper
+import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
+import com.gregantech.timepass.adapter.live.LiveUserAdapter
 import com.gregantech.timepass.adapter.rail.InstagramAdAdapter
 import com.gregantech.timepass.base.TimePassBaseFragment
 import com.gregantech.timepass.base.TimePassBaseResult
@@ -33,9 +35,10 @@ import com.gregantech.timepass.general.UserListScreenTitleEnum
 import com.gregantech.timepass.general.UserListScreenTypeEnum
 import com.gregantech.timepass.general.bundklekey.CategoryDetailBundleKeyEnum
 import com.gregantech.timepass.general.bundklekey.CreateVideoBundleEnum
-import com.gregantech.timepass.model.RailBaseItemModel
-import com.gregantech.timepass.model.RailItemTypeTwoModel
-import com.gregantech.timepass.model.getStrippedFileName
+import com.gregantech.timepass.model.*
+import com.gregantech.timepass.model.playback.PlaybackInfoModel
+import com.gregantech.timepass.network.repository.BroadCastRepository
+import com.gregantech.timepass.network.repository.FireStoreRepository
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
@@ -47,15 +50,16 @@ import com.gregantech.timepass.util.URIPathHelper
 import com.gregantech.timepass.util.constant.EMPTY_LONG
 import com.gregantech.timepass.util.constant.EMPTY_STRING
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
-import com.gregantech.timepass.util.extension.shareDownloadedFile
-import com.gregantech.timepass.util.extension.smoothSnapToPosition
-import com.gregantech.timepass.util.extension.toast
+import com.gregantech.timepass.util.extension.*
 import com.gregantech.timepass.util.log.LogUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoTrimmerActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoUploadActivity
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
+import com.gregantech.timepass.view.live.activity.LiveVideoPlayerActivity
+import com.gregantech.timepass.view.live.viewmodel.LiveBroadcastViewModel
+import com.gregantech.timepass.view.live.viewmodel.LiveChatViewModel
 import com.gregantech.timepass.view.player.activity.ImageViewActivity
 import com.gregantech.timepass.view.player.activity.PlayerActivity
 import com.gregantech.timepass.view.profile.activity.UserProfileActivity
@@ -70,10 +74,17 @@ import com.yalantis.ucrop.UCrop
 import java.io.File
 
 class UserVideoListFragment : TimePassBaseFragment() {
+
     private lateinit var binding: FragmentUserVideoListBinding
     private lateinit var ctxt: Context
     private lateinit var viewModelFactory: UserVideoListViewModel.Factory
+    private lateinit var bcViewModelFactory: LiveBroadcastViewModel.Factory
     private lateinit var userPostViewModelFactory: UserPostViewModel.Factory
+    private lateinit var chatViewModelFactory: LiveChatViewModel.Factory
+
+    private val liveUserAdapter by lazy {
+        LiveUserAdapter(::onLiveUserClicked)
+    }
     private lateinit var railItemClickHandler: RailItemClickHandler
     private val playerViewAdapter = NewPlayerViewAdapter()
     private var isRegistered = false
@@ -88,6 +99,27 @@ class UserVideoListFragment : TimePassBaseFragment() {
     var currentIndex = -1
     var isShareClick = false
     var downloadID: Long? = null
+
+    private val viewModel: UserVideoListViewModel by lazy {
+        requireNotNull(this.activity) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, viewModelFactory).get(UserVideoListViewModel::class.java)
+    }
+
+    private val bcViewModel: LiveBroadcastViewModel by lazy {
+        requireNotNull(this.activity) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, bcViewModelFactory).get(LiveBroadcastViewModel::class.java)
+    }
+
+    private val chatViewModel: LiveChatViewModel by lazy {
+        requireNotNull(this) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, chatViewModelFactory).get(LiveChatViewModel::class.java)
+    }
 
     private var permissionlistenerCreateVideo: PermissionListener = object : PermissionListener {
         override fun onPermissionGranted() {
@@ -105,13 +137,6 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
         override fun onPermissionDenied(deniedPermissions: List<String>) {
         }
-    }
-
-    private val viewModel: UserVideoListViewModel by lazy {
-        requireNotNull(this.activity) {
-            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
-        }
-        ViewModelProvider(this, viewModelFactory).get(UserVideoListViewModel::class.java)
     }
 
     private val userPostViewModel: UserPostViewModel by lazy {
@@ -153,7 +178,6 @@ class UserVideoListFragment : TimePassBaseFragment() {
             context?.let {
                 ctxt = it
             }
-
             onClickCreateVideo()
             onClickRailListItem()
         }
@@ -163,6 +187,9 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
+        bcViewModelFactory = LiveBroadcastViewModel.Factory(BroadCastRepository())
+        chatViewModelFactory = LiveChatViewModel.Factory(FireStoreRepository())
         if (!::viewModelFactory.isInitialized) {
             viewModelFactory =
                 UserVideoListViewModel.Factory(
@@ -177,7 +204,15 @@ class UserVideoListFragment : TimePassBaseFragment() {
                 )
             setupViewModelObserver()
         }
+    }
 
+    private fun initView() {
+        binding.rvLiveUserList.apply {
+            setHasFixedSize(true)
+            horizontalView(requireContext())
+            adapter = liveUserAdapter
+
+        }
     }
 
     override fun onStop() {
@@ -218,6 +253,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
                             railList.addAll(
                                 it.video.toRailItemTypeTwoModelList(
                                     isShowProfile = true,
+                                    isShowFollow = false,
                                     advertisementName = CARD_HOME_VIDEO_LIST
                                 )
                             )
@@ -229,10 +265,35 @@ class UserVideoListFragment : TimePassBaseFragment() {
                     }
                 }
             })
+
+        bcViewModel.obLiveUserList.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                TimePassBaseResult.Status.SUCCESS -> {
+                    setRecyclerLiveList(it.data)
+                }
+                TimePassBaseResult.Status.ERROR -> it.message?.toast(ctxt)
+                TimePassBaseResult.Status.LOADING -> {
+                }
+            }
+        })
+
+        chatViewModel.obActiveLiveCountCollection().observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                TimePassBaseResult.Status.SUCCESS -> if (isAdded) doFetchLiveUserList()
+                TimePassBaseResult.Status.ERROR -> it.message?.toast(ctxt)
+                TimePassBaseResult.Status.LOADING -> {
+                }
+            }
+        })
+
         viewModel.downloadRequest.observe(viewLifecycleOwner, Observer {
             downloadVideo(it)
         })
 
+    }
+
+    private fun doFetchLiveUserList() {
+        bcViewModel.getLiveUserList(LiveUserListRequest(SharedPreferenceHelper.getUserId()))
     }
 
     private fun setupRecyclerView(categoryVideoList: ArrayList<RailBaseItemModel>) {
@@ -251,12 +312,31 @@ class UserVideoListFragment : TimePassBaseFragment() {
         setupRecyclerViewScrollListener()
     }
 
+    private fun setRecyclerLiveList(data: LiveUserListResponse?) {
+        if (data?.list?.isEmpty() == true)
+            binding.rvLiveUserList.gone()
+        else
+            liveUserAdapter.refresh(data?.list)
+    }
+
+    private fun onLiveUserClicked(listItem: ListItem) {
+        LiveVideoPlayerActivity.present(
+            requireContext(), PlaybackInfoModel(
+                "Streaming Live",
+                BuildConfig.ANT_URL + listItem.streamId,
+                listItem.streamId!!,
+                true
+            )
+        )
+    }
+
     private fun setUpSnapShot() {
         val snapHelper: SnapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(binding.rvUserVideoList)
     }
 
     private fun setupRecyclerViewScrollListener() {
+
         binding.rvUserVideoList.addOnScrollListener(object :
             PaginationScrollListener(binding.rvUserVideoList.layoutManager as LinearLayoutManager) {
             override fun isLastPage(): Boolean {
@@ -422,6 +502,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
                             addMoreVideoList(
                                 it.video.toRailItemTypeTwoModelList(
                                     isShowProfile = true,
+                                    isShowFollow = false,
                                     advertisementName = CARD_HOME_VIDEO_LIST
                                 )
                             )

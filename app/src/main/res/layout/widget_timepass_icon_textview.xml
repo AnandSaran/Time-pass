@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tpItv_rootView"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/dp_30"
+    android:background="@drawable/bg_black_rounded"
+    android:orientation="horizontal">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/tpItv_pic"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dp_10"
+        tools:src="@drawable/place_holder_profile" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tpItv_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:ellipsize="end"
+        android:fontFamily="@font/roboto_medium"
+        android:textColor="@color/white"
+        tools:text="50" />
+
+
+</LinearLayout>

@@ -52,6 +52,9 @@ buildscript {
         version_test_junit = "1.1.1"
         version_test_espresso = "3.3.0"
         version_ad_mob = "19.7.0"
+        version_auto_link = "2.0.5"
+        version_rtmp_client = "3.1.0"
+        version_fire_store = "23.0.1"
     }
     repositories {
         google()

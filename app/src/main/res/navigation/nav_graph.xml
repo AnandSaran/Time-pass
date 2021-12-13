@@ -16,6 +16,7 @@
         android:label="@string/profile"
         tools:layout="@layout/fragment_profile" />
 
+
     <fragment
         android:id="@+id/categoryFragment"
         android:name="com.gregantech.timepass.view.home.fragment.CategoryFragment"
@@ -40,4 +41,9 @@
             android:defaultValue="0"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/topicFragment"
+        android:name="com.gregantech.timepass.view.topic.fragment.TopicFragment"
+        android:label="fragment_topic"
+        tools:layout="@layout/fragment_topic" />
 </navigation>

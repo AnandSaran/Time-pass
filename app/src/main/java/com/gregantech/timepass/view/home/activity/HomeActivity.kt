@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -23,8 +24,10 @@ import com.gregantech.timepass.util.constant.APP_PLAYSTORE_LINK
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.openWebLink
 import com.gregantech.timepass.util.extension.toast
+import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
 import com.gregantech.timepass.view.home.viewmodel.AppConfigViewModel
+import com.gregantech.timepass.view.live.activity.LiveBroadCastActivity
 import com.gregantech.timepass.view.uservideolist.fragment.UserVideoListFragment
 
 
@@ -56,11 +59,11 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
         setupDestinationChangedListener()
         initViewModelFactory()
         onClickBottomNavigation()
+        doFetchAppConfig()
     }
 
     override fun onResume() {
         super.onResume()
-        doFetchAppConfig()
     }
 
     private fun setupViewModelFactory() {
@@ -108,8 +111,12 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        bottomNav?.setupWithNavController(navController)
+        findViewById<BottomNavigationView>(R.id.bottomNavigation)?.run {
+            if (!SharedPreferenceHelper.isLiveEnabled()) {
+                menu.removeItem(R.id.categoryBroadcast)
+            }
+            setupWithNavController(navController)
+        }
     }
 
     private fun initDataBinding() {
@@ -119,6 +126,9 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
     private fun initView() {
         setupBottomNavMenu()
         setSupportActionBar(binding.tbCategory.toolbar)
+        binding.bottomNavigation.menu[1].apply {
+            isCheckable = false
+        }
         binding.tbCategory.toolbar.setTitleTextAppearance(this, R.style.logo_font)
     }
 
@@ -149,10 +159,16 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
                     navController.popBackStack(R.id.userVideoListFragment, true)
                     onSelectTab(R.id.userVideoListFragment)
                 }
+                R.id.categoryBroadcast -> {
+                    LiveBroadCastActivity.present(this)
+                }
+                R.id.categoryTopic -> {
+                    navController.popBackStack(R.id.topicFragment, true)
+                    onSelectTab(R.id.topicFragment)
+                }
                 R.id.categoryFragment -> {
                     navController.popBackStack(R.id.categoryFragment, true)
                     onSelectTab(R.id.categoryFragment)
-
                 }
                 R.id.userProfileFragment -> {
                     navController.popBackStack(R.id.userProfileFragment, true)

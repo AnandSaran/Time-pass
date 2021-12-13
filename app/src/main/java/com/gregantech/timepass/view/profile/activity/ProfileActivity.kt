@@ -128,6 +128,10 @@ class ProfileActivity : TimePassBaseActivity() {
 
     private fun isValidForm(): Boolean {
         var count = 0
+        if (binding.edtName.text.toString().isBlank()) {
+            binding.tilName.error = getString(R.string.enter_name)
+            count++
+        }
         if (!binding.edtEmail.text.toString().isValidEmail()) {
             binding.tilEmail.error = getString(R.string.invalid_email)
             count++
@@ -160,12 +164,13 @@ class ProfileActivity : TimePassBaseActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        return if (isUpdateProfile()) {
+        return super.onCreateOptionsMenu(menu)
+        /*return if (isUpdateProfile()) {
             super.onCreateOptionsMenu(menu)
         } else {
             menuInflater.inflate(R.menu.menu_profile, menu)
             true
-        }
+        }*/
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

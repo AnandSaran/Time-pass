@@ -30,6 +30,10 @@ object SharedPreferenceHelper {
         return SharedPreferenceUtil.getBooleanValue(SharedPreferenceKeyEnum.IS_USER_LOGGED_IN.value)
     }
 
+    fun isLiveEnabled(): Boolean {
+        return SharedPreferenceUtil.getBooleanValue(SharedPreferenceKeyEnum.IS_LIVE_ENABLED.value)
+    }
+
     fun getUserId(): String {
         return SharedPreferenceUtil.getStringValue(SharedPreferenceKeyEnum.USER_ID.value)
     }
@@ -51,6 +55,7 @@ object SharedPreferenceHelper {
         setFollowing(user.following)
         setBio(user.bio)
         setYouTubeProfileUrl(user.youtube)
+        setLiveEnabled(user.isLiveEnabled)
     }
 
     private fun setUserId(value: String) {
@@ -162,6 +167,20 @@ object SharedPreferenceHelper {
     private fun setUserLoggedIn(value: Boolean) {
         SharedPreferenceUtil.putBooleanValue(
             key = SharedPreferenceKeyEnum.IS_USER_LOGGED_IN.value,
+            value = value
+        )
+    }
+
+    fun setFCMToken(token: String) {
+        SharedPreferenceUtil.putStringValue(
+            key = SharedPreferenceKeyEnum.FCM_TOKEN.value,
+            value = token
+        )
+    }
+
+    fun setLiveEnabled(value: Boolean) {
+        SharedPreferenceUtil.putBooleanValue(
+            key = SharedPreferenceKeyEnum.IS_LIVE_ENABLED.value,
             value = value
         )
     }

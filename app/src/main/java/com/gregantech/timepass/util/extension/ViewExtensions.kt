@@ -13,6 +13,9 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -25,6 +28,8 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.gregantech.timepass.R
+import com.gregantech.timepass.util.constant.BODY
+import com.gregantech.timepass.widget.AnimateCounter
 import com.klinker.android.link_builder.Link
 import com.klinker.android.link_builder.applyLinks
 import java.io.File
@@ -57,7 +62,7 @@ fun ImageView.loadUriCircle(uri: Uri) {
         .into(this)
 }
 
-fun ImageView.loadUrlCircle(url: String, placeHolder: Int = R.drawable.logo_app_icon) {
+fun ImageView.loadUrlCircle(url: String?, placeHolder: Int = R.drawable.logo_app_icon) {
     Glide.with(context)
         .load(url)
         .circleCrop()
@@ -192,7 +197,7 @@ fun Context.shareVideoText(file: File) {
     val shareIntent = Intent()
     shareIntent.action = Intent.ACTION_SEND
     shareIntent.type = "video/*"
-    shareIntent.putExtra(Intent.EXTRA_STREAM, file.toURI());
+    shareIntent.putExtra(Intent.EXTRA_STREAM, file.toURI())
     startActivity(
         Intent.createChooser(
             shareIntent,
@@ -258,4 +263,26 @@ fun AppCompatTextView.applyTextHyperLink(
     if (listOfHyperLinks.isNotEmpty()) {
         this.applyLinks(listOfHyperLinks)
     }
+}
+
+fun AppCompatTextView.fadeIn(title: String, context: Context?) {
+    context?.let {
+        val anim: Animation = AnimationUtils.loadAnimation(it, R.anim.fade_in)
+        text = title
+        startAnimation(anim)
+    }
+
+}
+
+fun AppCompatTextView.anim(title: String) {
+    val from = text.toString().toFloat()
+    val to = title.toFloat()
+    if (from == to)
+        return
+    AnimateCounter.Builder(this)
+        .setCount(from, to, 0)
+        .setDuration(1000)
+        .setInterpolator(AccelerateDecelerateInterpolator())
+        .build()
+        .execute()
 }

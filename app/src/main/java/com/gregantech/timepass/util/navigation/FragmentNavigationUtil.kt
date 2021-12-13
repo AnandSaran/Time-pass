@@ -1,4 +1,4 @@
-package com.singtel.cast.utils.navigation
+package com.gregantech.timepass.util.navigation
 
 import androidx.fragment.app.FragmentManager
 import com.gregantech.timepass.base.TimePassBaseFragment

@@ -1,15 +1,24 @@
 package com.gregantech.timepass.util.extension
 
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.Log
+import android.view.View
 import android.webkit.MimeTypeMap
 import android.webkit.URLUtil
 import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.ads.AdRequest
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.model.DownloadResult
@@ -17,13 +26,11 @@ import com.gregantech.timepass.util.constant.BODY
 import com.gregantech.timepass.util.constant.RAW_DOWNLOAD_PATH
 import com.gregantech.timepass.util.constant.SUBJECT
 import com.yalantis.ucrop.util.FileUtils.getPath
-import io.ktor.client.HttpClient
-import io.ktor.client.call.call
-import io.ktor.client.request.url
-import io.ktor.http.HttpMethod
-import io.ktor.http.contentLength
-import io.ktor.http.isSuccess
-import io.ktor.util.cio.writeChannel
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.util.cio.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.io.copyAndClose
@@ -80,8 +87,8 @@ fun Context.shareFile(filePath: String?, mimeType: String? = null) {
             action = Intent.ACTION_SEND
             type = mimeType ?: uri.getMimeTypeForIntent()
             putExtra(Intent.EXTRA_STREAM, uri)
-            //putExtra(Intent.EXTRA_SUBJECT, SUBJECT)
-           // putExtra(Intent.EXTRA_TEXT, BODY)
+            putExtra(Intent.EXTRA_SUBJECT, SUBJECT)
+            putExtra(Intent.EXTRA_TEXT, BODY)
         }
         startActivity(Intent.createChooser(shareIntent, "Share using"))
     }
@@ -195,6 +202,10 @@ fun Activity.openFile(file: File) {
     }
 }
 
+fun RecyclerView.horizontalView(context: Context) {
+    layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+}
+
 fun getMimeType(file: File): String? {
     val extension = file.extension
     return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension)
@@ -205,3 +216,49 @@ fun Context.openWebLink(link: String) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 }
+
+
+fun View.show() {
+    visibility = View.VISIBLE
+}
+
+fun View.hide() {
+    visibility = View.INVISIBLE
+}
+
+fun View.gone() {
+    visibility = View.GONE
+}
+
+fun View.animShow() {
+    animate().alpha(1f).setDuration(300).setListener(object : AnimatorListenerAdapter() {
+        override fun onAnimationStart(animation: Animator) {
+            super.onAnimationStart(animation)
+            visibility = View.VISIBLE
+        }
+    })
+}
+
+fun View.animGone() {
+    animate().alpha(0f).setDuration(300).setListener(object : AnimatorListenerAdapter() {
+        override fun onAnimationEnd(animation: Animator) {
+            super.onAnimationEnd(animation)
+            visibility = View.GONE
+        }
+    })
+}
+
+fun Drawable.toBitmap(): Bitmap {
+    if (this is BitmapDrawable) {
+        return this.bitmap
+    }
+
+    val bitmap =
+        Bitmap.createBitmap(this.intrinsicWidth, this.intrinsicHeight, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    this.setBounds(0, 0, canvas.width, canvas.height)
+    this.draw(canvas)
+
+    return bitmap
+}
+
