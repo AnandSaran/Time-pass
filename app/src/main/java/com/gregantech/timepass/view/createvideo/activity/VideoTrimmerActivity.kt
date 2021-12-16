@@ -9,7 +9,6 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
@@ -18,11 +17,11 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import com.ahmedbadereldin.videotrimmer.Utility
-import com.ahmedbadereldin.videotrimmer.customVideoViews.BackgroundTask
-import com.ahmedbadereldin.videotrimmer.customVideoViews.BarThumb
-import com.ahmedbadereldin.videotrimmer.customVideoViews.CustomRangeSeekBar
-import com.ahmedbadereldin.videotrimmer.customVideoViews.OnRangeSeekBarChangeListener
+import com.adroit.videotrimmer.Utility
+import com.adroit.videotrimmer.customVideoViews.BackgroundTask
+import com.adroit.videotrimmer.customVideoViews.BarThumb
+import com.adroit.videotrimmer.customVideoViews.CustomRangeSeekBar
+import com.adroit.videotrimmer.customVideoViews.OnRangeSeekBarChangeListener
 import com.daasuu.mp4compose.FillMode
 import com.daasuu.mp4compose.composer.Mp4Composer
 import com.daasuu.mp4compose.filter.GlWatermarkFilter
@@ -67,9 +66,8 @@ class VideoTrimmerActivity : TimePassBaseActivity(),
         if (intent.extras != null) {
             srcFile = intent.extras!!.getString(CreateVideoBundleEnum.VIDEO_PATH.value)
         }
-        dstFile = (Environment.getExternalStorageDirectory()
-            .toString() + "/" + getString(R.string.app_name) + Date().time
-                + Utility.VIDEO_FORMAT)
+        dstFile =
+            cacheDir.toString() + "/" + getString(R.string.app_name) + Date().time + Utility.VIDEO_FORMAT
         timeLineView.post(Runnable {
             setBitmap(Uri.parse(srcFile))
             videoView.setVideoURI(Uri.parse(srcFile))

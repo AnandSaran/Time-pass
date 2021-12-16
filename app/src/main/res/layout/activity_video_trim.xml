@@ -106,14 +106,14 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp">
 
-                <com.ahmedbadereldin.videotrimmer.customVideoViews.TileView
+                <com.adroit.videotrimmer.customVideoViews.TileView
                     android:id="@+id/timeLineView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:orientation="horizontal" />
 
-                <com.ahmedbadereldin.videotrimmer.customVideoViews.CustomRangeSeekBar
+                <com.adroit.videotrimmer.customVideoViews.CustomRangeSeekBar
                     android:id="@+id/timeLineBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -1,3 +1,4 @@
 include ':liveVideoBroadcasterSDK'
 rootProject.name='Time pass'
 include ':app'
+include ':videotrimmer'
