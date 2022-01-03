@@ -21,6 +21,8 @@ data class Video(
     val image: String = EMPTY_STRING,
     @NullToEmptyString
     val followerId: String = EMPTY_STRING,
+    @NullToEmptyString
+    val videoDateTime: String? = null,
     var videoLikes: Int = 0,
     val videoComments: Int = 0,
     val isFollowed: Boolean = false,

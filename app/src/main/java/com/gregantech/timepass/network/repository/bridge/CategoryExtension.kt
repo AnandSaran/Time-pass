@@ -58,7 +58,8 @@ fun Video.toRailItemTypeTwoModel(
         isShowProfile = isShowProfile,
         userName = userName,
         userImage = userImage,
-        viewType = viewType
+        viewType = viewType,
+        timeStamp = videoDateTime
     )
 }
 

@@ -2,7 +2,9 @@ package com.gregantech.timepass.util.extension
 
 import android.util.Patterns
 import com.gregantech.timepass.util.constant.*
+import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
+import java.util.*
 
 fun String.appendPost(): String {
     return if (this.isBlank()) {
@@ -34,6 +36,25 @@ fun String.appendFollowing(): String {
         ZERO.plus(FOLLOWING)
     } else {
         this.plus(FOLLOWING)
+    }
+}
+
+fun String.toPrettyTime(): String {
+    val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH)
+    sdf.timeZone = TimeZone.getDefault()
+    val date = sdf.parse(this)
+    date?.let {
+        return Calendar.getInstance().apply {
+            time = it
+        }.timeInMillis.getPrettyTime()
+    }
+    return ""
+}
+
+fun Long.getPrettyTime(): String {
+    return when (val mDate = PrettyTime(Locale.ENGLISH).format(Date(this))) {
+        "moments from now", "moments ago" -> "just now"
+        else -> mDate
     }
 }
 

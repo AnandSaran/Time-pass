@@ -34,7 +34,8 @@ class RailItemTypeTwoModel(
     var userName: String = EMPTY_STRING,
     var userImage: String = EMPTY_STRING,
     var viewType: Int = 0,
-    var position: Int = 0
+    var position: Int = 0,
+    var timeStamp: String? = null
 ) : Parcelable, RailBaseItemModel(){
     val uriFile: Uri
         get() = file.toUri()

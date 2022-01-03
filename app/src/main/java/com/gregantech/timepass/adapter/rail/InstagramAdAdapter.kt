@@ -12,10 +12,7 @@ import com.gregantech.timepass.databinding.ItemInstagramBinding
 import com.gregantech.timepass.model.RailBaseItemModel
 import com.gregantech.timepass.model.RailItemTypeTwoModel
 import com.gregantech.timepass.util.NewPlayerViewAdapter
-import com.gregantech.timepass.util.extension.loadDrawable
-import com.gregantech.timepass.util.extension.loadUrl
-import com.gregantech.timepass.util.extension.loadUrlCircle
-import com.gregantech.timepass.util.extension.visible
+import com.gregantech.timepass.util.extension.*
 import java.util.*
 
 
@@ -78,6 +75,14 @@ class InstagramAdAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun onBind(model: RailItemTypeTwoModel) {
             model.position = adapterPosition
+            with(binding.tvTimeStamp) {
+                if (model.timeStamp.isNullOrEmpty())
+                    gone()
+                else {
+                    text = model.timeStamp?.toPrettyTime()
+                    show()
+                }
+            }
             binding.apply {
                 dataModel = model
                 setupOnClick(model)

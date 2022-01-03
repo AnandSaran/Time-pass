@@ -32,3 +32,4 @@ const val BODY =
 const val TYPE = "Type"
 const val DATA = "Data"
 
+const val UPLOAD_SIZE_LIMIT = 100000000 //100mb

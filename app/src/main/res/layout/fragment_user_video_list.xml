@@ -6,6 +6,7 @@
     <!--  android:paddingTop="29dp"-->
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/rootLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background_color_grey_light">

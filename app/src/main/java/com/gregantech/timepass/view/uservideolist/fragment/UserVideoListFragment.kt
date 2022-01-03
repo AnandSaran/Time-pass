@@ -10,6 +10,7 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.*
 import android.webkit.MimeTypeMap
 import androidx.activity.result.ActivityResult
@@ -21,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SnapHelper
+import com.google.android.material.snackbar.Snackbar
 import com.gregantech.timepass.BuildConfig
 import com.gregantech.timepass.R
 import com.gregantech.timepass.adapter.handler.rail.RailItemClickHandler
@@ -50,12 +52,12 @@ import com.gregantech.timepass.util.Run
 import com.gregantech.timepass.util.URIPathHelper
 import com.gregantech.timepass.util.constant.EMPTY_LONG
 import com.gregantech.timepass.util.constant.EMPTY_STRING
+import com.gregantech.timepass.util.constant.UPLOAD_SIZE_LIMIT
 import com.gregantech.timepass.util.constant.VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
 import com.gregantech.timepass.util.extension.*
 import com.gregantech.timepass.util.log.LogUtil
 import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
-import com.gregantech.timepass.view.createvideo.activity.VideoTrimmerActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoUploadActivity
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
 import com.gregantech.timepass.view.live.activity.LiveVideoPlayerActivity
@@ -641,12 +643,53 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
         val fileExt = MimeTypeMap.getFileExtensionFromUrl(uri.toString())
         if (path != null && path.isNotBlank()) {
-            startCreateVideoForResult.launch(
-                VideoTrimmerActivity.generateIntent(ctxt, path.toString())
-            )
+            if (isWithinLimit(uri))
+                displayVideoUploadPage(path)
+            /*  startCreateVideoForResult.launch(
+                  VideoTrimmerActivity.generateIntent(ctxt, path.toString())
+              )*/
         } else {
             (getString(R.string.file_format) + " ," + fileExt).toast(ctxt)
         }
+    }
+
+    private fun isWithinLimit(uri: Uri): Boolean {
+
+        val pickedFileSize = getFileSize(uri)
+        Log.d(
+            TAG,
+            "isWithinLimit: pickedFileSize $pickedFileSize UPLOAD_SIZE_LIMIT $UPLOAD_SIZE_LIMIT"
+        )
+        if (pickedFileSize > UPLOAD_SIZE_LIMIT) {
+            Snackbar.make(
+                binding.rootLayout,
+                "File size must be less than 100 mb",
+                Snackbar.LENGTH_LONG
+            ).show()
+            return false
+        }
+
+        return true
+    }
+
+    private fun getFileSize(uri: Uri): Long {
+        val projection = arrayOf(
+            MediaStore.MediaColumns.SIZE
+        )
+        requireContext().contentResolver.query(
+            uri, projection, null, null,
+            null
+        ).use { cursor ->
+            cursor?.run {
+                if (moveToFirst()) {
+                    val index = getColumnIndexOrThrow(MediaStore.MediaColumns.SIZE)
+                    return if (!isNull(index)) {
+                        (getString(index).toLong()).also { close() }
+                    } else 0L
+                }
+            }
+        }
+        return 0L
     }
 
 
