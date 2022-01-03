@@ -7,6 +7,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -60,6 +62,7 @@ import com.gregantech.timepass.util.sharedpreference.SharedPreferenceHelper
 import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoUploadActivity
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
+import com.gregantech.timepass.view.interactions.view.InteractionsActivity
 import com.gregantech.timepass.view.live.activity.LiveVideoPlayerActivity
 import com.gregantech.timepass.view.live.viewmodel.LiveBroadcastViewModel
 import com.gregantech.timepass.view.live.viewmodel.LiveChatViewModel
@@ -230,14 +233,40 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_user_video_list, menu)
+        menu.findItem(R.id.miActivity)?.icon = buildCounterDrawable(10)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.miSearch -> showSearchScreen()
+            R.id.miActivity -> InteractionsActivity.present(requireContext())
         }
         return true
+    }
+
+    private fun buildCounterDrawable(count: Int): BitmapDrawable {
+
+        val view =
+            LayoutInflater.from(requireContext()).inflate(R.layout.counter_menuitem_layout, null)
+        with(view) {
+            //setBackgroundResource(backgroundImageId)
+            val counterTextPanel: View = view.findViewById(R.id.rlDot)
+            counterTextPanel.apply {
+                if (count > 0) show() else gone()
+            }
+            measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+            layout(0, 0, view.measuredWidth, view.measuredHeight)
+            isDrawingCacheEnabled = true
+            drawingCacheQuality = View.DRAWING_CACHE_QUALITY_HIGH
+        }
+        val bitmap = Bitmap.createBitmap(view.drawingCache)
+        view.isDrawingCacheEnabled = false
+
+        return BitmapDrawable(resources, bitmap)
     }
 
     private fun showSearchScreen() {

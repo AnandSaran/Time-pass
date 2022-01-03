@@ -156,6 +156,7 @@ class HomeActivity : TimePassBaseActivity(), FilePickerBottomSheetFragment.ItemC
         }
     }
 
+
     private fun onClickBottomNavigation() {
         binding.bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
