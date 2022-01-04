@@ -44,6 +44,7 @@ import com.gregantech.timepass.model.*
 import com.gregantech.timepass.model.playback.PlaybackInfoModel
 import com.gregantech.timepass.network.repository.BroadCastRepository
 import com.gregantech.timepass.network.repository.FireStoreRepository
+import com.gregantech.timepass.network.repository.InteractionsRepository
 import com.gregantech.timepass.network.repository.VideoListRepository
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModel
 import com.gregantech.timepass.network.repository.bridge.toRailItemTypeTwoModelList
@@ -63,6 +64,7 @@ import com.gregantech.timepass.view.comment.fragment.CommentActivity
 import com.gregantech.timepass.view.createvideo.activity.VideoUploadActivity
 import com.gregantech.timepass.view.home.fragment.FilePickerBottomSheetFragment
 import com.gregantech.timepass.view.interactions.view.InteractionsActivity
+import com.gregantech.timepass.view.interactions.viewmodel.InteractionsViewModel
 import com.gregantech.timepass.view.live.activity.LiveVideoPlayerActivity
 import com.gregantech.timepass.view.live.viewmodel.LiveBroadcastViewModel
 import com.gregantech.timepass.view.live.viewmodel.LiveChatViewModel
@@ -88,6 +90,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     private lateinit var bcViewModelFactory: LiveBroadcastViewModel.Factory
     private lateinit var userPostViewModelFactory: UserPostViewModel.Factory
     private lateinit var chatViewModelFactory: LiveChatViewModel.Factory
+    private lateinit var interactionsViewModelFactory: InteractionsViewModel.Factory
 
     private val liveUserAdapter by lazy {
         LiveUserAdapter(::onLiveUserClicked)
@@ -109,6 +112,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     var isShareClick = false
     var downloadID: Long? = null
     var currentPos = 0
+    var showIndicator = false
 
     private val viewModel: UserVideoListViewModel by lazy {
         requireNotNull(this.activity) {
@@ -129,6 +133,13 @@ class UserVideoListFragment : TimePassBaseFragment() {
             VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
         }
         ViewModelProvider(this, chatViewModelFactory).get(LiveChatViewModel::class.java)
+    }
+
+    private val interactionsViewModel: InteractionsViewModel by lazy {
+        requireNotNull(this) {
+            VIEW_MODEL_IN_ACCESSIBLE_MESSAGE
+        }
+        ViewModelProvider(this, interactionsViewModelFactory).get(InteractionsViewModel::class.java)
     }
 
     private var permissionlistenerCreateVideo: PermissionListener = object : PermissionListener {
@@ -200,6 +211,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
         initView()
         bcViewModelFactory = LiveBroadcastViewModel.Factory(BroadCastRepository())
         chatViewModelFactory = LiveChatViewModel.Factory(FireStoreRepository())
+        interactionsViewModelFactory = InteractionsViewModel.Factory(InteractionsRepository())
         if (!::viewModelFactory.isInitialized) {
             viewModelFactory =
                 UserVideoListViewModel.Factory(
@@ -233,19 +245,23 @@ class UserVideoListFragment : TimePassBaseFragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_user_video_list, menu)
-        menu.findItem(R.id.miActivity)?.icon = buildCounterDrawable(10)
+        menu.findItem(R.id.miActivity)?.icon = buildCounterDrawable()
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.miSearch -> showSearchScreen()
-            R.id.miActivity -> InteractionsActivity.present(requireContext())
+            R.id.miActivity -> {
+                /*showIndicator = !showIndicator
+                requireActivity().invalidateOptionsMenu()*/
+                InteractionsActivity.present(requireContext())
+            }
         }
         return true
     }
 
-    private fun buildCounterDrawable(count: Int): BitmapDrawable {
+    private fun buildCounterDrawable(): BitmapDrawable {
 
         val view =
             LayoutInflater.from(requireContext()).inflate(R.layout.counter_menuitem_layout, null)
@@ -253,7 +269,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
             //setBackgroundResource(backgroundImageId)
             val counterTextPanel: View = view.findViewById(R.id.rlDot)
             counterTextPanel.apply {
-                if (count > 0) show() else gone()
+                if (showIndicator) show() else gone()
             }
             measure(
                 View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -327,6 +343,20 @@ class UserVideoListFragment : TimePassBaseFragment() {
             downloadVideo(it)
         })
 
+        interactionsViewModel.getActivityState().observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                TimePassBaseResult.Status.SUCCESS -> if (isAdded) showIndicator(it.data)
+                TimePassBaseResult.Status.ERROR -> {}
+                TimePassBaseResult.Status.LOADING -> {
+                }
+            }
+        })
+
+    }
+
+    private fun showIndicator(response: InteractionsResponse?) {
+        showIndicator = response?.status == "success" && response.showNotification == true
+        requireActivity().invalidateOptionsMenu()
     }
 
     private fun doFetchLiveUserList() {
@@ -592,6 +622,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     }
 
     override fun onResume() {
+
         super.onResume()
         if (currentIndex != -1) {
             playerViewAdapter.playIndexThenPausePreviousPlayer(currentIndex)
