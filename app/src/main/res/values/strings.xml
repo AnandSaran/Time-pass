@@ -87,5 +87,6 @@
     <string name="file_format">File Format</string>
     <string name="scroll_down">Loading Ad…\nScroll to see more videos..</string>
     <string name="title_activity">Activity</string>
+    <string name="no_activities_available">No activities available!</string>
 
 </resources>

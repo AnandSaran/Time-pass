@@ -1,12 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.interactions.view.InteractionsActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbarActivity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:titleTextAppearance="@style/TitleBarTextAppearance" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.gregantech.timepass.widget.TimePassViewSwitcher
+            android:id="@+id/vsActivity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvInteractions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_interaction" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto"
+                android:text="@string/no_activities_available"
+                android:textSize="@dimen/sp_20" />
+
+        </com.gregantech.timepass.widget.TimePassViewSwitcher>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
 </layout>

@@ -343,6 +343,9 @@ class UserVideoListFragment : TimePassBaseFragment() {
             downloadVideo(it)
         })
 
+    }
+
+    private fun fetchActivityState() {
         interactionsViewModel.getActivityState().observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 TimePassBaseResult.Status.SUCCESS -> if (isAdded) showIndicator(it.data)
@@ -351,7 +354,6 @@ class UserVideoListFragment : TimePassBaseFragment() {
                 }
             }
         })
-
     }
 
     private fun showIndicator(response: InteractionsResponse?) {
@@ -622,7 +624,7 @@ class UserVideoListFragment : TimePassBaseFragment() {
     }
 
     override fun onResume() {
-
+        fetchActivityState()
         super.onResume()
         if (currentIndex != -1) {
             playerViewAdapter.playIndexThenPausePreviousPlayer(currentIndex)

@@ -27,8 +27,12 @@ import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.Priority
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.FitCenter
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.gregantech.timepass.R
-import com.gregantech.timepass.util.constant.BODY
 import com.gregantech.timepass.widget.AnimateCounter
 import com.klinker.android.link_builder.Link
 import com.klinker.android.link_builder.applyLinks
@@ -72,6 +76,24 @@ fun ImageView.loadUrlCircle(url: String?, placeHolder: Int = R.drawable.logo_app
         }
         .into(this)
 }
+
+fun ImageView.setImageRoundedCorner(
+    imgUrl: Any?,
+    placeholder: Int = R.drawable.place_holder_profile
+) {
+
+    val options = RequestOptions()
+        .placeholder(placeholder)
+        .diskCacheStrategy(DiskCacheStrategy.ALL)
+        .transform(FitCenter(), RoundedCorners(10))
+        .priority(Priority.HIGH)
+
+    Glide.with(this.context)
+        .load(imgUrl)
+        .apply(options)
+        .into(this)
+}
+
 
 fun View.loadDrawableBackground(@DrawableRes drawable: Int) {
     ContextCompat.getDrawable(
