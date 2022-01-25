@@ -52,12 +52,14 @@
             android:theme="@style/FullScreenVideoTheme" />
         <activity
             android:name=".view.live.activity.LiveBroadCastActivity"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".view.live.activity.LiveVideoPlayerActivity"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
+            android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
         <meta-data
@@ -66,35 +68,43 @@
 
         <activity
             android:name=".view.userlist.activity.UserListActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.player.activity.ImageViewActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.profile.activity.UserVideoListActivity"
+            android:exported="false"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.profile.activity.UserProfileActivity"
+            android:exported="false"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.createvideo.activity.VideoUploadActivity"
+            android:exported="false"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.createvideo.activity.VideoTrimmerActivity"
+            android:exported="false"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
+            android:exported="false"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeToolbar" />
         <activity
             android:name=".view.player.activity.PlayerActivity"
+            android:exported="false"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/FullScreen" />
         <activity
@@ -112,27 +122,33 @@
         <activity
             android:name=".view.profile.activity.ProfileActivity"
             android:configChanges="orientation|screenSize"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.comment.fragment.CommentActivity"
             android:configChanges="orientation|screenSize"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.login.activity.LoginActivity"
             android:configChanges="orientation|screenSize"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.home.activity.HomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".view.categoryvideosearch.activity.SearchVideoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
             android:screenOrientation="portrait" />
 
         <service
             android:name="io.antmedia.android.broadcaster.LiveVideoBroadcaster"
+            android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <provider
@@ -151,6 +167,7 @@
 
         <service
             android:name=".fcm.FirebaseMessagingService"
+            android:exported="false"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
             android:stopWithTask="false">
             <intent-filter>
